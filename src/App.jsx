@@ -43,7 +43,6 @@ const PROMO_VIDEO = {
     webm: "",
     poster: "/stock/2024 Toyota Vellfire/cover.jpg",
 };
-const ALPHARD_SITE_URL = "/alphard.html#/brands/alphard-vellfire";
 
 // --- 🛠️ 核心工具：图片路径生成器 ---
 const getCarImage = (folderName, imageCount, type = 'cover', car = null) => {
@@ -468,9 +467,6 @@ const HomeFilterWidget = ({ cars }) => {
     const [priceRange, setPriceRange] = useState('');
     const [yearFrom, setYearFrom] = useState('');
     const [keyword, setKeyword] = useState('');
-    const openAlphardSite = () => {
-        window.location.href = ALPHARD_SITE_URL;
-    };
     
     // 首页品牌下拉：固定品牌列表（即使当前库存为 0，也允许选择，进入无结果页）
     const brandCounts = cars.reduce((acc, car) => {
@@ -626,7 +622,7 @@ const HomeFilterWidget = ({ cars }) => {
                             key={idx}
                             onClick={() => {
                                 if (tag === 'Toyota Alphard' || tag === '丰田埃尔法' || tag === 'Vellfire' || tag === '威尔法') {
-                                    openAlphardSite();
+                                    navigate('/inventory');
                                 } else if (tag === 'Under $50k' || tag === '5万以下') {
                                     navigate('/inventory?price=1');
                                 } else {
@@ -649,9 +645,6 @@ const HomePage = ({ cars }) => {
     const navigate = useNavigate();
     const { t } = useLanguage();
     const safeCars = cars || [];
-    const openAlphardSite = () => {
-        window.location.href = ALPHARD_SITE_URL;
-    };
     
     // 统计 Alphard 和 Vellfire 的数量
     const alphardVellfireCount = safeCars.filter(car => {
@@ -2123,7 +2116,7 @@ const SellPage = () => {
 };
 
 // --- App Content ---
-export function AppContent({ siteVariant = 'main' }) {
+export function AppContent() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const location = useLocation();
     const { lang, t, toggleLang } = useLanguage();
@@ -2180,12 +2173,12 @@ export function AppContent({ siteVariant = 'main' }) {
                         <div className="px-4 py-2">
                             <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">{t('Featured', '精选')}</p>
                         </div>
-                        <a
-                            href={ALPHARD_SITE_URL}
+                        <Link
+                            to="/inventory"
                             className="block w-full text-left px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-red-700 rounded-xl transition-colors"
                         >
                             {t('Alphard / Vellfire', '埃尔法 / 威尔法')} <span className="text-xs text-slate-400 font-semibold">· {t('MPV', 'MPV')}</span>
-                        </a>
+                        </Link>
                         <div className="px-4 pt-4 pb-2">
                             <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">{t('Top brands', '热门品牌')}</p>
                         </div>
@@ -2215,8 +2208,6 @@ export function AppContent({ siteVariant = 'main' }) {
         </div>
     );
 
-    const isAlphardSite = siteVariant === 'alphard';
-
     return (
         <div className="min-h-screen bg-slate-50 font-sans selection:bg-red-100 selection:text-red-900">
             <ScrollToTop />
@@ -2233,10 +2224,7 @@ export function AppContent({ siteVariant = 'main' }) {
 
                     <div className="hidden md:flex items-center gap-8 h-full">
                         <NavItem path="/" label={t('HOME', '首页')} />
-                        <NavItem path="/inventory" label={t('BUY A CAR', '选购车辆')} />
-                        {!isAlphardSite && <NavItem path="#" label={t('OUR BRANDS', '品牌')} hasDropdown />}
-                        {!isAlphardSite && <NavItem path="/sell" label={t('SELL YOUR CAR', '卖车')} />}
-                        {!isAlphardSite && <NavItem path="/about" label={t('ABOUT', '关于我们')} />}
+                        <NavItem path="/inventory" label={t('COLLECTION', '专属车源')} />
                         <NavItem path="/contact" label={t('CONTACT', '联系')} />
                     </div>
 
@@ -2261,22 +2249,7 @@ export function AppContent({ siteVariant = 'main' }) {
             {isMenuOpen && (
                 <div className="md:hidden fixed inset-0 top-[80px] bg-white/95 backdrop-blur-xl z-30 p-6 flex flex-col gap-6 animate-in slide-in-from-right-10 overflow-y-auto border-t border-slate-100">
                     <Link to="/" className="text-2xl font-bold text-slate-900 tracking-tight">{t('HOME', '首页')}</Link>
-                    <Link to="/inventory" className="text-2xl font-bold text-slate-900 tracking-tight">{t('BUY A CAR', '选购车辆')}</Link>
-                    {!isAlphardSite && (
-                        <div className="space-y-4 pl-4 border-l-4 border-red-500">
-                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{t('OUR BRANDS', '品牌')}</p>
-                            <a href={ALPHARD_SITE_URL} className="block text-lg font-bold text-slate-700">{t('Toyota Alphard', '丰田埃尔法')}</a>
-                            <div className="grid grid-cols-2 gap-2 pt-2">
-                                {topBrands.slice(0, 6).map(({ brand }) => (
-                                    <Link key={brand} to={`/inventory?brand=${encodeURIComponent(brand)}`} className="text-sm font-bold text-slate-600 hover:text-red-700">
-                                        {brand}
-                                    </Link>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                    {!isAlphardSite && <Link to="/sell" className="text-2xl font-bold text-slate-900 tracking-tight">{t('SELL YOUR CAR', '卖车')}</Link>}
-                    {!isAlphardSite && <Link to="/about" className="text-2xl font-bold text-slate-900 tracking-tight">{t('ABOUT', '关于我们')}</Link>}
+                    <Link to="/inventory" className="text-2xl font-bold text-slate-900 tracking-tight">{t('COLLECTION', '专属车源')}</Link>
                     <Link to="/contact" className="text-2xl font-bold text-slate-900 tracking-tight">{t('CONTACT', '联系')}</Link>
                     <button
                         type="button"
@@ -2291,15 +2264,10 @@ export function AppContent({ siteVariant = 'main' }) {
 
             <main className="flex-grow">
                 <Routes>
-                    <Route path="/" element={isAlphardSite ? <AlphardHomePage cars={carsWithLocalStock} /> : <HomePage cars={carsWithLocalStock} />} />
-                    <Route path="/inventory" element={<InventoryPage cars={carsWithLocalStock} />} />
-                    <Route path="/brands/toyota" element={<InventoryPage cars={carsWithLocalStock} category="toyota" />} />
-                    <Route path="/brands/alphard-vellfire" element={<InventoryPage cars={carsWithLocalStock} category="toyota" />} />
+                    <Route path="/" element={<AlphardHomePage cars={carsWithLocalStock} />} />
+                    <Route path="/inventory" element={<InventoryPage cars={carsWithLocalStock} category="toyota" />} />
                     <Route path="/vehicle/:id" element={<CarDetailPage cars={carsWithLocalStock} />} />
-                    <Route path="/about" element={<AboutPage />} />
                     <Route path="/contact" element={<ContactPage />} />
-                    <Route path="/sell" element={<SellPage />} />
-                    <Route path="/admin/import" element={<ImportPage source={source} onImport={setImportedCars} onClear={clearImportedCars} />} />
                 </Routes>
             </main>
 
@@ -2338,33 +2306,22 @@ export function AppContent({ siteVariant = 'main' }) {
                                 <a href={`tel:${SERVICE_PHONE}`} className="flex items-center gap-3 hover:text-white transition-colors group"><Phone size={16} className="text-red-600 group-hover:scale-110 transition-transform" /><span>{SERVICE_PHONE_DISPLAY}</span></a>
                             </div>
                         </div>
-                        {!isAlphardSite && (
-                            <div>
-                                <h4 className="text-white font-bold mb-6 tracking-widest text-xs uppercase">{t('Quick Links', '快速链接')}</h4>
-                                <ul className="space-y-3 text-sm">
-                                    {[
-                                        { label: t('Home', '首页'), to: '/' },
-                                        { label: t('Buy a Car', '选购车辆'), to: '/inventory' },
-                                        { label: t('Toyota Alphard / Vellfire', '丰田埃尔法 / 威尔法'), to: ALPHARD_SITE_URL, external: true },
-                                        { label: t('Sell Your Car', '卖车'), to: '/sell' },
-                                        { label: t('About Us', '关于我们'), to: '/about' },
-                                        { label: t('Contact', '联系'), to: '/contact' },
-                                    ].map((item) => (
-                                        <li key={item.to}>
-                                            {item.external ? (
-                                                <a href={item.to} className="hover:text-red-500 hover:translate-x-1 transition-all inline-block">
-                                                    {item.label}
-                                                </a>
-                                            ) : (
-                                                <Link to={item.to} className="hover:text-red-500 hover:translate-x-1 transition-all inline-block">
-                                                    {item.label}
-                                                </Link>
-                                            )}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
+                        <div>
+                            <h4 className="text-white font-bold mb-6 tracking-widest text-xs uppercase">{t('Quick Links', '快速链接')}</h4>
+                            <ul className="space-y-3 text-sm">
+                                {[
+                                    { label: t('Home', '首页'), to: '/' },
+                                    { label: t('Collection', '专属车源'), to: '/inventory' },
+                                    { label: t('Contact', '联系'), to: '/contact' },
+                                ].map((item) => (
+                                    <li key={item.to}>
+                                        <Link to={item.to} className="hover:text-red-500 hover:translate-x-1 transition-all inline-block">
+                                            {item.label}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
                     <div className="border-t border-slate-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-600">
                         <p>&copy; 2026 {BRAND_NAME}. {t('All rights reserved.', '保留所有权利。')}</p>
