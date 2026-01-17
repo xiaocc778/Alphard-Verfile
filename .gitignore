@@ -1,0 +1,41 @@
+# ���� node_modules (�������̫����)
+node_modules
+
+# ���Թ������Ŀ¼
+dist
+dist-ssr
+
+# ���Ա༭����ʱ�ļ� (����ǵ����㱨����������ף�)
+.vs
+.vscode
+*.suo
+*.ntvs
+*.njsproj
+*.sln
+*.swp
+
+# ������־
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ����ϵͳ�ļ�
+.DS_Store
+Thumbs.db
+
+# ���Ի�������
+.env
+.env.local
+
+# Scrape / sync outputs (keep repo lean; remove if you intentionally want to version these)
+.xhs_state.json
+xhs_*.json
+autohome_*showroom*.json
+
+# Stock folder: keep images for the site, but ignore archives/binaries
+public/stock/**/*.zip
+public/stock/**/*.exe
+public/stock/**/*.ini
+
+# Local backup of old/corrupt git metadata (never commit)
+.git_corrupt_backup_*
