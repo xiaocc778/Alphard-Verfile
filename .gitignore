@@ -39,3 +39,8 @@ public/stock/**/*.ini
 
 # Local backup of old/corrupt git metadata (never commit)
 .git_corrupt_backup_*
+.tools/
+.vercel
+.env*.local
+.vercel
+.env*.local
