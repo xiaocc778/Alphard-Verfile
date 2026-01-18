@@ -9,19 +9,20 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Site background (easy to swap images later)
-   - Put your preferred hero photos in /public/stock/... and update the URLs below. */
+/* Track Mode (performance look): abstract background + neon accent */
 :root {
-  --site-bg-image-1: url("/stock/2024 Toyota Vellfire/cover.jpg");
-  --site-bg-image-2: url("/stock/2023 Toyota Alphard 2.5L/cover.jpg");
+  --track-accent: #22d3ee;  /* cyan-400 */
+  --track-accent-2: #a3e635; /* lime-400 */
+  --track-surface: rgba(2, 6, 23, 0.86);
+  --track-border: rgba(255, 255, 255, 0.12);
 }
 
 body {
-  background: #0b1220;
+  background: #05070d;
   font-family: "Montserrat", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
-/* Business-grade background layer: subtle, desaturated, low-distraction */
+/* Track background: diagonal grid + glow (no car photos => clearly different from main site) */
 body::before {
   content: "";
   position: fixed;
@@ -29,17 +30,13 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background-image:
-    linear-gradient(180deg, rgba(2, 6, 23, 0.92) 0%, rgba(2, 6, 23, 0.86) 18%, rgba(248, 250, 252, 1) 62%, rgba(248, 250, 252, 1) 100%),
-    radial-gradient(1000px 520px at 12% 12%, rgba(185, 28, 28, 0.10), transparent 60%),
-    radial-gradient(900px 480px at 88% 18%, rgba(15, 23, 42, 0.28), transparent 62%),
-    var(--site-bg-image-1),
-    var(--site-bg-image-2);
-  background-size: auto, auto, auto, 900px auto, 900px auto;
-  background-position: center, center, center, 78% 2%, 10% 22%;
-  background-repeat: no-repeat;
+    radial-gradient(980px 520px at 14% 16%, rgba(34, 211, 238, 0.18), transparent 62%),
+    radial-gradient(900px 520px at 86% 18%, rgba(163, 230, 53, 0.12), transparent 62%),
+    repeating-linear-gradient(115deg, rgba(148, 163, 184, 0.08) 0, rgba(148, 163, 184, 0.08) 1px, transparent 1px, transparent 20px),
+    linear-gradient(180deg, rgba(2, 6, 23, 0.98) 0%, rgba(2, 6, 23, 0.92) 55%, rgba(2, 6, 23, 0.86) 100%);
+  background-repeat: no-repeat, no-repeat, repeat, no-repeat;
   background-attachment: fixed;
-  filter: grayscale(1) contrast(1.05) saturate(0.65);
-  opacity: 0.28;
+  opacity: 1;
 }
 
 body::after {
@@ -48,7 +45,58 @@ body::after {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(2, 6, 23, 0.62) 0%, rgba(2, 6, 23, 0.0) 40%, rgba(248, 250, 252, 0.0) 100%);
+  background:
+    radial-gradient(1200px 700px at 50% -10%, rgba(255, 255, 255, 0.06), transparent 60%),
+    radial-gradient(1000px 520px at 50% 110%, rgba(2, 6, 23, 0.72), transparent 55%);
+}
+
+/* Track UI helpers */
+.track-surface {
+  background: var(--track-surface);
+  border: 1px solid var(--track-border);
+  box-shadow:
+    0 16px 70px rgba(2, 6, 23, 0.70),
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  backdrop-filter: blur(16px);
+}
+
+.track-cut {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+}
+
+.track-outline {
+  position: relative;
+}
+.track-outline::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(90deg, rgba(34, 211, 238, 0.55), rgba(163, 230, 53, 0.35));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.track-btn {
+  border-radius: 12px;
+  padding: 0.95rem 1.25rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.track-btn-primary {
+  color: #020617;
+  background: linear-gradient(90deg, var(--track-accent), var(--track-accent-2));
+  box-shadow: 0 14px 40px rgba(34, 211, 238, 0.18);
+}
+.track-btn-ghost {
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 /* Custom Scrollbar */
@@ -142,13 +190,13 @@ body::after {
 
 /* Text Selection */
 ::selection {
-  background: rgba(220, 38, 38, 0.2);
-  color: #991b1b;
+  background: rgba(34, 211, 238, 0.22);
+  color: #020617;
 }
 
 /* Focus Styles */
 *:focus-visible {
-  outline: 2px solid #dc2626;
+  outline: 2px solid var(--track-accent);
   outline-offset: 2px;
 }
 
@@ -160,7 +208,7 @@ img {
 
 /* Gradient Text Helper */
 .gradient-text {
-  background: linear-gradient(to right, #dc2626, #f59e0b);
+  background: linear-gradient(to right, var(--track-accent), var(--track-accent-2));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

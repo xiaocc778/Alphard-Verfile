@@ -142,17 +142,27 @@ const CarCard = ({ car }) => {
     // 判断是否为 Alphard 或 Vellfire
     const isPremium = car.title?.toLowerCase().includes('alphard') || car.title?.toLowerCase().includes('vellfire');
 
+    const openDetails = () =>
+        navigate(`/vehicle/${car.id}`, {
+            state: { from: `${location.pathname}${location.search}` },
+        });
+
     return (
         <div
-            onClick={() =>
-                navigate(`/vehicle/${car.id}`, {
-                    state: { from: `${location.pathname}${location.search}` },
-                })
-            }
-            className="group bg-white rounded-2xl shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 overflow-hidden cursor-pointer flex flex-col h-full border border-slate-200"
+            role="button"
+            tabIndex={0}
+            aria-label={t('View vehicle details', '查看车辆详情')}
+            onClick={openDetails}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openDetails();
+                }
+            }}
+            className="group cursor-pointer flex flex-col h-full overflow-hidden rounded-2xl track-surface track-outline track-cut transition-transform duration-300 hover:-translate-y-1 focus-visible:outline-none"
         >
             {/* Image Container */}
-            <div className="relative h-56 overflow-hidden bg-slate-100">
+            <div className="relative h-56 overflow-hidden bg-slate-950">
                 <img
                     src={imageUrl}
                     alt={car.title}
@@ -160,24 +170,26 @@ const CarCard = ({ car }) => {
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                 />
                 {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent opacity-95 transition-opacity duration-300"></div>
                 
                 {/* Status Badge */}
                 <div className="absolute top-4 left-4 z-10 flex gap-2">
-                    <span className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm text-white ${car.status === 'In Stock' || car.status === 'Brand New' ? 'bg-emerald-700' : 'bg-slate-900'}`}>
+                    <span className={`px-3 py-1.5 rounded-md text-[11px] font-black uppercase tracking-[0.22em] border border-white/10 bg-slate-950/55 backdrop-blur track-cut ${
+                        car.status === 'In Stock' || car.status === 'Brand New' ? 'text-lime-200' : 'text-white/85'
+                    }`}>
                         {car.status}
                     </span>
                     {isPremium && (
-                        <span className="px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-sm text-white bg-slate-800 flex items-center gap-1">
-                            <Star size={10} fill="currentColor" /> Premium
+                        <span className="px-3 py-1.5 rounded-md text-[11px] font-black uppercase tracking-[0.22em] border border-white/10 bg-slate-950/55 backdrop-blur text-cyan-200 flex items-center gap-1 track-cut">
+                            <Star size={10} fill="currentColor" /> {t('Premium', '旗舰')}
                         </span>
                     )}
                 </div>
 
                 {/* Quick View Button */}
                 <div className="absolute bottom-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-                    <div className="bg-white text-slate-900 px-4 py-2 rounded-full text-xs font-bold shadow-lg flex items-center gap-2">
-                        {t('View Details', '查看详情')} <ArrowRight size={14} />
+                    <div className="px-4 py-2 rounded-md text-[11px] font-black uppercase tracking-[0.22em] text-slate-950 bg-gradient-to-r from-cyan-300 to-lime-300 shadow-lg track-cut">
+                        {t('View', '查看')} <ArrowRight size={14} className="inline" />
                     </div>
                 </div>
             </div>
@@ -185,49 +197,49 @@ const CarCard = ({ car }) => {
             {/* Content */}
             <div className="p-6 flex flex-col flex-grow">
                 {/* Title */}
-                <h3 className="text-lg font-bold text-slate-900 line-clamp-2 leading-snug group-hover:text-red-600 transition-colors mb-4">
+                <h3 className="text-lg font-black text-white line-clamp-2 leading-snug group-hover:text-cyan-200 transition-colors mb-4">
                     {car.title}
                 </h3>
 
                 {/* Specs Grid */}
                 <div className="grid grid-cols-3 gap-3 mb-6">
-                    <div className="bg-slate-50 rounded-xl p-3 text-center border border-slate-100">
-                        <p className="text-xs text-slate-400 mb-1">{t('Year', '年份')}</p>
-                        <p className="font-bold text-slate-900 text-sm">{car.year}</p>
+                    <div className="bg-white/5 rounded-xl p-3 text-center border border-white/10 track-cut">
+                        <p className="text-[10px] text-white/50 mb-1 font-black uppercase tracking-[0.22em]">{t('Year', '年份')}</p>
+                        <p className="font-black text-white text-sm">{car.year}</p>
                     </div>
-                    <div className="bg-slate-50 rounded-xl p-3 text-center border border-slate-100">
-                        <p className="text-xs text-slate-400 mb-1">{t('Mileage', '里程')}</p>
-                        <p className="font-bold text-slate-900 text-sm">
+                    <div className="bg-white/5 rounded-xl p-3 text-center border border-white/10 track-cut">
+                        <p className="text-[10px] text-white/50 mb-1 font-black uppercase tracking-[0.22em]">{t('Mileage', '里程')}</p>
+                        <p className="font-black text-white text-sm">
                             {(car.mileage || 0).toLocaleString()}
-                            <span className="text-xs text-slate-400">{t('km', '公里')}</span>
+                            <span className="text-[10px] text-white/45 ml-1">{t('km', '公里')}</span>
                         </p>
                     </div>
-                    <div className="bg-slate-50 rounded-xl p-3 text-center border border-slate-100">
-                        <p className="text-xs text-slate-400 mb-1">{t('Fuel', '燃料')}</p>
-                        <p className="font-bold text-slate-900 text-sm truncate">{car.fuel || 'Petrol'}</p>
+                    <div className="bg-white/5 rounded-xl p-3 text-center border border-white/10 track-cut">
+                        <p className="text-[10px] text-white/50 mb-1 font-black uppercase tracking-[0.22em]">{t('Fuel', '燃料')}</p>
+                        <p className="font-black text-white text-sm truncate">{car.fuel || 'Petrol'}</p>
                     </div>
                 </div>
 
                 {/* Price Section */}
-                <div className="mt-auto pt-5 border-t border-slate-100 flex items-center justify-between">
+                <div className="mt-auto pt-5 border-t border-white/10 flex items-center justify-between">
                     <div>
                         {car.price > 0 ? (
                             <>
-                                <p className="text-2xl font-black text-slate-900 tracking-tight">${car.price.toLocaleString()}</p>
-                                <p className="text-[10px] text-slate-400 uppercase font-semibold tracking-wide">
+                                <p className="text-2xl font-black text-white tracking-tight">${car.price.toLocaleString()}</p>
+                                <p className="text-[10px] text-white/45 uppercase font-black tracking-[0.22em]">
                                     {t('Excl. Gov. Charges', '不含政府费用')}
                                 </p>
                             </>
                         ) : (
                             <>
-                                <p className="text-xl font-bold text-red-600">{t('Contact for Price', '价格面议')}</p>
-                                <p className="text-[10px] text-slate-400 uppercase font-semibold tracking-wide">
+                                <p className="text-xl font-black text-cyan-200">{t('Contact for Price', '价格面议')}</p>
+                                <p className="text-[10px] text-white/45 uppercase font-black tracking-[0.22em]">
                                     {t('Enquire for price', '询价请联系')}
                                 </p>
                             </>
                         )}
                     </div>
-                    <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 group-hover:bg-slate-900 group-hover:text-white transition-all duration-300">
+                    <div className="w-12 h-12 rounded-md bg-white/5 border border-white/10 flex items-center justify-center text-white/70 group-hover:text-white transition-all duration-300 track-cut">
                         <ArrowRight size={20} />
                     </div>
                 </div>
@@ -300,7 +312,7 @@ const InventoryFilterWidget = ({ tempFilters, setTempFilters, onSearch, onReset,
     const years = [...new Set(cars.map(car => car.year))].filter(Boolean).sort((a, b) => b - a);
 
     return (
-        <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl shadow-black/10 border border-white/60 overflow-hidden">
+        <div className="track-surface track-outline track-cut rounded-2xl overflow-hidden">
             {/* Header */}
             <div className="bg-slate-950 px-6 py-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -323,38 +335,36 @@ const InventoryFilterWidget = ({ tempFilters, setTempFilters, onSearch, onReset,
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
                     {/* Keyword */}
                     <div className="space-y-2 lg:col-span-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                        <label className="text-[11px] font-black text-white/55 uppercase tracking-[0.22em] flex items-center gap-1">
                             {t('Keyword', '关键词')}
                         </label>
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/35" size={16} />
                             <input
                                 value={tempFilters.keyword || ''}
                                 onChange={(e) => setTempFilters({ ...tempFilters, keyword: e.target.value })}
                                 onKeyDown={(e) => { if (e.key === 'Enter') onSearch(); }}
                                 placeholder={t('Alphard / Hybrid / SUV / 7 seats...', 'Alphard / 混动 / SUV / 7座...')}
-                                className={`w-full pl-10 pr-4 p-3 border-2 rounded-xl focus:border-slate-900 focus:ring-4 focus:ring-slate-900/10 font-medium text-sm transition-all ${
-                                    tempFilters.keyword ? 'bg-slate-100 border-slate-300 text-slate-900' : 'bg-slate-50 border-slate-200 text-slate-800 hover:border-slate-300'
-                                }`}
+                                className="w-full pl-10 pr-4 p-3 rounded-xl border border-white/10 bg-slate-950/45 text-white placeholder-white/30 focus:ring-4 focus:ring-[rgba(34,211,238,0.22)] focus:border-[rgba(34,211,238,0.35)] font-semibold text-sm transition-all hover:border-white/20"
                             />
                         </div>
                     </div>
                     {/* Brand */}
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                        <label className="text-[11px] font-black text-white/55 uppercase tracking-[0.22em] flex items-center gap-1">
                             {t('Brand', '品牌')}
                         </label>
                         {isToyotaCategory ? (
-                            <div className="w-full p-3 border-2 rounded-xl bg-slate-100 border-slate-200 text-slate-600 font-semibold text-sm flex items-center justify-between">
-                                <span>{t('Toyota', '丰田')}</span>
-                                <span className="text-xs text-slate-400">{t('Locked', '锁定')}</span>
+                            <div className="w-full p-3 rounded-xl bg-slate-950/55 border border-white/10 text-white/80 font-semibold text-sm flex items-center justify-between">
+                                <span className="font-black tracking-wide">{t('Toyota', '丰田')}</span>
+                                <span className="text-[11px] text-white/40 font-black uppercase tracking-[0.22em]">{t('Locked', '锁定')}</span>
                             </div>
                         ) : (
                             <div className="relative group">
                             <select 
                                     value={tempFilters.brand}
                                     onChange={(e) => setTempFilters({...tempFilters, brand: e.target.value})}
-                                className={`w-full p-3 border-2 rounded-xl appearance-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/10 font-medium text-sm cursor-pointer transition-all ${tempFilters.brand ? 'bg-slate-100 border-slate-300 text-slate-900' : 'bg-slate-50 border-slate-200 text-slate-800 hover:border-slate-300'}`}
+                                className="w-full p-3 rounded-xl appearance-none cursor-pointer transition-all border border-white/10 bg-slate-950/45 text-white focus:ring-4 focus:ring-[rgba(34,211,238,0.22)] focus:border-[rgba(34,211,238,0.35)] hover:border-white/20 font-semibold text-sm"
                                 >
                                     <option value="">{t('All Brands', '全部品牌')}</option>
                                     {ALL_BRANDS.map((brand) => (
@@ -363,41 +373,41 @@ const InventoryFilterWidget = ({ tempFilters, setTempFilters, onSearch, onReset,
                                         </option>
                                     ))}
                                 </select>
-                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={16} />
+                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-white/35 pointer-events-none" size={16} />
                             </div>
                         )}
                     </div>
 
                     {/* Year From */}
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                        <label className="text-[11px] font-black text-white/55 uppercase tracking-[0.22em] flex items-center gap-1">
                             {t('Year', '年份')}
                         </label>
                         <div className="relative group">
                             <select 
                                 value={tempFilters.yearFrom}
                                 onChange={(e) => setTempFilters({...tempFilters, yearFrom: e.target.value})}
-                                className={`w-full p-3 border-2 rounded-xl appearance-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/10 font-medium text-sm cursor-pointer transition-all ${tempFilters.yearFrom ? 'bg-slate-100 border-slate-300 text-slate-900' : 'bg-slate-50 border-slate-200 text-slate-800 hover:border-slate-300'}`}
+                                className="w-full p-3 rounded-xl appearance-none cursor-pointer transition-all border border-white/10 bg-slate-950/45 text-white focus:ring-4 focus:ring-[rgba(34,211,238,0.22)] focus:border-[rgba(34,211,238,0.35)] hover:border-white/20 font-semibold text-sm"
                             >
                                 <option value="">{t('Any Year', '不限年份')}</option>
                                 {years.map(year => (
                                     <option key={year} value={year}>{year}+</option>
                                 ))}
                             </select>
-                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={16} />
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-white/35 pointer-events-none" size={16} />
                         </div>
                     </div>
 
                     {/* Price Range */}
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                        <label className="text-[11px] font-black text-white/55 uppercase tracking-[0.22em] flex items-center gap-1">
                             {t('Price', '价格')}
                         </label>
                         <div className="relative group">
                             <select 
                                 value={tempFilters.priceRange}
                                 onChange={(e) => setTempFilters({...tempFilters, priceRange: e.target.value})}
-                                className={`w-full p-3 border-2 rounded-xl appearance-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/10 font-medium text-sm cursor-pointer transition-all ${tempFilters.priceRange ? 'bg-slate-100 border-slate-300 text-slate-900' : 'bg-slate-50 border-slate-200 text-slate-800 hover:border-slate-300'}`}
+                                className="w-full p-3 rounded-xl appearance-none cursor-pointer transition-all border border-white/10 bg-slate-950/45 text-white focus:ring-4 focus:ring-[rgba(34,211,238,0.22)] focus:border-[rgba(34,211,238,0.35)] hover:border-white/20 font-semibold text-sm"
                             >
                                 <option value="">{t('Any Price', '不限价格')}</option>
                                 <option value="1">{t('Under $30,000', '30,000 以下')}</option>
@@ -405,20 +415,20 @@ const InventoryFilterWidget = ({ tempFilters, setTempFilters, onSearch, onReset,
                                 <option value="3">{t('$60,000 - $100,000', '60,000 - 100,000')}</option>
                                 <option value="4">{t('$100,000+', '100,000 以上')}</option>
                             </select>
-                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={16} />
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-white/35 pointer-events-none" size={16} />
                         </div>
                     </div>
 
                     {/* Sort By */}
                     <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                        <label className="text-[11px] font-black text-white/55 uppercase tracking-[0.22em] flex items-center gap-1">
                             {t('Sort', '排序')}
                         </label>
                         <div className="relative group">
                             <select 
                                 value={tempFilters.sortBy}
                                 onChange={(e) => setTempFilters({...tempFilters, sortBy: e.target.value})}
-                                className="w-full p-3 bg-slate-50 border-2 border-slate-200 rounded-xl appearance-none focus:border-slate-900 focus:ring-4 focus:ring-slate-900/10 text-slate-800 font-medium text-sm cursor-pointer transition-all hover:border-slate-300"
+                                className="w-full p-3 rounded-xl appearance-none cursor-pointer transition-all border border-white/10 bg-slate-950/45 text-white focus:ring-4 focus:ring-[rgba(34,211,238,0.22)] focus:border-[rgba(34,211,238,0.35)] hover:border-white/20 font-semibold text-sm"
                             >
                                 <option value="newest">{t('Newest First', '最新优先')}</option>
                                 <option value="oldest">{t('Oldest First', '最旧优先')}</option>
@@ -426,7 +436,7 @@ const InventoryFilterWidget = ({ tempFilters, setTempFilters, onSearch, onReset,
                                 <option value="price-high">{t('Price: High → Low', '价格：高到低')}</option>
                                 <option value="mileage-low">{t('Mileage: Low → High', '里程：低到高')}</option>
                             </select>
-                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={16} />
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-white/35 pointer-events-none" size={16} />
                         </div>
                     </div>
 
@@ -435,7 +445,7 @@ const InventoryFilterWidget = ({ tempFilters, setTempFilters, onSearch, onReset,
                         <label className="text-xs font-bold text-transparent">{t('Reset', '重置')}</label>
                         <button
                             onClick={onReset}
-                            className="w-full p-3 bg-white hover:bg-slate-50 text-slate-700 font-bold rounded-xl transition-all flex items-center justify-center gap-2 border-2 border-slate-200 hover:border-slate-300"
+                            className="w-full p-3 track-btn track-btn-ghost track-cut flex items-center justify-center gap-2"
                         >
                             <X size={16} />
                             <span>{t('Reset', '重置')}</span>
@@ -447,7 +457,7 @@ const InventoryFilterWidget = ({ tempFilters, setTempFilters, onSearch, onReset,
                         <label className="text-xs font-bold text-transparent">{t('Search', '搜索')}</label>
                         <button
                             onClick={onSearch}
-                            className="w-full bg-slate-900 hover:bg-black text-white font-bold p-3 rounded-xl transition-all shadow-lg shadow-black/10 flex items-center justify-center gap-2"
+                            className="w-full p-3 track-btn track-btn-primary track-cut transition-all flex items-center justify-center gap-2"
                         >
                             <span>{t('Search', '搜索')}</span>
                             <ArrowRight size={16} />
@@ -1141,13 +1151,13 @@ const AlphardHomePage = ({ cars }) => {
                 <div className="relative z-10 container mx-auto px-4 min-h-[85vh] flex items-center">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center w-full py-24">
                         <div className="lg:col-span-7 space-y-8">
-                            <span className="inline-flex items-center gap-2 bg-amber-500/10 text-amber-200 text-xs font-bold uppercase tracking-[0.28em] px-4 py-2 rounded-full border border-amber-300/20">
+                            <span className="inline-flex items-center gap-2 bg-white/5 text-cyan-200 text-xs font-black uppercase tracking-[0.28em] px-4 py-2 rounded-md border border-white/12 backdrop-blur track-cut">
                                 <Award size={14} />
                                 {t('Executive MPV Atelier', '高端MPV定制馆')}
                             </span>
                             <h1 className="text-4xl md:text-6xl font-black text-white leading-tight">
                                 {t('Alphard & Vellfire', '埃尔法 / 威尔法')}
-                                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-red-400">
+                                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-cyan-100 to-lime-200">
                                     {t('Executive Lounge Collection', '行政贵宾专属')}
                                 </span>
                             </h1>
@@ -1160,13 +1170,13 @@ const AlphardHomePage = ({ cars }) => {
                             <div className="flex flex-wrap gap-4">
                                 <button
                                     onClick={() => navigate('/inventory')}
-                                    className="bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold py-4 px-8 rounded-full transition-all shadow-lg shadow-amber-400/30"
+                                    className="track-btn track-btn-primary track-cut"
                                 >
                                     {t('View Collection', '查看专属车源')}
                                 </button>
                                 <button
                                     onClick={() => navigate('/contact')}
-                                    className="bg-white/10 hover:bg-white/20 text-white font-bold py-4 px-8 rounded-full border border-white/20 transition-all"
+                                    className="track-btn track-btn-ghost track-cut"
                                 >
                                     {t('Private Appointment', '预约私享看车')}
                                 </button>
@@ -1176,7 +1186,7 @@ const AlphardHomePage = ({ cars }) => {
                             <div className="bg-white/10 border border-white/15 rounded-3xl p-6 backdrop-blur-xl">
                                 <div className="flex items-center justify-between mb-6">
                                     <p className="text-xs text-white/60 uppercase tracking-[0.2em]">{t('Executive Metrics', '专属数据')}</p>
-                                    <span className="text-amber-200 text-xs font-bold">{t('Verified', '已认证')}</span>
+                                    <span className="text-cyan-200 text-xs font-black tracking-[0.18em] uppercase">{t('Verified', '已认证')}</span>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
                                     {[
@@ -1201,15 +1211,20 @@ const AlphardHomePage = ({ cars }) => {
             </header>
 
             {/* ========== SIGNATURE SERVICES ========== */}
-            <section className="py-16 bg-white">
+            <section className="py-16 bg-transparent">
                 <div className="container mx-auto px-4">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                    <div className="track-surface track-outline track-cut rounded-3xl p-8 md:p-10">
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
                         <div className="lg:col-span-4">
-                            <h2 className="text-3xl font-black text-slate-900 mb-4">
+                            <span className="inline-flex items-center gap-2 bg-white/5 text-white/75 text-[11px] font-black uppercase tracking-[0.28em] px-4 py-2 rounded-md border border-white/12 backdrop-blur track-cut mb-4">
+                                <ShieldCheck size={14} />
+                                {t('Track-ready service', '赛道级服务')}
+                            </span>
+                            <h2 className="text-3xl font-black text-white mb-4">
                                 {t('Signature Services', '尊享服务')}
                             </h2>
-                            <p className="text-slate-600 leading-relaxed">
-                                {t('A refined experience built around executive MPV ownership.', '围绕高端MPV车主打造的尊享体验。')}
+                            <p className="text-white/70 leading-relaxed">
+                                {t('Sharper standards. Faster response. Cleaner delivery.', '更高标准、更快响应、更干净的交付体验。')}
                             </p>
                         </div>
                         <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1218,31 +1233,32 @@ const AlphardHomePage = ({ cars }) => {
                                 { title: t('Certified Condition', '车况认证'), desc: t('Full inspection with documented history.', '全项检测，历史透明。') },
                                 { title: t('Aftercare Plan', '售后计划'), desc: t('Service reminders and priority booking.', '保养提醒，优先预约。') },
                             ].map((item) => (
-                                <div key={item.title} className="bg-slate-50 border border-slate-100 rounded-2xl p-6">
-                                    <h3 className="text-lg font-bold text-slate-900 mb-2">{item.title}</h3>
-                                    <p className="text-sm text-slate-600 leading-relaxed">{item.desc}</p>
+                                <div key={item.title} className="bg-white/5 border border-white/10 rounded-2xl p-6 track-cut">
+                                    <h3 className="text-lg font-black text-white mb-2 tracking-tight">{item.title}</h3>
+                                    <p className="text-sm text-white/65 leading-relaxed">{item.desc}</p>
                                 </div>
                             ))}
+                        </div>
                         </div>
                     </div>
                 </div>
             </section>
 
             {/* ========== INVENTORY PREVIEW ========== */}
-            <section className="py-20 bg-slate-50">
+            <section className="py-20 bg-transparent">
                 <div className="container mx-auto px-4">
                     <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-10">
                         <div>
-                            <span className="inline-block bg-slate-200 text-slate-600 font-bold text-xs uppercase tracking-widest px-4 py-2 rounded-full mb-4">
+                            <span className="inline-block bg-white/5 text-white/75 font-black text-[11px] uppercase tracking-[0.28em] px-4 py-2 rounded-md border border-white/12 backdrop-blur track-cut mb-4">
                                 {t('Curated Inventory', '精选车源')}
                             </span>
-                            <h2 className="text-3xl md:text-4xl font-black text-slate-900">
+                            <h2 className="text-3xl md:text-4xl font-black text-white">
                                 {t('Executive Lounge Highlights', '行政贵宾精选')}
                             </h2>
                         </div>
                         <button
                             onClick={() => navigate('/inventory')}
-                            className="text-slate-900 font-bold hover:text-red-600 transition-colors flex items-center gap-2"
+                            className="text-white/75 font-black uppercase tracking-[0.22em] hover:text-cyan-200 transition-colors flex items-center gap-2"
                         >
                             {t('View All Inventory', '查看全部现车')}
                             <ArrowRight size={18} />
@@ -1257,7 +1273,7 @@ const AlphardHomePage = ({ cars }) => {
             {/* ========== SERVICE CTA ========== */}
             <section className="py-20 bg-gradient-to-r from-black via-slate-950 to-slate-900 text-white">
                 <div className="container mx-auto px-4">
-                    <div className="rounded-3xl border border-white/10 bg-white/5 p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div className="track-surface track-outline track-cut rounded-3xl p-10 flex flex-col md:flex-row items-center justify-between gap-6">
                         <div>
                             <h3 className="text-2xl md:text-3xl font-black mb-3">
                                 {t('Concierge Service & Aftercare', '尊享管家式服务')}
@@ -1269,13 +1285,13 @@ const AlphardHomePage = ({ cars }) => {
                         <div className="flex flex-wrap gap-3">
                             <button
                                 onClick={() => navigate('/contact')}
-                                className="bg-amber-300 text-slate-900 font-bold py-3 px-6 rounded-full hover:bg-amber-200 transition-colors"
+                                className="track-btn track-btn-primary track-cut"
                             >
                                 {t('Talk to Us', '立即咨询')}
                             </button>
                             <a
                                 href={`tel:${SALES_PHONE}`}
-                                className="bg-white/10 border border-white/30 text-white font-bold py-3 px-6 rounded-full hover:bg-white/20 transition-colors"
+                                className="track-btn track-btn-ghost track-cut"
                             >
                                 {t('Call Sales', '致电销售')}
                             </a>
@@ -1577,16 +1593,16 @@ const InventoryPage = ({ cars, category }) => {
             {/* Toyota 专题页：增加一个专题介绍区，和 Buy a Car 形成“独立页面”感 */}
             {isToyotaPage && (
                 <div className="container mx-auto px-4 -mt-14 relative z-10 mb-8">
-                    <div className="bg-white/90 backdrop-blur-xl rounded-3xl border border-white/60 shadow-2xl shadow-black/10 p-6 md:p-10">
+                    <div className="track-surface track-outline track-cut rounded-3xl p-6 md:p-10">
                         <div className="grid md:grid-cols-12 gap-8 items-center">
                             <div className="md:col-span-7 space-y-4">
-                                <h2 className="text-2xl md:text-3xl font-black text-slate-900">
+                                <h2 className="text-2xl md:text-3xl font-black text-white">
                                     {t(
                                         'Focused Alphard & Vellfire premium inventory',
                                         '专注 埃尔法 / 威尔法 的精品现车'
                                     )}
                                 </h2>
-                                <p className="text-slate-600 leading-relaxed">
+                                <p className="text-white/70 leading-relaxed">
                                     {t(
                                         'This dedicated brand page shows only Alphard/Vellfire stock to help customers decide faster for family or business use.',
                                         '这里是独立的品牌专题页：只展示 埃尔法 / 威尔法 库存，方便客户快速做决定（家庭/商务两相宜）。'
@@ -1599,8 +1615,8 @@ const InventoryPage = ({ cars, category }) => {
                                         { k: "Premium Audio", v: "JBL/Bose 等" },
                                         { k: "Safety Suite", v: "安全系统" },
                                     ].map((x) => (
-                                        <div key={x.k} className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
-                                            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t(x.k, x.v)}</p>
+                                        <div key={x.k} className="bg-white/5 rounded-2xl p-4 border border-white/10 track-cut">
+                                            <p className="text-xs font-black text-white/60 uppercase tracking-[0.22em]">{t(x.k, x.v)}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -1649,14 +1665,14 @@ const InventoryPage = ({ cars, category }) => {
             {/* Results */}
             <div className="container mx-auto px-4">
                 {/* Stats Bar */}
-                <div className="flex flex-wrap items-center justify-between gap-4 mb-8 py-4 px-6 bg-white rounded-xl shadow-sm border border-slate-100">
+                <div className="flex flex-wrap items-center justify-between gap-4 mb-8 py-4 px-6 track-surface track-outline track-cut rounded-2xl">
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                            <span className="text-3xl font-black text-slate-900">{filteredCars.length}</span>
-                            <span className="text-slate-500 font-medium">{t('vehicles', '车辆')}</span>
+                            <span className="text-3xl font-black text-white">{filteredCars.length}</span>
+                            <span className="text-white/60 font-medium">{t('vehicles', '车辆')}</span>
                         </div>
                         {filteredCars.length > 0 && (
-                            <div className="hidden md:flex items-center gap-2 text-slate-400 text-sm border-l border-slate-200 pl-4">
+                            <div className="hidden md:flex items-center gap-2 text-white/55 text-sm border-l border-white/10 pl-4">
                                 <DollarSign size={14} />
                                 <span>{t('Avg.', '均价')} ${avgPrice.toLocaleString()}</span>
                             </div>
@@ -1666,16 +1682,11 @@ const InventoryPage = ({ cars, category }) => {
                     {/* Active Filters Tags */}
                     {activeTags.length > 0 && (
                         <div className="flex flex-wrap items-center gap-2">
-                            <span className="text-xs text-slate-400 font-medium">{t('Active filters:', '当前筛选:')}</span>
+                            <span className="text-xs text-white/50 font-medium">{t('Active filters:', '当前筛选:')}</span>
                             {activeTags.map(tag => (
                                 <span
                                     key={tag.key}
-                                    className={`px-3 py-1.5 rounded-full text-sm font-semibold flex items-center gap-2 ${
-                                        tag.color === 'red' ? 'bg-red-100 text-red-700' :
-                                        tag.color === 'blue' ? 'bg-blue-100 text-blue-700' :
-                                        tag.color === 'green' ? 'bg-emerald-100 text-emerald-700' :
-                                        'bg-slate-100 text-slate-700'
-                                    }`}
+                                    className="px-3 py-1.5 rounded-md text-sm font-semibold flex items-center gap-2 border border-white/10 bg-white/5 text-white/85 track-cut"
                                 >
                                     {tag.label}
                                     <button
@@ -1690,7 +1701,7 @@ const InventoryPage = ({ cars, category }) => {
                             ))}
                             <button 
                                 onClick={handleReset}
-                                className="text-xs text-slate-500 hover:text-red-600 font-medium underline underline-offset-2"
+                                className="text-xs text-white/55 hover:text-cyan-200 font-medium underline underline-offset-2"
                             >
                                 {t('Clear all', '清空')}
                             </button>
@@ -2153,51 +2164,57 @@ export function AppContent() {
             {hasDropdown ? (
                 <button
                     type="button"
-                    className="flex items-center gap-1.5 hover:text-red-600 transition-all font-bold text-sm tracking-wide text-slate-800"
+                    className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors font-black text-sm tracking-[0.18em]"
                 >
-                    {label} <ChevronDown size={14} className="group-hover:rotate-180 transition-transform duration-300" />
+                    {label} <ChevronDown size={14} className="text-white/60 group-hover:text-white/80 group-hover:rotate-180 transition-all duration-300" />
                 </button>
             ) : (
                 <Link
                     to={path}
-                    className={`flex items-center gap-1.5 hover:text-red-600 transition-all font-bold text-sm tracking-wide ${
-                        location.pathname === path ? 'text-red-600' : 'text-slate-800'
+                    className={`relative flex items-center gap-1.5 font-black text-sm tracking-[0.18em] transition-colors ${
+                        location.pathname === path ? 'text-cyan-200' : 'text-white/80 hover:text-white'
                     }`}
                 >
                     {label}
+                    <span
+                        className={`absolute -bottom-2 left-0 right-0 h-[2px] rounded-full bg-gradient-to-r from-cyan-300 to-lime-300 transition-opacity ${
+                            location.pathname === path ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                        }`}
+                        aria-hidden="true"
+                    />
                 </Link>
             )}
             {hasDropdown && (
                 <div className="absolute top-full left-0 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform -translate-y-2 group-hover:translate-y-0 z-50">
-                    <div className="bg-white/95 backdrop-blur-xl shadow-2xl rounded-2xl border border-slate-100 overflow-hidden w-72 p-2">
+                    <div className="bg-slate-950/95 backdrop-blur-xl shadow-2xl rounded-2xl border border-white/10 overflow-hidden w-72 p-2">
                         <div className="px-4 py-2">
-                            <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">{t('Featured', '精选')}</p>
+                            <p className="text-[10px] font-black tracking-[0.28em] text-white/45 uppercase">{t('Featured', '精选')}</p>
                         </div>
                         <Link
                             to="/inventory"
-                            className="block w-full text-left px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-red-700 rounded-xl transition-colors"
+                            className="block w-full text-left px-4 py-3 text-sm font-semibold text-white/85 hover:bg-white/5 hover:text-white rounded-xl transition-colors"
                         >
-                            {t('Alphard / Vellfire', '埃尔法 / 威尔法')} <span className="text-xs text-slate-400 font-semibold">· {t('MPV', 'MPV')}</span>
+                            {t('Alphard / Vellfire', '埃尔法 / 威尔法')} <span className="text-xs text-white/45 font-semibold">· {t('MPV', 'MPV')}</span>
                         </Link>
                         <div className="px-4 pt-4 pb-2">
-                            <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">{t('Top brands', '热门品牌')}</p>
+                            <p className="text-[10px] font-black tracking-[0.28em] text-white/45 uppercase">{t('Top brands', '热门品牌')}</p>
                         </div>
                         <div className="max-h-72 overflow-auto px-1 pb-2">
                             {topBrands.map(({ brand, count }) => (
                                 <Link
                                     key={brand}
                                     to={`/inventory?brand=${encodeURIComponent(brand)}`}
-                                    className="block w-full text-left px-3 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl transition-colors flex items-center justify-between"
+                                    className="block w-full text-left px-3 py-2.5 text-sm font-semibold text-white/70 hover:bg-white/5 hover:text-white rounded-xl transition-colors flex items-center justify-between"
                                 >
                                     <span>{brand}</span>
-                                    <span className="text-xs text-slate-400 font-bold">{count}</span>
+                                    <span className="text-xs text-white/45 font-bold">{count}</span>
                                 </Link>
                             ))}
                         </div>
-                        <div className="border-t border-slate-100 mt-1 pt-2 px-2">
+                        <div className="border-t border-white/10 mt-1 pt-2 px-2">
                             <Link
                                 to="/inventory"
-                                className="block w-full text-center px-4 py-2 text-sm font-bold text-slate-900 hover:text-red-700 rounded-xl transition-colors"
+                                className="block w-full text-center px-4 py-2 text-sm font-bold text-white hover:text-cyan-200 rounded-xl transition-colors"
                             >
                                 {t('View all inventory', '查看全部库存')}
                             </Link>
@@ -2209,16 +2226,19 @@ export function AppContent() {
     );
 
     return (
-        <div className="min-h-screen bg-slate-50 font-sans selection:bg-red-100 selection:text-red-900">
+        <div className="min-h-screen bg-transparent font-sans selection:bg-cyan-200/30 selection:text-slate-950">
             <ScrollToTop />
 
             {/* Navbar (Make background solid to match logo white and reduce edge contrast) */}
-            <nav className="sticky top-0 z-40 bg-white border-b border-slate-200/70 shadow-sm h-20 transition-all">
+            <nav className="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-xl border-b border-white/10 shadow-[0_1px_0_0_rgba(255,255,255,0.06)] h-20 transition-all">
                 <div className="container mx-auto px-4 h-full flex justify-between items-center">
                     <Link to="/" className="flex items-center gap-3 cursor-pointer group">
-                        <img src={LOGO_URL} alt="Logo" className="h-10 w-auto object-contain group-hover:opacity-80 transition-opacity" />
+                        <span className="bg-white/90 p-1.5 rounded-md ring-1 ring-white/15 shadow-sm track-cut">
+                            <img src={LOGO_URL} alt="Logo" className="h-9 w-auto object-contain" />
+                        </span>
                         <div className="hidden sm:block">
-                            <h1 className="text-lg font-black text-slate-900 leading-none tracking-[0.22em] uppercase">{BRAND_NAME}</h1>
+                            <h1 className="text-sm font-black text-white leading-none tracking-[0.28em] uppercase">{BRAND_NAME}</h1>
+                            <div className="text-[10px] font-black tracking-[0.34em] text-white/45 uppercase">Track Mode</div>
                         </div>
                     </Link>
 
@@ -2232,13 +2252,13 @@ export function AppContent() {
                         <button
                             type="button"
                             onClick={toggleLang}
-                            className="hidden md:inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-200 text-xs font-bold text-slate-700 hover:text-red-600 hover:border-red-200 transition-colors"
+                            className="hidden md:inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-xs font-bold text-white/80 hover:text-white hover:border-white/20 transition-colors"
                             aria-label={t('Switch language', '切换语言')}
                         >
                             <Globe size={16} />
                             {lang === 'zh' ? 'EN' : '中文'}
                         </button>
-                        <button className="md:hidden p-2 text-slate-900 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                        <button className="md:hidden p-2 text-white bg-white/10 rounded-lg hover:bg-white/15 transition-colors" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                         </button>
                     </div>
@@ -2247,14 +2267,14 @@ export function AppContent() {
 
             {/* Mobile Menu */}
             {isMenuOpen && (
-                <div className="md:hidden fixed inset-0 top-[80px] bg-white/95 backdrop-blur-xl z-30 p-6 flex flex-col gap-6 animate-in slide-in-from-right-10 overflow-y-auto border-t border-slate-100">
-                    <Link to="/" className="text-2xl font-bold text-slate-900 tracking-tight">{t('HOME', '首页')}</Link>
-                    <Link to="/inventory" className="text-2xl font-bold text-slate-900 tracking-tight">{t('COLLECTION', '专属车源')}</Link>
-                    <Link to="/contact" className="text-2xl font-bold text-slate-900 tracking-tight">{t('CONTACT', '联系')}</Link>
+                <div className="md:hidden fixed inset-0 top-[80px] bg-slate-950/92 backdrop-blur-xl z-30 p-6 flex flex-col gap-6 animate-in slide-in-from-right-10 overflow-y-auto border-t border-white/10">
+                    <Link to="/" className="text-2xl font-black text-white tracking-tight">{t('HOME', '首页')}</Link>
+                    <Link to="/inventory" className="text-2xl font-black text-white tracking-tight">{t('COLLECTION', '专属车源')}</Link>
+                    <Link to="/contact" className="text-2xl font-black text-white tracking-tight">{t('CONTACT', '联系')}</Link>
                     <button
                         type="button"
                         onClick={toggleLang}
-                        className="mt-4 inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-slate-200 text-sm font-bold text-slate-700 hover:text-red-600 hover:border-red-200 transition-colors"
+                        className="mt-4 inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-sm font-bold text-white/80 hover:text-white hover:border-white/20 transition-colors"
                     >
                         <Globe size={16} />
                         {lang === 'zh' ? 'English' : '中文'}
