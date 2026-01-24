@@ -1,0 +1,59 @@
+/* Track Mode helpers (used by current App.jsx components)
+   NOTE: This file exists to keep the current UI working. If/when we fully
+   refactor pages to Toyota AU light style, we can delete this. */
+
+:root {
+  --track-accent: #22d3ee;  /* cyan-400 */
+  --track-accent-2: #a3e635; /* lime-400 */
+  --track-surface: rgba(2, 6, 23, 0.86);
+  --track-border: rgba(255, 255, 255, 0.12);
+}
+
+.track-surface {
+  background: var(--track-surface);
+  border: 1px solid var(--track-border);
+  box-shadow:
+    0 16px 70px rgba(2, 6, 23, 0.70),
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  backdrop-filter: blur(16px);
+}
+
+.track-cut {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+}
+
+.track-outline {
+  position: relative;
+}
+.track-outline::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(90deg, rgba(34, 211, 238, 0.55), rgba(163, 230, 53, 0.35));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+.track-btn {
+  border-radius: 9999px;
+  padding: 0.95rem 1.25rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.track-btn-primary {
+  color: #020617;
+  background: linear-gradient(90deg, var(--track-accent), var(--track-accent-2));
+  box-shadow: 0 14px 40px rgba(34, 211, 238, 0.18);
+}
+.track-btn-ghost {
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
