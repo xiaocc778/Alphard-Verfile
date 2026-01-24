@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================
+   Toyota AU-inspired global styles (Light Mode only)
+   ========================================================= */
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: theme(colors.background);
+    color: theme(colors.text.body);
+    font-family: theme(fontFamily.sans);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Headings */
+  h1, h2, h3, h4, h5, h6 {
+    color: theme(colors.text.heading);
+  }
+
+  /* Links */
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Buttons: Toyota site tends to be bold */
+  button,
+  [type="button"],
+  [type="submit"] {
+    font-weight: 700;
+  }
+
+  /* Focus ring: subtle but visible */
+  :focus-visible {
+    outline: 2px solid theme(colors.brand.DEFAULT);
+    outline-offset: 2px;
+  }
+
+  /* Selection */
+  ::selection {
+    background: color-mix(in srgb, theme(colors.brand.DEFAULT) 18%, transparent);
+    color: theme(colors.text.heading);
+  }
+}
+
+@layer components {
+  /* Standardized page section backgrounds */
+  .bg-page {
+    @apply bg-background;
+  }
+
+  .bg-section {
+    @apply bg-surface;
+  }
+
+  /* Toyota-like card + hover shadow (very restrained until hover) */
+  .toyota-card {
+    @apply rounded-lg bg-white border border-black/5 shadow-none transition-shadow;
+  }
+  .toyota-card:hover {
+    @apply shadow-md;
+  }
+
+  /* Toyota-like button: pill shape + bold */
+  .toyota-btn {
+    @apply inline-flex items-center justify-center rounded-full font-bold transition-colors;
+  }
+  .toyota-btn-primary {
+    @apply toyota-btn bg-brand text-white hover:bg-brand-700;
+  }
+  .toyota-btn-secondary {
+    @apply toyota-btn bg-white text-text-heading border border-black/10 hover:bg-surface;
+  }
+}
+
