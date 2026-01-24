@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState, useEffect } from 'react';
 // 1. 引入路由核心组件
 import { BrowserRouter, Routes, Route, Link, useNavigate, useParams, useLocation } from 'react-router-dom';
 // 2. 引入图标库
-import { MapPin, Phone, MessageCircle, Menu, X, ChevronDown, ArrowLeft, Mail, Info, Instagram, Facebook, Globe, Wrench, ShieldCheck, Clock, DollarSign, ChevronLeft, ChevronRight, CheckCircle2, Star, Award, Users, Car, Sparkles, Play, ArrowRight, Shield, Truck, ThumbsUp, Search } from 'lucide-react';
+import { MapPin, Phone, MessageCircle, Menu, X, ChevronDown, ArrowLeft, Mail, Info, Instagram, Facebook, Globe, Wrench, ShieldCheck, Clock, DollarSign, ChevronLeft, ChevronRight, CheckCircle2, Star, Award, Users, Car, Sparkles, Play, ArrowRight, Shield, Truck, ThumbsUp, Search, User } from 'lucide-react';
 // 3. 引入车辆数据
 import { cars as carsFromData } from './carsData.js';
 import { useCarsData } from './hooks/useCarsData.js';
@@ -132,6 +132,52 @@ const ScrollToTop = () => {
     return null;
 };
 
+const useScrollReveal = () => {
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const elements = Array.from(document.querySelectorAll('[data-reveal]'));
+        if (!elements.length) return;
+        if (!('IntersectionObserver' in window)) {
+            elements.forEach((el) => el.classList.add('is-visible'));
+            return;
+        }
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.2, rootMargin: '0px 0px -10% 0px' }
+        );
+        elements.forEach((el) => observer.observe(el));
+        return () => observer.disconnect();
+    }, []);
+};
+
+const useParallaxHero = () => {
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+        const root = document.documentElement;
+        let rafId = 0;
+        const onScroll = () => {
+            const y = window.scrollY || 0;
+            cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(() => {
+                root.style.setProperty('--parallax-y', `${Math.min(y, 600)}px`);
+            });
+        };
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => {
+            cancelAnimationFrame(rafId);
+            window.removeEventListener('scroll', onScroll);
+        };
+    }, []);
+};
+
 // --- Sub-Components ---
 const CarCard = ({ car }) => {
     const navigate = useNavigate();
@@ -159,10 +205,11 @@ const CarCard = ({ car }) => {
                     openDetails();
                 }
             }}
-            className="group cursor-pointer flex flex-col h-full overflow-hidden rounded-2xl track-surface track-outline track-cut transition-transform duration-300 hover:-translate-y-1 focus-visible:outline-none"
+            className="group toyota-card cursor-pointer flex flex-col h-full overflow-hidden reveal"
+            data-reveal
         >
             {/* Image Container */}
-            <div className="relative h-56 overflow-hidden bg-slate-950">
+            <div className="relative h-56 overflow-hidden bg-surface">
                 <img
                     src={imageUrl}
                     alt={car.title}
@@ -170,26 +217,26 @@ const CarCard = ({ car }) => {
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                 />
                 {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent opacity-95 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent opacity-85 transition-opacity duration-300"></div>
                 
                 {/* Status Badge */}
                 <div className="absolute top-4 left-4 z-10 flex gap-2">
-                    <span className={`px-3 py-1.5 rounded-md text-[11px] font-black uppercase tracking-[0.22em] border border-white/10 bg-slate-950/55 backdrop-blur track-cut ${
-                        car.status === 'In Stock' || car.status === 'Brand New' ? 'text-lime-200' : 'text-white/85'
+                    <span className={`px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-[0.12em] shadow-sm ${
+                        car.status === 'In Stock' || car.status === 'Brand New' ? 'bg-brand text-white' : 'bg-black/70 text-white'
                     }`}>
                         {car.status}
                     </span>
                     {isPremium && (
-                        <span className="px-3 py-1.5 rounded-md text-[11px] font-black uppercase tracking-[0.22em] border border-white/10 bg-slate-950/55 backdrop-blur text-cyan-200 flex items-center gap-1 track-cut">
-                            <Star size={10} fill="currentColor" /> {t('Premium', '旗舰')}
+                        <span className="px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-[0.12em] bg-white/90 text-text-heading flex items-center gap-1 shadow-sm">
+                            <Star size={10} fill="currentColor" className="text-brand" /> {t('Premium', '精选')}
                         </span>
                     )}
                 </div>
 
                 {/* Quick View Button */}
                 <div className="absolute bottom-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-                    <div className="px-4 py-2 rounded-md text-[11px] font-black uppercase tracking-[0.22em] text-slate-950 bg-gradient-to-r from-cyan-300 to-lime-300 shadow-lg track-cut">
-                        {t('View', '查看')} <ArrowRight size={14} className="inline" />
+                    <div className="px-4 py-2 rounded-full text-[11px] font-bold tracking-[0.12em] text-white bg-brand shadow-md">
+                        {t('View details', '查看详情')} <ArrowRight size={14} className="inline" />
                     </div>
                 </div>
             </div>
@@ -197,49 +244,49 @@ const CarCard = ({ car }) => {
             {/* Content */}
             <div className="p-6 flex flex-col flex-grow">
                 {/* Title */}
-                <h3 className="text-lg font-black text-white line-clamp-2 leading-snug group-hover:text-cyan-200 transition-colors mb-4">
+                <h3 className="text-lg font-bold text-text-heading line-clamp-2 leading-snug group-hover:text-brand transition-colors mb-4">
                     {car.title}
                 </h3>
 
                 {/* Specs Grid */}
                 <div className="grid grid-cols-3 gap-3 mb-6">
-                    <div className="bg-white/5 rounded-xl p-3 text-center border border-white/10 track-cut">
-                        <p className="text-[10px] text-white/50 mb-1 font-black uppercase tracking-[0.22em]">{t('Year', '年份')}</p>
-                        <p className="font-black text-white text-sm">{car.year}</p>
+                    <div className="bg-surface rounded-lg p-3 text-center border border-black/5">
+                        <p className="text-[10px] text-text-muted mb-1 font-bold uppercase tracking-[0.14em]">{t('Year', '年份')}</p>
+                        <p className="font-bold text-text-heading text-sm">{car.year}</p>
                     </div>
-                    <div className="bg-white/5 rounded-xl p-3 text-center border border-white/10 track-cut">
-                        <p className="text-[10px] text-white/50 mb-1 font-black uppercase tracking-[0.22em]">{t('Mileage', '里程')}</p>
-                        <p className="font-black text-white text-sm">
+                    <div className="bg-surface rounded-lg p-3 text-center border border-black/5">
+                        <p className="text-[10px] text-text-muted mb-1 font-bold uppercase tracking-[0.14em]">{t('Mileage', '里程')}</p>
+                        <p className="font-bold text-text-heading text-sm">
                             {(car.mileage || 0).toLocaleString()}
-                            <span className="text-[10px] text-white/45 ml-1">{t('km', '公里')}</span>
+                            <span className="text-[10px] text-text-muted ml-1">{t('km', '公里')}</span>
                         </p>
                     </div>
-                    <div className="bg-white/5 rounded-xl p-3 text-center border border-white/10 track-cut">
-                        <p className="text-[10px] text-white/50 mb-1 font-black uppercase tracking-[0.22em]">{t('Fuel', '燃料')}</p>
-                        <p className="font-black text-white text-sm truncate">{car.fuel || 'Petrol'}</p>
+                    <div className="bg-surface rounded-lg p-3 text-center border border-black/5">
+                        <p className="text-[10px] text-text-muted mb-1 font-bold uppercase tracking-[0.14em]">{t('Fuel', '燃料')}</p>
+                        <p className="font-bold text-text-heading text-sm truncate">{car.fuel || 'Petrol'}</p>
                     </div>
                 </div>
 
                 {/* Price Section */}
-                <div className="mt-auto pt-5 border-t border-white/10 flex items-center justify-between">
+                <div className="mt-auto pt-5 border-t border-black/10 flex items-center justify-between">
                     <div>
                         {car.price > 0 ? (
                             <>
-                                <p className="text-2xl font-black text-white tracking-tight">${car.price.toLocaleString()}</p>
-                                <p className="text-[10px] text-white/45 uppercase font-black tracking-[0.22em]">
+                                <p className="text-2xl font-bold text-text-heading tracking-tight">${car.price.toLocaleString()}</p>
+                                <p className="text-[10px] text-text-muted uppercase font-semibold tracking-wide">
                                     {t('Excl. Gov. Charges', '不含政府费用')}
                                 </p>
                             </>
                         ) : (
                             <>
-                                <p className="text-xl font-black text-cyan-200">{t('Contact for Price', '价格面议')}</p>
-                                <p className="text-[10px] text-white/45 uppercase font-black tracking-[0.22em]">
+                                <p className="text-xl font-bold text-brand">{t('Contact for Price', '价格面议')}</p>
+                                <p className="text-[10px] text-text-muted uppercase font-semibold tracking-wide">
                                     {t('Enquire for price', '询价请联系')}
                                 </p>
                             </>
                         )}
                     </div>
-                    <div className="w-12 h-12 rounded-md bg-white/5 border border-white/10 flex items-center justify-center text-white/70 group-hover:text-white transition-all duration-300 track-cut">
+                    <div className="w-12 h-12 rounded-full bg-surface border border-black/5 flex items-center justify-center text-text-muted group-hover:text-text-heading transition-colors">
                         <ArrowRight size={20} />
                     </div>
                 </div>
@@ -312,21 +359,21 @@ const InventoryFilterWidget = ({ tempFilters, setTempFilters, onSearch, onReset,
     const years = [...new Set(cars.map(car => car.year))].filter(Boolean).sort((a, b) => b - a);
 
     return (
-        <div className="track-surface track-outline track-cut rounded-2xl overflow-hidden">
+        <div className="toyota-card overflow-hidden">
             {/* Header */}
-            <div className="bg-slate-950 px-6 py-4 flex items-center justify-between">
+            <div className="bg-white px-6 py-4 flex items-center justify-between border-b border-black/10">
                 <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center">
+                    <div className="w-8 h-8 bg-brand rounded-lg flex items-center justify-center">
                         <Car className="text-white" size={16} />
                     </div>
                     <div>
-                        <h3 className="text-white font-bold">{t('Filter Vehicles', '筛选车辆')}</h3>
-                        <p className="text-slate-400 text-xs">{isToyotaCategory ? t('Brand Showcase', '品牌专题') : t('Buy a Car', '选购车辆')}</p>
+                        <h3 className="text-text-heading font-bold">{t('Filter Vehicles', '筛选车辆')}</h3>
+                        <p className="text-text-muted text-xs">{isToyotaCategory ? t('Brand Showcase', '品牌专题') : t('Buy a Car', '选购车辆')}</p>
                     </div>
                 </div>
-                <div className="text-white text-sm">
+                <div className="text-text-heading text-sm">
                     <span className="text-2xl font-black">{resultCount}</span>
-                    <span className="text-slate-400 ml-1">{t('results', '结果')}</span>
+                    <span className="text-text-muted ml-1">{t('results', '结果')}</span>
                 </div>
             </div>
 
@@ -339,13 +386,13 @@ const InventoryFilterWidget = ({ tempFilters, setTempFilters, onSearch, onReset,
                             {t('Keyword', '关键词')}
                         </label>
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/35" size={16} />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
                             <input
                                 value={tempFilters.keyword || ''}
                                 onChange={(e) => setTempFilters({ ...tempFilters, keyword: e.target.value })}
                                 onKeyDown={(e) => { if (e.key === 'Enter') onSearch(); }}
                                 placeholder={t('Alphard / Hybrid / SUV / 7 seats...', 'Alphard / 混动 / SUV / 7座...')}
-                                className="w-full pl-10 pr-4 p-3 rounded-xl border border-white/10 bg-slate-950/45 text-white placeholder-white/30 focus:ring-4 focus:ring-[rgba(34,211,238,0.22)] focus:border-[rgba(34,211,238,0.35)] font-semibold text-sm transition-all hover:border-white/20"
+                                className="w-full pl-10 pr-4 p-3 rounded-lg border border-black/10 bg-white text-text-heading placeholder:text-text-muted focus:ring-4 focus:ring-brand/10 focus:border-brand font-medium text-sm transition-all"
                             />
                         </div>
                     </div>
@@ -355,16 +402,16 @@ const InventoryFilterWidget = ({ tempFilters, setTempFilters, onSearch, onReset,
                             {t('Brand', '品牌')}
                         </label>
                         {isToyotaCategory ? (
-                            <div className="w-full p-3 rounded-xl bg-slate-950/55 border border-white/10 text-white/80 font-semibold text-sm flex items-center justify-between">
-                                <span className="font-black tracking-wide">{t('Toyota', '丰田')}</span>
-                                <span className="text-[11px] text-white/40 font-black uppercase tracking-[0.22em]">{t('Locked', '锁定')}</span>
+                            <div className="w-full p-3 rounded-lg bg-surface border border-black/10 text-text-body font-semibold text-sm flex items-center justify-between">
+                                <span className="font-bold">{t('Toyota', '丰田')}</span>
+                                <span className="text-[11px] text-text-muted font-bold uppercase tracking-[0.12em]">{t('Locked', '锁定')}</span>
                             </div>
                         ) : (
                             <div className="relative group">
                             <select 
                                     value={tempFilters.brand}
                                     onChange={(e) => setTempFilters({...tempFilters, brand: e.target.value})}
-                                className="w-full p-3 rounded-xl appearance-none cursor-pointer transition-all border border-white/10 bg-slate-950/45 text-white focus:ring-4 focus:ring-[rgba(34,211,238,0.22)] focus:border-[rgba(34,211,238,0.35)] hover:border-white/20 font-semibold text-sm"
+                                className="w-full p-3 rounded-lg appearance-none cursor-pointer transition-all border border-black/10 bg-white text-text-heading focus:ring-4 focus:ring-brand/10 focus:border-brand font-medium text-sm"
                                 >
                                     <option value="">{t('All Brands', '全部品牌')}</option>
                                     {ALL_BRANDS.map((brand) => (
@@ -373,7 +420,7 @@ const InventoryFilterWidget = ({ tempFilters, setTempFilters, onSearch, onReset,
                                         </option>
                                     ))}
                                 </select>
-                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-white/35 pointer-events-none" size={16} />
+                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" size={16} />
                             </div>
                         )}
                     </div>
@@ -387,14 +434,14 @@ const InventoryFilterWidget = ({ tempFilters, setTempFilters, onSearch, onReset,
                             <select 
                                 value={tempFilters.yearFrom}
                                 onChange={(e) => setTempFilters({...tempFilters, yearFrom: e.target.value})}
-                                className="w-full p-3 rounded-xl appearance-none cursor-pointer transition-all border border-white/10 bg-slate-950/45 text-white focus:ring-4 focus:ring-[rgba(34,211,238,0.22)] focus:border-[rgba(34,211,238,0.35)] hover:border-white/20 font-semibold text-sm"
+                                className="w-full p-3 rounded-lg appearance-none cursor-pointer transition-all border border-black/10 bg-white text-text-heading focus:ring-4 focus:ring-brand/10 focus:border-brand font-medium text-sm"
                             >
                                 <option value="">{t('Any Year', '不限年份')}</option>
                                 {years.map(year => (
                                     <option key={year} value={year}>{year}+</option>
                                 ))}
                             </select>
-                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-white/35 pointer-events-none" size={16} />
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" size={16} />
                         </div>
                     </div>
 
@@ -407,7 +454,7 @@ const InventoryFilterWidget = ({ tempFilters, setTempFilters, onSearch, onReset,
                             <select 
                                 value={tempFilters.priceRange}
                                 onChange={(e) => setTempFilters({...tempFilters, priceRange: e.target.value})}
-                                className="w-full p-3 rounded-xl appearance-none cursor-pointer transition-all border border-white/10 bg-slate-950/45 text-white focus:ring-4 focus:ring-[rgba(34,211,238,0.22)] focus:border-[rgba(34,211,238,0.35)] hover:border-white/20 font-semibold text-sm"
+                                className="w-full p-3 rounded-lg appearance-none cursor-pointer transition-all border border-black/10 bg-white text-text-heading focus:ring-4 focus:ring-brand/10 focus:border-brand font-medium text-sm"
                             >
                                 <option value="">{t('Any Price', '不限价格')}</option>
                                 <option value="1">{t('Under $30,000', '30,000 以下')}</option>
@@ -415,7 +462,7 @@ const InventoryFilterWidget = ({ tempFilters, setTempFilters, onSearch, onReset,
                                 <option value="3">{t('$60,000 - $100,000', '60,000 - 100,000')}</option>
                                 <option value="4">{t('$100,000+', '100,000 以上')}</option>
                             </select>
-                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-white/35 pointer-events-none" size={16} />
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none" size={16} />
                         </div>
                     </div>
 
@@ -428,7 +475,7 @@ const InventoryFilterWidget = ({ tempFilters, setTempFilters, onSearch, onReset,
                             <select 
                                 value={tempFilters.sortBy}
                                 onChange={(e) => setTempFilters({...tempFilters, sortBy: e.target.value})}
-                                className="w-full p-3 rounded-xl appearance-none cursor-pointer transition-all border border-white/10 bg-slate-950/45 text-white focus:ring-4 focus:ring-[rgba(34,211,238,0.22)] focus:border-[rgba(34,211,238,0.35)] hover:border-white/20 font-semibold text-sm"
+                                className="w-full p-3 rounded-lg appearance-none cursor-pointer transition-all border border-black/10 bg-white text-text-heading focus:ring-4 focus:ring-brand/10 focus:border-brand font-medium text-sm"
                             >
                                 <option value="newest">{t('Newest First', '最新优先')}</option>
                                 <option value="oldest">{t('Oldest First', '最旧优先')}</option>
@@ -443,9 +490,9 @@ const InventoryFilterWidget = ({ tempFilters, setTempFilters, onSearch, onReset,
                     {/* Reset Button */}
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-transparent">{t('Reset', '重置')}</label>
-                        <button
+                            <button
                             onClick={onReset}
-                            className="w-full p-3 track-btn track-btn-ghost track-cut flex items-center justify-center gap-2"
+                                className="w-full p-3 toyota-btn-secondary flex items-center justify-center gap-2"
                         >
                             <X size={16} />
                             <span>{t('Reset', '重置')}</span>
@@ -457,7 +504,7 @@ const InventoryFilterWidget = ({ tempFilters, setTempFilters, onSearch, onReset,
                         <label className="text-xs font-bold text-transparent">{t('Search', '搜索')}</label>
                         <button
                             onClick={onSearch}
-                            className="w-full p-3 track-btn track-btn-primary track-cut transition-all flex items-center justify-center gap-2"
+                            className="w-full p-3 toyota-btn-primary flex items-center justify-center gap-2"
                         >
                             <span>{t('Search', '搜索')}</span>
                             <ArrowRight size={16} />
@@ -809,16 +856,134 @@ const HomePage = ({ cars }) => {
                 </div>
             </header>
 
+            {/* ========== SCROLL REVEAL FEATURE (Toyota-style) ========== */}
+            <section className="relative bg-white">
+                <div className="relative h-[58vh] md:h-[68vh] overflow-hidden">
+                    <img
+                        src="/stock/20 Mercedes G63/cover.jpg"
+                        alt=""
+                        className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/25 to-transparent" />
+                </div>
+                <div className="absolute inset-0 flex items-center">
+                    <div className="container mx-auto px-6">
+                        <div className="max-w-xl text-white reveal reveal-slide" data-reveal>
+                            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/70">
+                                {t('Featured story', '精选故事')}
+                            </p>
+                            <h2 className="mt-4 text-3xl md:text-5xl font-semibold tracking-tight">
+                                {t('Designed for every journey', '为每一段旅程而生')}
+                            </h2>
+                            <p className="mt-4 text-base md:text-lg text-white/80 leading-relaxed">
+                                {t(
+                                    'A refined driving experience with comfort, confidence, and craftsmanship in every detail.',
+                                    '以舒适、信心与匠心细节，打造更优雅的驾驶体验。'
+                                )}
+                            </p>
+                            <div className="mt-6">
+                                <button
+                                    onClick={() => navigate('/inventory')}
+                                    className="inline-flex items-center justify-center rounded-full border border-white/70 px-7 py-3 text-sm font-semibold text-white/90 hover:bg-white/10 transition-colors"
+                                >
+                                    {t('Explore the range', '浏览车型')}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ========== FIND YOUR IDEAL (Toyota-style tiles) ========== */}
+            <section className="py-16 bg-white">
+                <div className="container mx-auto px-4">
+                    <div className="max-w-site mx-auto">
+                        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-10 reveal" data-reveal data-reveal-delay="1">
+                            <div>
+                                <span className="inline-block bg-surface text-text-muted font-bold text-[11px] uppercase tracking-[0.14em] px-4 py-2 rounded-full border border-black/10 mb-4">
+                                    {t('Find your ideal Toyota', '找到你的理想座驾')}
+                                </span>
+                                <h2 className="text-3xl md:text-4xl font-black text-text-heading">
+                                    {t('Browse by body type', '按车型分类浏览')}
+                                </h2>
+                                <p className="text-text-body mt-3 max-w-2xl">
+                                    {t('Explore our curated range with clean, spacious tiles and clear labels.', '用简洁清晰的图块布局，快速找到适合你的车型。')}
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => navigate('/inventory')}
+                                className="toyota-btn-secondary px-6 py-3"
+                            >
+                                {t('Browse all vehicles', '浏览全部车型')}
+                            </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {[
+                                {
+                                    title: t('Luxury MPV', '豪华 MPV'),
+                                    desc: t('Executive comfort for family and business.', '家庭与商务的行政舒适体验。'),
+                                    image: '/stock/2024 Toyota Vellfire/cover.jpg',
+                                },
+                                {
+                                    title: t('Premium Sedan', '高端轿车'),
+                                    desc: t('Balanced everyday luxury and performance.', '兼具日常舒适与驾驶质感。'),
+                                    image: '/stock/2023 Toyota Alphard 2.5L/cover.jpg',
+                                },
+                                {
+                                    title: t('SUV & 4WD', 'SUV / 4WD'),
+                                    desc: t('Confidence on any road.', '从城市到远途都从容。'),
+                                    image: '/stock/20 Mercedes G63/cover.jpg',
+                                },
+                                {
+                                    title: t('Performance', '性能车'),
+                                    desc: t('Sharper response, bolder design.', '更锋利的操控与更大胆的设计。'),
+                                    image: '/stock/18 Ford Mustang GT 5.0/cover.jpg',
+                                },
+                                {
+                                    title: t('Family Select', '家庭精选'),
+                                    desc: t('Comfort-focused picks for families.', '为家庭打造的舒适选择。'),
+                                    image: '/stock/2024 Toyota Vellfire/cover.jpg',
+                                },
+                                {
+                                    title: t('New Arrivals', '最新到库'),
+                                    desc: t('Fresh arrivals updated weekly.', '每周更新新到车源。'),
+                                    image: '/stock/2023 Toyota Alphard 2.5L/cover.jpg',
+                                },
+                            ].map((item) => (
+                                <div key={item.title} className="toyota-card overflow-hidden group reveal" data-reveal data-reveal-delay="2">
+                                    <div className="relative">
+                                        <img src={item.image} alt="" className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                                        <div className="absolute bottom-4 left-4 right-4 text-white">
+                                            <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">
+                                                {t('Category', '分类')}
+                                            </p>
+                                            <h3 className="text-lg font-black">{item.title}</h3>
+                                            <p className="text-sm text-white/85 mt-1">{item.desc}</p>
+                                        </div>
+                                    </div>
+                                    <div className="p-5 flex items-center justify-between">
+                                        <span className="text-sm font-bold text-text-heading">{t('See models', '查看车型')}</span>
+                                        <ArrowRight size={18} className="text-brand" />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* ========== QUICK SEARCH BAR ========== */}
             <section className="relative z-20 -mt-12">
-                <div className="container mx-auto px-4">
+                <div className="container mx-auto px-4 reveal" data-reveal data-reveal-delay="2">
                     <HomeFilterWidget cars={safeCars} />
                 </div>
             </section>
 
             {/* ========== VIDEO SHOWCASE ========== */}
             <section className="py-20 bg-slate-50">
-                <div className="container mx-auto px-4">
+                <div className="container mx-auto px-4 reveal" data-reveal data-reveal-delay="1">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
                         <div className="lg:col-span-5 space-y-6">
                             <span className="inline-flex items-center gap-2 bg-red-100 text-red-600 text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full">
@@ -1123,6 +1288,8 @@ const AlphardHomePage = ({ cars }) => {
     const navigate = useNavigate();
     const { t } = useLanguage();
     const safeCars = cars || [];
+    useScrollReveal();
+    useParallaxHero();
 
     const alphardVellfireCount = safeCars.filter(car => {
         const searchStr = `${car.title} ${car.folderName}`.toLowerCase();
@@ -1131,170 +1298,131 @@ const AlphardHomePage = ({ cars }) => {
 
     return (
         <>
-            {/* ========== HERO ========== */}
-            <header className="relative min-h-[88vh] bg-black overflow-hidden">
-                <div className="absolute inset-0">
+            {/* ========== HERO (Toyota-style: split title band + full-bleed image) ========== */}
+            <header className="bg-white">
+                <div className="container mx-auto px-6 py-16 md:py-20">
+                    <div className="max-w-4xl mx-auto text-center reveal" data-reveal>
+                        <h1 className="text-4xl md:text-6xl font-semibold tracking-tight text-text-heading">
+                            {t('Welcome to Best Auto', '欢迎来到 Best Auto')}
+                        </h1>
+                        <p className="mt-4 text-lg md:text-xl text-text-body">
+                            {t('Your journey starts here, let’s go.', '旅程从这里开始，一起出发。')}
+                        </p>
+                    </div>
+                </div>
+                <div className="relative h-[52vh] md:h-[62vh] overflow-hidden">
                     <img
                         src="/stock/2024 Toyota Vellfire/cover.jpg"
                         alt=""
-                        className="absolute inset-0 w-full h-full object-cover opacity-25 grayscale contrast-125"
+                        className="absolute inset-0 w-full h-full object-cover"
                     />
-                    <img
-                        src="/stock/2023 Toyota Alphard 2.5L/cover.jpg"
-                        alt=""
-                        className="absolute right-0 top-0 w-[60%] h-full object-cover opacity-18 grayscale contrast-125"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-black via-black/90 to-black/50"></div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/30"></div>
-                </div>
-
-                <div className="relative z-10 container mx-auto px-4 min-h-[85vh] flex items-center">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center w-full py-24">
-                        <div className="lg:col-span-7 space-y-8">
-                            <span className="inline-flex items-center gap-2 bg-white/5 text-cyan-200 text-xs font-black uppercase tracking-[0.28em] px-4 py-2 rounded-md border border-white/12 backdrop-blur track-cut">
-                                <Award size={14} />
-                                {t('Executive MPV Atelier', '高端MPV定制馆')}
-                            </span>
-                            <h1 className="text-4xl md:text-6xl font-black text-white leading-tight">
-                                {t('Alphard & Vellfire', '埃尔法 / 威尔法')}
-                                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-cyan-200 via-cyan-100 to-lime-200">
-                                    {t('Executive Lounge Collection', '行政贵宾专属')}
-                                </span>
-                            </h1>
-                            <p className="text-lg text-white/70 leading-relaxed">
-                                {t(
-                                    `Curated Alphard & Vellfire inventory with ${alphardVellfireCount}+ vehicles in stock. Discreet service, verified condition, and private viewing.`,
-                                    `精选埃尔法 / 威尔法现车，${alphardVellfireCount}+ 台库存。私密看车、车况可溯、服务专业。`
-                                )}
-                            </p>
-                            <div className="flex flex-wrap gap-4">
-                                <button
-                                    onClick={() => navigate('/inventory')}
-                                    className="track-btn track-btn-primary track-cut"
-                                >
-                                    {t('View Collection', '查看专属车源')}
-                                </button>
-                                <button
-                                    onClick={() => navigate('/contact')}
-                                    className="track-btn track-btn-ghost track-cut"
-                                >
-                                    {t('Private Appointment', '预约私享看车')}
-                                </button>
-                            </div>
-                        </div>
-                        <div className="lg:col-span-5">
-                            <div className="bg-white/10 border border-white/15 rounded-3xl p-6 backdrop-blur-xl">
-                                <div className="flex items-center justify-between mb-6">
-                                    <p className="text-xs text-white/60 uppercase tracking-[0.2em]">{t('Executive Metrics', '专属数据')}</p>
-                                    <span className="text-cyan-200 text-xs font-black tracking-[0.18em] uppercase">{t('Verified', '已认证')}</span>
-                                </div>
-                                <div className="grid grid-cols-2 gap-4">
-                                    {[
-                                        { label: t('In Stock', '现车'), value: `${alphardVellfireCount}+` },
-                                        { label: t('Executive Spec', '高配车型'), value: t('Curated', '精选') },
-                                        { label: t('Aftercare', '售后保障'), value: t('Concierge', '管家式') },
-                                        { label: t('Inspection', '检测'), value: t('Certified', '认证') },
-                                    ].map((item) => (
-                                        <div key={item.label} className="bg-white/5 border border-white/10 rounded-2xl p-4 text-white">
-                                            <p className="text-xs text-white/60 font-semibold uppercase tracking-[0.2em]">{item.label}</p>
-                                            <p className="text-2xl font-black mt-2">{item.value}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="mt-6 border-t border-white/10 pt-4 text-white/70 text-sm">
-                                    {t('Private showroom appointments available daily.', '可预约私享看车，支持每日到店。')}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </header>
 
-            {/* ========== SIGNATURE SERVICES ========== */}
-            <section className="py-16 bg-transparent">
-                <div className="container mx-auto px-4">
-                    <div className="track-surface track-outline track-cut rounded-3xl p-8 md:p-10">
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-                        <div className="lg:col-span-4">
-                            <span className="inline-flex items-center gap-2 bg-white/5 text-white/75 text-[11px] font-black uppercase tracking-[0.28em] px-4 py-2 rounded-md border border-white/12 backdrop-blur track-cut mb-4">
-                                <ShieldCheck size={14} />
-                                {t('Track-ready service', '赛道级服务')}
-                            </span>
-                            <h2 className="text-3xl font-black text-white mb-4">
-                                {t('Signature Services', '尊享服务')}
-                            </h2>
-                            <p className="text-white/70 leading-relaxed">
-                                {t('Sharper standards. Faster response. Cleaner delivery.', '更高标准、更快响应、更干净的交付体验。')}
-                            </p>
+            {/* ========== FEATURE HIGHLIGHTS (Toyota-style) ========== */}
+            <section className="py-16 bg-section">
+                <div className="container mx-auto px-6">
+                    <div className="max-w-site mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        {[
+                            {
+                                title: t('Toyota Genuine Accessories', '原厂精品配件'),
+                                desc: t('Personalise your vehicle with seamless-fit accessories.', '原厂配件，匹配度更高，风格更统一。'),
+                                cta: t('Explore accessories', '查看配件'),
+                                image: '/stock/2024 Toyota Vellfire/cover.jpg',
+                            },
+                            {
+                                title: t('Flexible finance options', '灵活金融方案'),
+                                desc: t('Estimate repayments and tailor a plan that fits.', '快速测算分期方案，灵活选择。'),
+                                cta: t('Estimate my repayments', '估算分期'),
+                                image: '/stock/2023 Toyota Alphard 2.5L/cover.jpg',
+                            },
+                        ].map((item) => (
+                            <div key={item.title} className="toyota-card overflow-hidden reveal" data-reveal data-reveal-delay="2">
+                                <div className="relative h-64">
+                                    <img src={item.image} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                                    <div className="absolute bottom-5 left-6 right-6 text-white">
+                                        <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">{t('Featured', '精选')}</p>
+                                        <h3 className="text-2xl font-black mt-2">{item.title}</h3>
+                                        <p className="text-sm text-white/85 mt-2">{item.desc}</p>
+                                    </div>
+                                </div>
+                                <div className="p-6 flex items-center justify-between">
+                                    <span className="text-sm font-bold text-text-heading">{item.cta}</span>
+                                    <ArrowRight size={18} className="text-brand" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ========== SEE WHAT'S NEW ========== */}
+            <section className="py-20 bg-white">
+                <div className="container mx-auto px-6">
+                    <div className="max-w-site mx-auto">
+                        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-10 reveal" data-reveal data-reveal-delay="1">
+                            <div>
+                                <p className="text-xs font-bold uppercase tracking-[0.3em] text-text-muted">{t("See what's new", '最新动态')}</p>
+                                <h2 className="text-3xl md:text-4xl font-black text-text-heading mt-3">{t('Highlights from Best Auto', 'Best Auto 最新亮点')}</h2>
+                            </div>
+                            <button
+                                onClick={() => navigate('/inventory')}
+                                className="toyota-btn-secondary px-6 py-3"
+                            >
+                                {t('View all vehicles', '查看全部车辆')}
+                            </button>
                         </div>
-                        <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-                            {[
-                                { title: t('Concierge Delivery', '管家式交付'), desc: t('Private handover, tailored setup.', '私享交付，专属设置。') },
-                                { title: t('Certified Condition', '车况认证'), desc: t('Full inspection with documented history.', '全项检测，历史透明。') },
-                                { title: t('Aftercare Plan', '售后计划'), desc: t('Service reminders and priority booking.', '保养提醒，优先预约。') },
-                            ].map((item) => (
-                                <div key={item.title} className="bg-white/5 border border-white/10 rounded-2xl p-6 track-cut">
-                                    <h3 className="text-lg font-black text-white mb-2 tracking-tight">{item.title}</h3>
-                                    <p className="text-sm text-white/65 leading-relaxed">{item.desc}</p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {safeCars.slice(0, 3).map((car, idx) => (
+                                <div key={car.id} className="toyota-card overflow-hidden reveal" data-reveal data-reveal-delay={(idx % 3) + 1}>
+                                    <div className="relative h-52">
+                                        <img src={getCarImage(car)} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent" />
+                                        <span className="absolute top-4 left-4 bg-white/90 text-[10px] font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-full">
+                                            {t('New', '新到')}
+                                        </span>
+                                    </div>
+                                    <div className="p-6">
+                                        <h3 className="text-lg font-black text-text-heading">{car.title}</h3>
+                                        <p className="text-sm text-text-muted mt-2">{t('Available now · Verified stock', '现车在售 · 已验车')}</p>
+                                        <button
+                                            onClick={() => navigate(`/vehicle/${car.id}`)}
+                                            className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-brand hover:text-brand-700 transition-colors"
+                                        >
+                                            {t('Tell me more', '了解更多')} <ArrowRight size={16} />
+                                        </button>
+                                    </div>
                                 </div>
                             ))}
-                        </div>
                         </div>
                     </div>
                 </div>
             </section>
 
             {/* ========== INVENTORY PREVIEW ========== */}
-            <section className="py-20 bg-transparent">
-                <div className="container mx-auto px-4">
-                    <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-10">
-                        <div>
-                            <span className="inline-block bg-white/5 text-white/75 font-black text-[11px] uppercase tracking-[0.28em] px-4 py-2 rounded-md border border-white/12 backdrop-blur track-cut mb-4">
-                                {t('Curated Inventory', '精选车源')}
-                            </span>
-                            <h2 className="text-3xl md:text-4xl font-black text-white">
-                                {t('Executive Lounge Highlights', '行政贵宾精选')}
-                            </h2>
-                        </div>
-                        <button
-                            onClick={() => navigate('/inventory')}
-                            className="text-white/75 font-black uppercase tracking-[0.22em] hover:text-cyan-200 transition-colors flex items-center gap-2"
-                        >
-                            {t('View All Inventory', '查看全部现车')}
-                            <ArrowRight size={18} />
-                        </button>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {safeCars.slice(0, 6).map(car => <CarCard key={car.id} car={car} />)}
-                    </div>
-                </div>
-            </section>
-
-            {/* ========== SERVICE CTA ========== */}
-            <section className="py-20 bg-gradient-to-r from-black via-slate-950 to-slate-900 text-white">
-                <div className="container mx-auto px-4">
-                    <div className="track-surface track-outline track-cut rounded-3xl p-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div>
-                            <h3 className="text-2xl md:text-3xl font-black mb-3">
-                                {t('Concierge Service & Aftercare', '尊享管家式服务')}
-                            </h3>
-                            <p className="text-white/70 text-lg">
-                                {t('Sales, service, and aftercare tailored for Alphard/Vellfire owners.', '为埃尔法/威尔法车主提供购车、保养与售后一体化服务。')}
-                            </p>
-                        </div>
-                        <div className="flex flex-wrap gap-3">
+            <section className="py-20 bg-section">
+                <div className="container mx-auto px-6">
+                    <div className="max-w-site mx-auto">
+                        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-10 reveal" data-reveal data-reveal-delay="1">
+                            <div>
+                                <span className="inline-block bg-white text-text-muted font-bold text-[11px] uppercase tracking-[0.14em] px-4 py-2 rounded-full border border-black/10 mb-4">
+                                    {t('Curated inventory', '精选车源')}
+                                </span>
+                                <h2 className="text-3xl md:text-4xl font-black text-text-heading">
+                                    {t('Executive Lounge Highlights', '行政贵宾精选')}
+                                </h2>
+                            </div>
                             <button
-                                onClick={() => navigate('/contact')}
-                                className="track-btn track-btn-primary track-cut"
+                                onClick={() => navigate('/inventory')}
+                                className="toyota-btn-secondary px-6 py-3"
                             >
-                                {t('Talk to Us', '立即咨询')}
+                                {t('View all inventory', '查看全部现车')}
                             </button>
-                            <a
-                                href={`tel:${SALES_PHONE}`}
-                                className="track-btn track-btn-ghost track-cut"
-                            >
-                                {t('Call Sales', '致电销售')}
-                            </a>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {safeCars.slice(0, 6).map(car => <CarCard key={car.id} car={car} />)}
                         </div>
                     </div>
                 </div>
@@ -1517,92 +1645,61 @@ const InventoryPage = ({ cars, category }) => {
     };
 
     return (
-        <div className="min-h-screen bg-transparent pb-20">
-            {/* Header */}
-            <div
-                className={`text-white pt-20 pb-32 relative overflow-hidden ${
-                    isToyotaPage
-                        ? "bg-gradient-to-br from-black via-slate-950 to-slate-900"
-                        : "bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800"
-                }`}
-            >
-                {/* Decorative elements */}
+        <div className="min-h-screen bg-page pb-20">
+            {/* Header (Toyota-style: full-bleed media + light overlay + black text) */}
+            <header className="relative overflow-hidden bg-white">
                 <div className="absolute inset-0">
-                    {/* Business background car images (subtle & replaceable later) */}
-                    {isToyotaPage ? (
-                        <>
-                            <img
-                                src="/stock/2024 Toyota Vellfire/cover.jpg"
-                                alt=""
-                                className="absolute inset-0 w-full h-full object-cover opacity-12 grayscale contrast-110"
-                            />
-                            <img
-                                src="/stock/2023 Toyota Alphard 2.5L/cover.jpg"
-                                alt=""
-                                className="absolute right-0 top-0 w-[55%] h-full object-cover opacity-08 grayscale contrast-110"
-                            />
-                        </>
-                    ) : (
-                        <>
-                            <img
-                                src="/stock/2024 Toyota Vellfire/cover.jpg"
-                                alt=""
-                                className="absolute inset-0 w-full h-full object-cover opacity-10 grayscale contrast-110"
-                            />
-                            <img
-                                src="/stock/2023 Toyota Alphard 2.5L/cover.jpg"
-                                alt=""
-                                className="absolute right-0 top-0 w-[55%] h-full object-cover opacity-07 grayscale contrast-110"
-                            />
-                        </>
-                    )}
+                    <img
+                        src="/stock/2024 Toyota Vellfire/cover.jpg"
+                        alt=""
+                        className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-white/20" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-white/85 via-white/35 to-white/10" />
+                </div>
 
-                    {/* Overlays for readability */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/30"></div>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-black/35"></div>
-                </div>
-                <div className="absolute top-0 left-0 w-64 h-64 bg-red-600/10 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
-                <div className="absolute bottom-0 right-0 w-96 h-96 bg-amber-500/10 rounded-full translate-x-1/3 translate-y-1/3"></div>
-                
-                <div className="relative z-10 container mx-auto px-4 text-center">
-                    {isToyotaPage && (
-                    <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-                        <span className="text-xs font-bold tracking-widest uppercase text-white/90">{t('Brand Showcase', '品牌专题')}</span>
-                        <span className="text-xs text-white/60">|</span>
-                        <span className="text-xs text-white/80">{t('Alphard / Vellfire', '埃尔法 / 威尔法')}</span>
+                <div className="relative container mx-auto px-4 py-16 md:py-20">
+                    <div className="max-w-3xl">
+                        {isToyotaPage && (
+                            <div className="inline-flex items-center gap-2 bg-white/90 border border-black/10 px-4 py-2 rounded-full mb-6">
+                                <span className="text-xs font-bold tracking-widest uppercase text-text-heading">{t('Brand Showcase', '品牌专题')}</span>
+                                <span className="text-xs text-text-muted">|</span>
+                                <span className="text-xs text-text-body">{t('Alphard / Vellfire', '埃尔法 / 威尔法')}</span>
+                            </div>
+                        )}
+                        <h1 className="text-4xl md:text-6xl font-black mb-4 text-text-heading">{pageTitle}</h1>
+                        <p className="text-text-body max-w-3xl text-lg leading-relaxed">{pageDesc}</p>
+
+                        {isToyotaPage && (
+                            <div className="mt-8 flex flex-wrap gap-3 text-sm">
+                                <span className="px-4 py-2 rounded-full bg-white/90 border border-black/10 text-text-heading font-semibold">
+                                    {filteredCars.length} {t('Available', '在库')}
+                                </span>
+                                <span className="px-4 py-2 rounded-full bg-white/90 border border-black/10 text-text-heading font-semibold">
+                                    {t('Alphard/Vellfire Specialist', '埃尔法/威尔法 专家')}
+                                </span>
+                                <span className="px-4 py-2 rounded-full bg-white/90 border border-black/10 text-text-heading font-semibold">
+                                    {t('Service & Repairs', '保养维修')}
+                                </span>
+                            </div>
+                        )}
                     </div>
-                    )}
-                    <h1 className="text-4xl md:text-6xl font-black mb-4">{pageTitle}</h1>
-                    <p className="text-white/70 max-w-3xl mx-auto text-lg leading-relaxed">{pageDesc}</p>
-                    {isToyotaPage && (
-                        <div className="mt-10 flex flex-wrap justify-center gap-3 text-sm">
-                            <span className="px-4 py-2 rounded-full bg-white/10 border border-white/10 text-white/90 font-semibold">
-                                {filteredCars.length} {t('Available', '在库')}
-                            </span>
-                            <span className="px-4 py-2 rounded-full bg-white/10 border border-white/10 text-white/90 font-semibold">
-                                {t('Alphard/Vellfire Specialist', '埃尔法/威尔法 专家')}
-                            </span>
-                            <span className="px-4 py-2 rounded-full bg-white/10 border border-white/10 text-white/90 font-semibold">
-                                {t('Service & Repairs', '保养维修')}
-                            </span>
-                        </div>
-                    )}
                 </div>
-            </div>
+            </header>
 
             {/* Toyota 专题页：增加一个专题介绍区，和 Buy a Car 形成“独立页面”感 */}
             {isToyotaPage && (
                 <div className="container mx-auto px-4 -mt-14 relative z-10 mb-8">
-                    <div className="track-surface track-outline track-cut rounded-3xl p-6 md:p-10">
+                    <div className="toyota-card p-6 md:p-10">
                         <div className="grid md:grid-cols-12 gap-8 items-center">
                             <div className="md:col-span-7 space-y-4">
-                                <h2 className="text-2xl md:text-3xl font-black text-white">
+                                <h2 className="text-2xl md:text-3xl font-black text-text-heading">
                                     {t(
                                         'Focused Alphard & Vellfire premium inventory',
                                         '专注 埃尔法 / 威尔法 的精品现车'
                                     )}
                                 </h2>
-                                <p className="text-white/70 leading-relaxed">
+                                <p className="text-text-body leading-relaxed">
                                     {t(
                                         'This dedicated brand page shows only Alphard/Vellfire stock to help customers decide faster for family or business use.',
                                         '这里是独立的品牌专题页：只展示 埃尔法 / 威尔法 库存，方便客户快速做决定（家庭/商务两相宜）。'
@@ -1615,8 +1712,8 @@ const InventoryPage = ({ cars, category }) => {
                                         { k: "Premium Audio", v: "JBL/Bose 等" },
                                         { k: "Safety Suite", v: "安全系统" },
                                     ].map((x) => (
-                                        <div key={x.k} className="bg-white/5 rounded-2xl p-4 border border-white/10 track-cut">
-                                            <p className="text-xs font-black text-white/60 uppercase tracking-[0.22em]">{t(x.k, x.v)}</p>
+                                        <div key={x.k} className="bg-surface rounded-lg p-4 border border-black/10">
+                                            <p className="text-xs font-bold text-text-muted uppercase tracking-[0.12em]">{t(x.k, x.v)}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -1632,13 +1729,13 @@ const InventoryPage = ({ cars, category }) => {
                                 <div className="mt-4 flex gap-3">
                                     <button
                                         onClick={() => navigate('/contact')}
-                                        className="flex-1 bg-slate-900 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition-colors"
+                                        className="flex-1 toyota-btn-primary py-3"
                                     >
                                         {t('Enquire Now', '立即咨询')}
                                     </button>
                                     <a
                                         href={`tel:${SALES_PHONE}`}
-                                        className="flex-1 bg-white hover:bg-slate-50 border-2 border-slate-200 text-slate-900 font-bold py-3 rounded-xl transition-colors text-center"
+                                        className="flex-1 toyota-btn-secondary py-3 text-center"
                                     >
                                         {t('Call Sales', '致电销售')}
                                     </a>
@@ -1665,14 +1762,14 @@ const InventoryPage = ({ cars, category }) => {
             {/* Results */}
             <div className="container mx-auto px-4">
                 {/* Stats Bar */}
-                <div className="flex flex-wrap items-center justify-between gap-4 mb-8 py-4 px-6 track-surface track-outline track-cut rounded-2xl">
+                <div className="toyota-card mb-8 py-4 px-6 flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                            <span className="text-3xl font-black text-white">{filteredCars.length}</span>
-                            <span className="text-white/60 font-medium">{t('vehicles', '车辆')}</span>
+                            <span className="text-3xl font-black text-text-heading">{filteredCars.length}</span>
+                            <span className="text-text-muted font-medium">{t('vehicles', '车辆')}</span>
                         </div>
                         {filteredCars.length > 0 && (
-                            <div className="hidden md:flex items-center gap-2 text-white/55 text-sm border-l border-white/10 pl-4">
+                            <div className="hidden md:flex items-center gap-2 text-text-muted text-sm border-l border-black/10 pl-4">
                                 <DollarSign size={14} />
                                 <span>{t('Avg.', '均价')} ${avgPrice.toLocaleString()}</span>
                             </div>
@@ -1682,11 +1779,11 @@ const InventoryPage = ({ cars, category }) => {
                     {/* Active Filters Tags */}
                     {activeTags.length > 0 && (
                         <div className="flex flex-wrap items-center gap-2">
-                            <span className="text-xs text-white/50 font-medium">{t('Active filters:', '当前筛选:')}</span>
+                            <span className="text-xs text-text-muted font-medium">{t('Active filters:', '当前筛选:')}</span>
                             {activeTags.map(tag => (
                                 <span
                                     key={tag.key}
-                                    className="px-3 py-1.5 rounded-md text-sm font-semibold flex items-center gap-2 border border-white/10 bg-white/5 text-white/85 track-cut"
+                                    className="px-3 py-1.5 rounded-full text-sm font-semibold flex items-center gap-2 border border-black/10 bg-surface text-text-heading"
                                 >
                                     {tag.label}
                                     <button
@@ -1736,7 +1833,7 @@ const InventoryPage = ({ cars, category }) => {
                                 </p>
                                 <button
                                     onClick={() => setVisibleCount(prev => prev + 9)}
-                                    className="bg-white border-2 border-slate-200 text-slate-900 font-bold py-3 px-10 rounded-full hover:border-red-600 hover:text-red-600 transition-colors shadow-sm"
+                                    className="bg-white border-2 border-black/10 text-text-heading font-bold py-3 px-10 rounded-full hover:border-brand hover:text-brand transition-colors shadow-sm"
                                 >
                                     {t('Load More Vehicles', '加载更多车辆')}
                                 </button>
@@ -1779,10 +1876,10 @@ const CarDetailPage = ({ cars }) => {
     const prevImage = () => { if (galleryImages.length <= 1) return; setCurrentImageIndex((prev) => (prev === 0 ? galleryImages.length - 1 : prev - 1)); };
 
     return (
-        <div className="bg-slate-50 min-h-screen pb-20">
-            <div className="bg-white border-b border-slate-200 sticky top-[80px] z-30 shadow-sm/50">
+        <div className="bg-page min-h-screen pb-20">
+            <div className="bg-white border-b border-black/10 sticky top-[80px] z-30 shadow-sm/50">
                 <div className="container mx-auto px-4 py-4">
-                    <button onClick={() => navigate(backTarget)} className="flex items-center gap-2 text-slate-500 hover:text-red-600 font-medium transition-colors text-sm">
+                    <button onClick={() => navigate(backTarget)} className="flex items-center gap-2 text-text-muted hover:text-brand font-medium transition-colors text-sm">
                         <ArrowLeft size={16} /> {t('Back to Results', '返回结果')}
                     </button>
                 </div>
@@ -1799,20 +1896,20 @@ const CarDetailPage = ({ cars }) => {
                                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur text-white text-xs px-4 py-1.5 rounded-full font-medium tracking-widest">{currentImageIndex + 1} / {galleryImages.length}</div>
                             </>}
                         </div>
-                        {galleryImages.length > 1 && <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">{galleryImages.map((img, idx) => (<button key={idx} onClick={() => setCurrentImageIndex(idx)} className={`flex-shrink-0 w-24 h-16 rounded-lg overflow-hidden border-2 transition-all relative ${currentImageIndex === idx ? 'border-red-600 ring-2 ring-red-100' : 'border-transparent opacity-60 hover:opacity-100'}`}><img src={img} alt="thumb" className="w-full h-full object-cover" /></button>))}</div>}
-                        <div className="bg-white p-10 rounded-3xl shadow-sm border border-slate-100">
-                            <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                                <Info size={20} className="text-red-600" /> {t('Vehicle Overview', '车辆概览')}
+                        {galleryImages.length > 1 && <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">{galleryImages.map((img, idx) => (<button key={idx} onClick={() => setCurrentImageIndex(idx)} className={`flex-shrink-0 w-24 h-16 rounded-lg overflow-hidden border-2 transition-all relative ${currentImageIndex === idx ? 'border-brand ring-2 ring-brand/10' : 'border-transparent opacity-60 hover:opacity-100'}`}><img src={img} alt="thumb" className="w-full h-full object-cover" /></button>))}</div>}
+                        <div className="toyota-card p-10">
+                            <h3 className="text-xl font-bold text-text-heading mb-6 flex items-center gap-2">
+                                <Info size={20} className="text-brand" /> {t('Vehicle Overview', '车辆概览')}
                             </h3>
-                            <p className="text-slate-600 leading-8 mb-10">{car.description}</p>
+                            <p className="text-text-body leading-8 mb-10">{car.description}</p>
                             {car.features && (
                                 <div>
-                                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
+                                    <h4 className="text-xs font-bold text-text-muted uppercase tracking-widest mb-4">
                                         {t('Key Features', '核心配置')}
                                     </h4>
                                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                                         {car.features.map((f, i) => (
-                                            <div key={i} className="flex items-center gap-3 text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-100/50">
+                                            <div key={i} className="flex items-center gap-3 text-text-body bg-surface p-4 rounded-lg border border-black/10">
                                                 <CheckCircle2 size={18} className="text-emerald-500 shrink-0" />
                                                 <span className="text-sm font-semibold">{f}</span>
                                             </div>
@@ -1823,12 +1920,12 @@ const CarDetailPage = ({ cars }) => {
                         </div>
                     </div>
                     <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-28">
-                        <div className="bg-white p-8 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
-                            <div className="mb-8 pb-8 border-b border-slate-100">
-                                <div className="flex items-center gap-2 mb-4"><span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${car.status === 'In Stock' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>{car.status}</span><span className="text-slate-400 text-xs font-bold flex items-center gap-1"><MapPin size={12} /> {car.location || "Homebush"}</span></div>
-                                <h1 className="text-2xl font-bold text-slate-900 mt-3 mb-2 leading-tight">{car.title}</h1>
-                                <div className="flex items-baseline gap-2"><p className="text-4xl font-bold text-red-700">${(car.price || 0).toLocaleString()}</p></div>
-                                <p className="text-xs text-slate-400 font-medium mt-1">
+                        <div className="toyota-card p-8">
+                            <div className="mb-8 pb-8 border-b border-black/10">
+                                <div className="flex items-center gap-2 mb-4"><span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${car.status === 'In Stock' ? 'bg-emerald-100 text-emerald-700' : 'bg-surface text-text-heading border border-black/10'}`}>{car.status}</span><span className="text-text-muted text-xs font-bold flex items-center gap-1"><MapPin size={12} /> {car.location || "Homebush"}</span></div>
+                                <h1 className="text-2xl font-bold text-text-heading mt-3 mb-2 leading-tight">{car.title}</h1>
+                                <div className="flex items-baseline gap-2"><p className="text-4xl font-bold text-brand">${(car.price || 0).toLocaleString()}</p></div>
+                                <p className="text-xs text-text-muted font-medium mt-1">
                                     {t('Excluding Government Charges', '不含政府费用')}
                                 </p>
                             </div>
@@ -1841,18 +1938,18 @@ const CarDetailPage = ({ cars }) => {
                                     { l: t('Fuel', '燃料'), v: car.fuel || t('N/A', '无') },
                                     { l: t('Seats', '座位'), v: car.seats || t('N/A', '无') },
                                 ].map((item, i) => (
-                                    <div key={i} className="bg-slate-50 p-3 rounded-xl">
-                                        <span className="block text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-1">{item.l}</span>
-                                        <span className="font-bold text-slate-900 text-sm truncate block" title={item.v}>{item.v}</span>
+                                    <div key={i} className="bg-surface p-3 rounded-lg border border-black/10">
+                                        <span className="block text-[10px] text-text-muted uppercase font-bold tracking-wider mb-1">{item.l}</span>
+                                        <span className="font-bold text-text-heading text-sm truncate block" title={item.v}>{item.v}</span>
                                     </div>
                                 ))}
                             </div>
                             <div className="space-y-4">
-                                <button onClick={() => navigate('/contact')} className="w-full bg-red-700 text-white font-bold py-4 rounded-xl hover:bg-red-800 transition-all shadow-lg shadow-red-700/20 active:scale-95">
+                                <button onClick={() => navigate('/contact')} className="w-full toyota-btn-primary py-4 active:scale-95">
                                     {t('Enquire Now', '立即咨询')}
                                 </button>
-                                <a href={`tel:${SALES_PHONE}`} className="w-full border-2 border-slate-200 text-slate-900 font-bold py-4 rounded-xl hover:bg-slate-50 transition-colors flex items-center justify-center gap-2 active:scale-95">
-                                    <Phone size={20} className="text-red-600" /> {t('Call Sales', '致电销售')}
+                                <a href={`tel:${SALES_PHONE}`} className="w-full toyota-btn-secondary py-4 flex items-center justify-center gap-2 active:scale-95">
+                                    <Phone size={20} className="text-brand" /> {t('Call Sales', '致电销售')}
                                 </a>
                             </div>
                         </div>
@@ -2008,7 +2105,7 @@ const ContactPage = () => {
     const { t } = useLanguage();
 
     return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-page">
         {/* Hero w/ Background (SilkProperty-like) */}
         <header className="relative overflow-hidden">
             <div className="absolute inset-0">
@@ -2037,35 +2134,35 @@ const ContactPage = () => {
 
         <div className="container mx-auto px-4 py-16 md:py-20">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-                <div className="bg-white p-10 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
-                    <h3 className="text-2xl font-black text-slate-900 mb-2">{t('Send a Message', '发送消息')}</h3>
-                    <p className="text-slate-500 mb-8">{t("We'll respond as soon as possible.", '我们会尽快回复。')}</p>
+                <div className="toyota-card p-10">
+                    <h3 className="text-2xl font-black text-text-heading mb-2">{t('Send a Message', '发送消息')}</h3>
+                    <p className="text-text-body mb-8">{t("We'll respond as soon as possible.", '我们会尽快回复。')}</p>
                     <form className="space-y-6" action={CONTACT_FORM_ACTION} method="POST">
                         <input type="hidden" name="_subject" value={t('[BEST AUTO] New contact enquiry', '[BEST AUTO] 新联系咨询')} />
                         <input type="hidden" name="_captcha" value="false" />
                         <input type="hidden" name="_template" value="table" />
                         <div>
-                            <label className="block text-sm font-black text-slate-700 mb-2">{t('Full Name', '姓名')}</label>
-                            <input name="name" required type="text" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-slate-900/10 focus:border-slate-900 outline-none transition-all" placeholder={t('John Doe', '张三')} />
+                            <label className="block text-sm font-bold text-text-heading mb-2">{t('Full Name', '姓名')}</label>
+                            <input name="name" required type="text" className="w-full p-4 bg-white border border-black/10 rounded-lg focus:ring-4 focus:ring-brand/10 focus:border-brand outline-none transition-all" placeholder={t('John Doe', '张三')} />
                         </div>
                         <div>
-                            <label className="block text-sm font-black text-slate-700 mb-2">{t('Phone Number', '联系电话')}</label>
-                            <input name="phone" required type="tel" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-slate-900/10 focus:border-slate-900 outline-none transition-all" placeholder="0400 000 000" />
+                            <label className="block text-sm font-bold text-text-heading mb-2">{t('Phone Number', '联系电话')}</label>
+                            <input name="phone" required type="tel" className="w-full p-4 bg-white border border-black/10 rounded-lg focus:ring-4 focus:ring-brand/10 focus:border-brand outline-none transition-all" placeholder="0400 000 000" />
                         </div>
                         <div>
-                            <label className="block text-sm font-black text-slate-700 mb-2">{t('Your Enquiry', '咨询内容')}</label>
-                            <textarea name="message" required className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-slate-900/10 focus:border-slate-900 outline-none h-40 resize-none" placeholder={t("I'm interested in...", '我想咨询...')} ></textarea>
+                            <label className="block text-sm font-bold text-text-heading mb-2">{t('Your Enquiry', '咨询内容')}</label>
+                            <textarea name="message" required className="w-full p-4 bg-white border border-black/10 rounded-lg focus:ring-4 focus:ring-brand/10 focus:border-brand outline-none h-40 resize-none" placeholder={t("I'm interested in...", '我想咨询...')} ></textarea>
                         </div>
-                        <button className="w-full bg-slate-900 text-white font-black py-4 rounded-xl hover:bg-red-700 transition-colors shadow-lg">
+                        <button className="w-full toyota-btn-primary py-4">
                             {t('Send Message', '发送')}
                         </button>
                     </form>
                     <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <a href={`tel:${SALES_PHONE}`} className="bg-white hover:bg-slate-50 border-2 border-slate-200 text-slate-900 font-black py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
-                            <Phone size={18} className="text-red-600" /> {t('Call Sales:', '销售电话:')} {SALES_PHONE_DISPLAY}
+                        <a href={`tel:${SALES_PHONE}`} className="toyota-btn-secondary py-3 flex items-center justify-center gap-2">
+                            <Phone size={18} className="text-brand" /> {t('Call Sales:', '销售电话:')} {SALES_PHONE_DISPLAY}
                         </a>
-                        <a href={`tel:${SERVICE_PHONE}`} className="bg-white hover:bg-slate-50 border-2 border-slate-200 text-slate-900 font-black py-3 rounded-xl transition-colors flex items-center justify-center gap-2">
-                            <Wrench size={18} className="text-red-600" /> {t('Service:', '保养:')} {SERVICE_PHONE_DISPLAY}
+                        <a href={`tel:${SERVICE_PHONE}`} className="toyota-btn-secondary py-3 flex items-center justify-center gap-2">
+                            <Wrench size={18} className="text-brand" /> {t('Service:', '保养:')} {SERVICE_PHONE_DISPLAY}
                         </a>
                     </div>
                 </div>
@@ -2075,28 +2172,28 @@ const ContactPage = () => {
                         { name: t('Best Auto Showroom (Homebush)', 'Best Auto 展厅（Homebush）'), address: SHOWROOM_ADDRESS, map: `https://www.google.com/maps?q=${encodeURIComponent(SHOWROOM_ADDRESS)}&output=embed`, note: t(`Phone/WeChat: ${WECHAT_ID} · ${SALES_PHONE_DISPLAY}`, `电话/微信: ${WECHAT_ID} · ${SALES_PHONE_DISPLAY}`) },
                         { name: t('Best Auto Service Centre (Clyde)', 'Best Auto 维修中心（Clyde）'), address: SERVICE_ADDRESS, map: `https://www.google.com/maps?q=${encodeURIComponent(SERVICE_ADDRESS)}&output=embed`, note: t(`Service: ${SERVICE_PHONE_DISPLAY}`, `服务: ${SERVICE_PHONE_DISPLAY}`) },
                     ].map((loc, idx) => (
-                        <div key={idx} className="bg-white p-6 rounded-2xl shadow-md border border-slate-100 overflow-hidden">
-                            <h4 className="font-black text-slate-900 mb-3 flex items-center gap-2 text-lg">
-                                <MapPin className="text-red-600" /> {loc.name}
+                        <div key={idx} className="toyota-card p-6 overflow-hidden">
+                            <h4 className="font-black text-text-heading mb-3 flex items-center gap-2 text-lg">
+                                <MapPin className="text-brand" /> {loc.name}
                             </h4>
-                            <p className="text-slate-500 mb-2 ml-8 text-sm">{loc.address}</p>
-                            <p className="text-slate-400 mb-4 ml-8 text-xs">{loc.note}</p>
-                            <div className="h-48 bg-slate-200 rounded-2xl overflow-hidden relative">
+                            <p className="text-text-body mb-2 ml-8 text-sm">{loc.address}</p>
+                            <p className="text-text-muted mb-4 ml-8 text-xs">{loc.note}</p>
+                            <div className="h-48 bg-surface rounded-lg overflow-hidden relative border border-black/10">
                                 <iframe src={loc.map} width="100%" height="100%" style={{ border: 0 }} allowFullScreen="" loading="lazy"></iframe>
                             </div>
                         </div>
                     ))}
 
-                    <div className="bg-slate-900 text-white p-8 rounded-3xl shadow-xl">
-                        <h4 className="font-black mb-6 flex items-center gap-3 text-lg">
-                            <Clock className="text-red-500" /> {t('Opening Hours', '营业时间')}
+                    <div className="toyota-card p-8">
+                        <h4 className="font-black mb-6 flex items-center gap-3 text-lg text-text-heading">
+                            <Clock className="text-brand" /> {t('Opening Hours', '营业时间')}
                         </h4>
-                        <div className="space-y-4 text-sm text-slate-300">
-                            <div className="flex justify-between border-b border-white/10 pb-2">
-                                <span>{t('Everyday', '每天')}</span><span className="font-black text-white">{t('10:00 AM - 5:30 PM', '10:00 - 17:30')}</span>
+                        <div className="space-y-4 text-sm text-text-body">
+                            <div className="flex justify-between border-b border-black/10 pb-2">
+                                <span>{t('Everyday', '每天')}</span><span className="font-black text-text-heading">{t('10:00 AM - 5:30 PM', '10:00 - 17:30')}</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="text-white/70">{t('WeChat', '微信')}</span><span className="font-black text-white">{WECHAT_ID}</span>
+                                <span className="text-text-muted">{t('WeChat', '微信')}</span><span className="font-black text-text-heading">{WECHAT_ID}</span>
                             </div>
                         </div>
                     </div>
@@ -2111,15 +2208,69 @@ const ContactPage = () => {
 const SellPage = () => {
     const { t } = useLanguage();
     return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-            <div className="text-center p-12 bg-white rounded-3xl shadow-xl max-w-2xl mx-4">
+        <div className="min-h-screen bg-page flex items-center justify-center">
+            <div className="text-center p-12 toyota-card max-w-2xl mx-4">
                 <DollarSign size={64} className="mx-auto text-slate-300 mb-6" />
-                <h1 className="text-4xl font-bold text-slate-900 mb-4">{t('Sell Your Car', '卖车')}</h1>
-                <p className="text-lg text-slate-500 mb-8">
+                <h1 className="text-4xl font-bold text-text-heading mb-4">{t('Sell Your Car', '卖车')}</h1>
+                <p className="text-lg text-text-body mb-8">
                     {t('Instant valuations coming soon. Please contact us directly for trade-in offers.', '即时估价即将上线，置换请直接联系我们。')}
                 </p>
-                <Link to="/contact" className="bg-slate-900 text-white font-bold py-4 px-10 rounded-xl hover:bg-slate-800 transition-colors">
+                <Link to="/contact" className="toyota-btn-primary py-4 px-10">
                     {t('Contact Team', '联系团队')}
+                </Link>
+            </div>
+        </div>
+    );
+};
+
+const ServicesPage = () => {
+    const { t } = useLanguage();
+    return (
+        <div className="min-h-screen bg-page flex items-center justify-center">
+            <div className="text-center p-12 toyota-card max-w-2xl mx-4">
+                <Wrench size={64} className="mx-auto text-slate-300 mb-6" />
+                <h1 className="text-4xl font-bold text-text-heading mb-4">{t('Services', '服务')}</h1>
+                <p className="text-lg text-text-body mb-8">
+                    {t('Maintenance, repairs, and ownership support. Full service details are coming soon.', '保养、维修与用车支持，完整服务信息即将上线。')}
+                </p>
+                <Link to="/contact" className="toyota-btn-primary py-4 px-10">
+                    {t('Book a Service', '预约服务')}
+                </Link>
+            </div>
+        </div>
+    );
+};
+
+const OwnersPage = () => {
+    const { t } = useLanguage();
+    return (
+        <div className="min-h-screen bg-page flex items-center justify-center">
+            <div className="text-center p-12 toyota-card max-w-2xl mx-4">
+                <Users size={64} className="mx-auto text-slate-300 mb-6" />
+                <h1 className="text-4xl font-bold text-text-heading mb-4">{t('Owners', '车主专区')}</h1>
+                <p className="text-lg text-text-body mb-8">
+                    {t('Ownership tips, care guides, and service history tools will be available soon.', '用车指南、养护建议与服务记录功能即将上线。')}
+                </p>
+                <Link to="/contact" className="toyota-btn-secondary py-4 px-10">
+                    {t('Contact Support', '联系支持')}
+                </Link>
+            </div>
+        </div>
+    );
+};
+
+const SupportPage = () => {
+    const { t } = useLanguage();
+    return (
+        <div className="min-h-screen bg-page flex items-center justify-center">
+            <div className="text-center p-12 toyota-card max-w-2xl mx-4">
+                <ShieldCheck size={64} className="mx-auto text-slate-300 mb-6" />
+                <h1 className="text-4xl font-bold text-text-heading mb-4">{t('Support', '支持')}</h1>
+                <p className="text-lg text-text-body mb-8">
+                    {t('Need help? We are here for sales, service, and warranty enquiries.', '需要帮助？销售、保养与质保问题随时联系。')}
+                </p>
+                <Link to="/contact" className="toyota-btn-primary py-4 px-10">
+                    {t('Get Support', '获取支持')}
                 </Link>
             </div>
         </div>
@@ -2159,62 +2310,66 @@ export function AppContent() {
 
     useEffect(() => { setIsMenuOpen(false); }, [location]);
 
+    const TOP_NAV_ITEMS = useMemo(
+        () => [
+            { label: 'Models', to: '/inventory' },
+            { label: 'Shop', to: '/sell' },
+            { label: 'Services', to: '/services' },
+            { label: 'Owners', to: '/owners' },
+            { label: 'Explore', to: '/about' },
+            { label: 'Support', to: '/support' },
+        ],
+        []
+    );
+
     const NavItem = ({ path, label, hasDropdown }) => (
         <div className="group relative h-full flex items-center">
             {hasDropdown ? (
                 <button
                     type="button"
-                    className="flex items-center gap-1.5 text-white/80 hover:text-white transition-colors font-black text-sm tracking-[0.18em]"
+                    className="flex items-center gap-1.5 text-text-heading hover:text-brand transition-colors font-bold text-sm tracking-wide"
                 >
-                    {label} <ChevronDown size={14} className="text-white/60 group-hover:text-white/80 group-hover:rotate-180 transition-all duration-300" />
+                    {label} <ChevronDown size={14} className="text-text-muted group-hover:text-brand group-hover:rotate-180 transition-all duration-300" />
                 </button>
             ) : (
                 <Link
                     to={path}
-                    className={`relative flex items-center gap-1.5 font-black text-sm tracking-[0.18em] transition-colors ${
-                        location.pathname === path ? 'text-cyan-200' : 'text-white/80 hover:text-white'
-                    }`}
+                    className="flex items-center gap-1.5 font-medium text-[15px] tracking-wide text-text-heading hover:text-brand transition-colors"
                 >
                     {label}
-                    <span
-                        className={`absolute -bottom-2 left-0 right-0 h-[2px] rounded-full bg-gradient-to-r from-cyan-300 to-lime-300 transition-opacity ${
-                            location.pathname === path ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                        }`}
-                        aria-hidden="true"
-                    />
                 </Link>
             )}
             {hasDropdown && (
                 <div className="absolute top-full left-0 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform -translate-y-2 group-hover:translate-y-0 z-50">
-                    <div className="bg-slate-950/95 backdrop-blur-xl shadow-2xl rounded-2xl border border-white/10 overflow-hidden w-72 p-2">
+                    <div className="bg-white shadow-2xl rounded-lg border border-black/10 overflow-hidden w-72 p-2">
                         <div className="px-4 py-2">
-                            <p className="text-[10px] font-black tracking-[0.28em] text-white/45 uppercase">{t('Featured', '精选')}</p>
+                            <p className="text-[10px] font-bold tracking-[0.22em] text-text-muted uppercase">{t('Featured', '精选')}</p>
                         </div>
                         <Link
                             to="/inventory"
-                            className="block w-full text-left px-4 py-3 text-sm font-semibold text-white/85 hover:bg-white/5 hover:text-white rounded-xl transition-colors"
+                            className="block w-full text-left px-4 py-3 text-sm font-semibold text-text-heading hover:bg-surface rounded-lg transition-colors"
                         >
-                            {t('Alphard / Vellfire', '埃尔法 / 威尔法')} <span className="text-xs text-white/45 font-semibold">· {t('MPV', 'MPV')}</span>
+                            {t('Alphard / Vellfire', '埃尔法 / 威尔法')} <span className="text-xs text-text-muted font-semibold">· {t('MPV', 'MPV')}</span>
                         </Link>
                         <div className="px-4 pt-4 pb-2">
-                            <p className="text-[10px] font-black tracking-[0.28em] text-white/45 uppercase">{t('Top brands', '热门品牌')}</p>
+                            <p className="text-[10px] font-bold tracking-[0.22em] text-text-muted uppercase">{t('Top brands', '热门品牌')}</p>
                         </div>
                         <div className="max-h-72 overflow-auto px-1 pb-2">
                             {topBrands.map(({ brand, count }) => (
                                 <Link
                                     key={brand}
                                     to={`/inventory?brand=${encodeURIComponent(brand)}`}
-                                    className="block w-full text-left px-3 py-2.5 text-sm font-semibold text-white/70 hover:bg-white/5 hover:text-white rounded-xl transition-colors flex items-center justify-between"
+                                    className="block w-full text-left px-3 py-2.5 text-sm font-semibold text-text-body hover:bg-surface rounded-lg transition-colors flex items-center justify-between"
                                 >
                                     <span>{brand}</span>
-                                    <span className="text-xs text-white/45 font-bold">{count}</span>
+                                    <span className="text-xs text-text-muted font-bold">{count}</span>
                                 </Link>
                             ))}
                         </div>
-                        <div className="border-t border-white/10 mt-1 pt-2 px-2">
+                        <div className="border-t border-black/10 mt-1 pt-2 px-2">
                             <Link
                                 to="/inventory"
-                                className="block w-full text-center px-4 py-2 text-sm font-bold text-white hover:text-cyan-200 rounded-xl transition-colors"
+                                className="block w-full text-center px-4 py-2 text-sm font-bold text-text-heading hover:text-brand rounded-lg transition-colors"
                             >
                                 {t('View all inventory', '查看全部库存')}
                             </Link>
@@ -2226,39 +2381,44 @@ export function AppContent() {
     );
 
     return (
-        <div className="min-h-screen bg-transparent font-sans selection:bg-cyan-200/30 selection:text-slate-950">
+        <div className="min-h-screen bg-page font-sans">
             <ScrollToTop />
 
-            {/* Navbar (Make background solid to match logo white and reduce edge contrast) */}
-            <nav className="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-xl border-b border-white/10 shadow-[0_1px_0_0_rgba(255,255,255,0.06)] h-20 transition-all">
-                <div className="container mx-auto px-4 h-full flex justify-between items-center">
-                    <Link to="/" className="flex items-center gap-3 cursor-pointer group">
-                        <span className="bg-white/90 p-1.5 rounded-md ring-1 ring-white/15 shadow-sm track-cut">
-                            <img src={LOGO_URL} alt="Logo" className="h-9 w-auto object-contain" />
-                        </span>
-                        <div className="hidden sm:block">
-                            <h1 className="text-sm font-black text-white leading-none tracking-[0.28em] uppercase">{BRAND_NAME}</h1>
-                            <div className="text-[10px] font-black tracking-[0.34em] text-white/45 uppercase">Track Mode</div>
-                        </div>
-                    </Link>
+            {/* Toyota.com.au-like Header (layout-only; account/search non-functional) */}
+            <nav className="sticky top-0 z-40 bg-white border-b border-black/10 h-20">
+                <div className="container mx-auto px-6 h-full flex items-center justify-between">
+                    <div className="flex items-center gap-12 h-full">
+                        {/* Brand */}
+                        <Link to="/" className="flex items-center gap-3">
+                            <img src={LOGO_URL} alt="Logo" className="h-10 w-auto object-contain" />
+                            <span className="sr-only">{BRAND_NAME}</span>
+                        </Link>
 
-                    <div className="hidden md:flex items-center gap-8 h-full">
-                        <NavItem path="/" label={t('HOME', '首页')} />
-                        <NavItem path="/inventory" label={t('COLLECTION', '专属车源')} />
-                        <NavItem path="/contact" label={t('CONTACT', '联系')} />
+                        {/* Primary nav */}
+                        <div className="hidden md:flex items-center gap-10 h-full">
+                            {TOP_NAV_ITEMS.map((item) => (
+                                <NavItem key={item.label} path={item.to} label={item.label} />
+                            ))}
+                        </div>
                     </div>
 
+                    {/* Utilities */}
                     <div className="flex items-center gap-3">
                         <button
                             type="button"
                             onClick={toggleLang}
-                            className="hidden md:inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-xs font-bold text-white/80 hover:text-white hover:border-white/20 transition-colors"
+                            className="hidden md:inline-flex items-center gap-2 px-4 py-2 rounded-full border border-black/10 bg-white text-xs font-bold text-text-heading hover:bg-surface transition-colors"
                             aria-label={t('Switch language', '切换语言')}
                         >
                             <Globe size={16} />
                             {lang === 'zh' ? 'EN' : '中文'}
                         </button>
-                        <button className="md:hidden p-2 text-white bg-white/10 rounded-lg hover:bg-white/15 transition-colors" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+
+                        <button
+                            className="md:hidden p-2 text-text-heading bg-surface rounded-full hover:bg-black/5 transition-colors"
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            aria-label={t('Open menu', '打开菜单')}
+                        >
                             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                         </button>
                     </div>
@@ -2267,14 +2427,16 @@ export function AppContent() {
 
             {/* Mobile Menu */}
             {isMenuOpen && (
-                <div className="md:hidden fixed inset-0 top-[80px] bg-slate-950/92 backdrop-blur-xl z-30 p-6 flex flex-col gap-6 animate-in slide-in-from-right-10 overflow-y-auto border-t border-white/10">
-                    <Link to="/" className="text-2xl font-black text-white tracking-tight">{t('HOME', '首页')}</Link>
-                    <Link to="/inventory" className="text-2xl font-black text-white tracking-tight">{t('COLLECTION', '专属车源')}</Link>
-                    <Link to="/contact" className="text-2xl font-black text-white tracking-tight">{t('CONTACT', '联系')}</Link>
+                <div className="md:hidden fixed inset-0 top-[80px] bg-white z-30 p-6 flex flex-col gap-6 overflow-y-auto border-t border-black/10">
+                    {TOP_NAV_ITEMS.map((item) => (
+                        <Link key={item.label} to={item.to} className="text-2xl font-bold text-text-heading tracking-tight">
+                            {item.label}
+                        </Link>
+                    ))}
                     <button
                         type="button"
                         onClick={toggleLang}
-                        className="mt-4 inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-sm font-bold text-white/80 hover:text-white hover:border-white/20 transition-colors"
+                        className="mt-4 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full border border-black/10 bg-white text-sm font-bold text-text-heading hover:bg-surface transition-colors"
                     >
                         <Globe size={16} />
                         {lang === 'zh' ? 'English' : '中文'}
@@ -2287,47 +2449,52 @@ export function AppContent() {
                     <Route path="/" element={<AlphardHomePage cars={carsWithLocalStock} />} />
                     <Route path="/inventory" element={<InventoryPage cars={carsWithLocalStock} category="toyota" />} />
                     <Route path="/vehicle/:id" element={<CarDetailPage cars={carsWithLocalStock} />} />
+                    <Route path="/about" element={<AboutPage />} />
+                    <Route path="/sell" element={<SellPage />} />
+                    <Route path="/services" element={<ServicesPage />} />
+                    <Route path="/owners" element={<OwnersPage />} />
+                    <Route path="/support" element={<SupportPage />} />
                     <Route path="/contact" element={<ContactPage />} />
                 </Routes>
             </main>
 
-            <footer className="bg-slate-950 text-slate-400 pt-24 pb-12">
+            <footer className="bg-white border-t border-black/10 text-text-body pt-16 pb-12">
                 <div className="container mx-auto px-4">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
                         <div className="space-y-6">
                             <div className="flex items-center gap-3">
-                                <img src={LOGO_URL} alt="Logo" className="h-8 w-auto brightness-0 invert opacity-90" />
-                                <span className="font-black text-white tracking-[0.22em] text-lg uppercase">{BRAND_NAME}</span>
+                                <img src={LOGO_URL} alt="Logo" className="h-8 w-auto object-contain" />
+                                <span className="font-black text-text-heading tracking-[0.22em] text-lg uppercase">{BRAND_NAME}</span>
                             </div>
-                            <p className="text-sm leading-7 text-slate-500">
+                            <p className="text-sm leading-7 text-text-body">
                                 {t(
                                     'Your trusted partner for premium pre-owned vehicles in Sydney. Quality cars, transparent pricing, and exceptional service since 2015.',
                                     '悉尼精品二手车值得信赖的伙伴。优质车源、透明定价与专业服务，始于 2015。'
                                 )}
                             </p>
                             <div className="flex gap-4">
-                                <a href="#" className="w-10 h-10 bg-slate-900 border border-slate-800 rounded-full flex items-center justify-center hover:bg-red-600 hover:border-red-600 hover:text-white transition-all"><Instagram size={18} /></a>
-                                <a href="#" className="w-10 h-10 bg-slate-900 border border-slate-800 rounded-full flex items-center justify-center hover:bg-blue-600 hover:border-blue-600 hover:text-white transition-all"><Facebook size={18} /></a>
+                                <a href="#" className="w-10 h-10 bg-surface border border-black/10 rounded-full flex items-center justify-center hover:bg-brand hover:border-brand hover:text-white transition-all"><Instagram size={18} /></a>
+                                <a href="#" className="w-10 h-10 bg-surface border border-black/10 rounded-full flex items-center justify-center hover:bg-brand hover:border-brand hover:text-white transition-all"><Facebook size={18} /></a>
                             </div>
                         </div>
                         <div>
-                            <h4 className="text-white font-bold mb-6 tracking-widest text-xs uppercase">{t('Homebush Showroom', 'Homebush 展厅')}</h4>
+                            <h4 className="text-text-heading font-bold mb-6 tracking-widest text-xs uppercase">{t('Homebush Showroom', 'Homebush 展厅')}</h4>
                             <div className="space-y-4 text-sm">
-                                <a href={`https://www.google.com/maps?q=${encodeURIComponent(SHOWROOM_ADDRESS)}`} target="_blank" rel="noreferrer" className="flex items-start gap-3 hover:text-white transition-colors group"><MapPin size={16} className="text-red-600 mt-1 group-hover:scale-110 transition-transform" /><span className="leading-relaxed">{SHOWROOM_ADDRESS}</span></a>
-                                <a href={`tel:${SALES_PHONE}`} className="flex items-center gap-3 hover:text-white transition-colors group"><Phone size={16} className="text-red-600 group-hover:scale-110 transition-transform" /><span>{SALES_PHONE_DISPLAY}</span></a>
-                                <p className="flex items-center gap-3"><MessageCircle size={16} className="text-red-600" /><span>{t('WeChat', '微信')}: {WECHAT_ID}</span></p>
-                                <p className="flex items-center gap-3"><Clock size={16} className="text-red-600" /><span>{t('Daily', '每天')} 10:00 – 5:30</span></p>
+                                <a href={`https://www.google.com/maps?q=${encodeURIComponent(SHOWROOM_ADDRESS)}`} target="_blank" rel="noreferrer" className="flex items-start gap-3 hover:text-brand transition-colors group"><MapPin size={16} className="text-brand mt-1" /><span className="leading-relaxed">{SHOWROOM_ADDRESS}</span></a>
+                                <a href={`tel:${SALES_PHONE}`} className="flex items-center gap-3 hover:text-brand transition-colors group"><Phone size={16} className="text-brand" /><span>{SALES_PHONE_DISPLAY}</span></a>
+                                <p className="flex items-center gap-3"><MessageCircle size={16} className="text-brand" /><span>{t('WeChat', '微信')}: {WECHAT_ID}</span></p>
+                                <p className="flex items-center gap-3"><Clock size={16} className="text-brand" /><span>{t('Daily', '每天')} 10:00 – 5:30</span></p>
                             </div>
                         </div>
                         <div>
-                            <h4 className="text-white font-bold mb-6 tracking-widest text-xs uppercase">{t('Clyde Service Centre', 'Clyde 服务中心')}</h4>
+                            <h4 className="text-text-heading font-bold mb-6 tracking-widest text-xs uppercase">{t('Clyde Service Centre', 'Clyde 服务中心')}</h4>
                             <div className="space-y-4 text-sm">
-                                <a href={`https://www.google.com/maps?q=${encodeURIComponent(SERVICE_ADDRESS)}`} target="_blank" rel="noreferrer" className="flex items-start gap-3 hover:text-white transition-colors group"><MapPin size={16} className="text-red-600 mt-1 group-hover:scale-110 transition-transform" /><span className="leading-relaxed">{SERVICE_ADDRESS}</span></a>
-                                <a href={`tel:${SERVICE_PHONE}`} className="flex items-center gap-3 hover:text-white transition-colors group"><Phone size={16} className="text-red-600 group-hover:scale-110 transition-transform" /><span>{SERVICE_PHONE_DISPLAY}</span></a>
+                                <a href={`https://www.google.com/maps?q=${encodeURIComponent(SERVICE_ADDRESS)}`} target="_blank" rel="noreferrer" className="flex items-start gap-3 hover:text-brand transition-colors group"><MapPin size={16} className="text-brand mt-1" /><span className="leading-relaxed">{SERVICE_ADDRESS}</span></a>
+                                <a href={`tel:${SERVICE_PHONE}`} className="flex items-center gap-3 hover:text-brand transition-colors group"><Phone size={16} className="text-brand" /><span>{SERVICE_PHONE_DISPLAY}</span></a>
                             </div>
                         </div>
                         <div>
-                            <h4 className="text-white font-bold mb-6 tracking-widest text-xs uppercase">{t('Quick Links', '快速链接')}</h4>
+                            <h4 className="text-text-heading font-bold mb-6 tracking-widest text-xs uppercase">{t('Quick Links', '快速链接')}</h4>
                             <ul className="space-y-3 text-sm">
                                 {[
                                     { label: t('Home', '首页'), to: '/' },
@@ -2335,7 +2502,7 @@ export function AppContent() {
                                     { label: t('Contact', '联系'), to: '/contact' },
                                 ].map((item) => (
                                     <li key={item.to}>
-                                        <Link to={item.to} className="hover:text-red-500 hover:translate-x-1 transition-all inline-block">
+                                        <Link to={item.to} className="hover:text-brand transition-colors inline-block">
                                             {item.label}
                                         </Link>
                                     </li>
@@ -2343,9 +2510,9 @@ export function AppContent() {
                             </ul>
                         </div>
                     </div>
-                    <div className="border-t border-slate-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-600">
+                    <div className="border-t border-black/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-text-muted">
                         <p>&copy; 2026 {BRAND_NAME}. {t('All rights reserved.', '保留所有权利。')}</p>
-                        <div className="flex gap-8 hover:text-slate-400 transition-colors cursor-pointer">
+                        <div className="flex gap-8 hover:text-text-body transition-colors cursor-pointer">
                             <span>{t('Privacy Policy', '隐私政策')}</span>
                             <span>{t('Terms & Conditions', '条款与条件')}</span>
                         </div>

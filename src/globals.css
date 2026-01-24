@@ -84,5 +84,40 @@
   .toyota-btn-secondary {
     @apply toyota-btn bg-white text-text-heading border border-black/10 hover:bg-surface;
   }
+
+  /* Scroll reveal (Toyota-like "floating in" on scroll) */
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 700ms ease, transform 700ms ease;
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal.reveal-slide {
+    transform: translateY(38px);
+  }
+  .reveal.reveal-slide.is-visible {
+    transform: translateY(0);
+  }
+  .reveal[data-reveal-delay="1"] { transition-delay: 80ms; }
+  .reveal[data-reveal-delay="2"] { transition-delay: 160ms; }
+  .reveal[data-reveal-delay="3"] { transition-delay: 240ms; }
+  .reveal[data-reveal-delay="4"] { transition-delay: 320ms; }
+
+  /* Subtle parallax layers */
+  .parallax-layer {
+    transform: translate3d(0, calc(var(--parallax-y, 0px) * var(--parallax-speed, 0.2)), 0);
+    will-change: transform;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
 }
 
