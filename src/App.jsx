@@ -1349,33 +1349,7 @@ const AlphardHomePage = ({ cars }) => {
             <HeroSection t={t} copyVisible={heroCopyVisible} />
 
             <main className="relative z-10 bg-white">
-                {/* ========== 1. PRODUCT SPOTLIGHT (类似 New HiLux) ========== */}
-                <section className="relative h-[70vh] md:h-[80vh] overflow-hidden reveal" data-reveal>
-                    <img 
-                        src="/stock/2024 Toyota Vellfire/cover.jpg" 
-                        alt="" 
-                        className="absolute inset-0 w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-center text-white px-6">
-                            <h2 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight text-white/90">
-                                {t('New Alphard', '全新埃尔法')}
-                            </h2>
-                            <p className="mt-4 text-lg md:text-xl text-white/70">
-                                {t('The ultimate in luxury travel', '极致奢华出行体验')}
-                            </p>
-                            <button 
-                                onClick={() => navigate('/inventory')}
-                                className="mt-8 px-8 py-3 border border-white/60 text-white rounded-full hover:bg-white hover:text-black transition-all duration-300 font-bold"
-                            >
-                                {t('Tell me more', '了解更多')}
-                            </button>
-                        </div>
-                    </div>
-                </section>
-
-                {/* ========== 2. FIND YOUR IDEAL VEHICLE ========== */}
+                {/* ========== 1. FIND YOUR IDEAL VEHICLE ========== */}
                 <section className="py-20 bg-white">
                     <div className="container mx-auto px-6">
                         <div className="max-w-site mx-auto">
