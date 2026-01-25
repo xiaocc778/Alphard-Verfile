@@ -2118,28 +2118,20 @@ const AboutPage = () => {
     const { t } = useLanguage();
     return (
     <div className="min-h-screen bg-white">
-        {/* Hero w/ Background (SilkProperty-like) */}
-        <header className="relative overflow-hidden">
-            <div className="absolute inset-0">
-                <img
-                    src="/stock/20 Mercedes G63/cover.jpg"
-                    alt=""
-                    className="w-full h-full object-cover"
-                    onError={(e) => { e.target.src = "/stock/18 Ford Mustang GT 5.0/cover.jpg"; }}
-                />
-                <div className="absolute inset-0 bg-black/55"></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/40"></div>
+        {/* Hero - clean slate gradient */}
+        <header className="relative overflow-hidden bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900">
+            <div className="absolute inset-0 opacity-20">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.15),transparent_50%)]" />
             </div>
 
-            <div className="relative z-10 container mx-auto px-4 py-24 md:py-32 text-center text-white">
-                <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-                    <span className="text-xs font-black tracking-widest uppercase">{t('About', '关于')}</span>
-                    <span className="text-xs text-white/60">·</span>
-                    <span className="text-xs text-white/80">{t('Alphard & Vellfire Specialist', '埃尔法 / 威尔法 专家')}</span>
+            <div className="relative z-10 container mx-auto px-6 py-20 md:py-28 text-center text-white">
+                <div className="inline-flex items-center gap-2 bg-white/15 border border-white/25 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
+                    <Award size={14} />
+                    <span className="text-xs font-bold tracking-widest uppercase">{t('About', '关于')}</span>
                 </div>
-                <h1 className="text-4xl md:text-6xl font-black tracking-tight">{BRAND_NAME} Pty Ltd</h1>
-                <p className="text-white/75 mt-5 max-w-3xl mx-auto text-lg leading-relaxed">
-                    {t('Specialist in Toyota Alphard & Vellfire · Sales · Service · Repairs', '日本 丰田埃尔法 / 威尔法 专业车行｜销售 · 保养 · 维修 一站式服务')}
+                <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{BRAND_NAME}</h1>
+                <p className="text-white/80 mt-5 max-w-2xl mx-auto text-lg">
+                    {t('Alphard & Vellfire Specialist · Sales · Service · Repairs', '埃尔法 / 威尔法 专营｜销售 · 保养 · 维修')}
                 </p>
             </div>
         </header>
