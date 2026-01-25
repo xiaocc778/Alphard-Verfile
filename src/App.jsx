@@ -2258,29 +2258,21 @@ const ContactPage = () => {
     const { t } = useLanguage();
 
     return (
-    <div className="min-h-screen bg-page">
-        {/* Hero w/ Background (SilkProperty-like) */}
-        <header className="relative overflow-hidden">
-            <div className="absolute inset-0">
-                <img
-                    src="/stock/18 Ford Mustang GT 5.0/cover.jpg"
-                    alt=""
-                    className="w-full h-full object-cover"
-                    onError={(e) => { e.target.src = "/stock/20 Mercedes G63/cover.jpg"; }}
-                />
-                <div className="absolute inset-0 bg-black/55"></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-black/40"></div>
+    <div className="min-h-screen bg-white">
+        {/* Hero - clean red gradient */}
+        <header className="relative overflow-hidden bg-gradient-to-br from-brand via-red-600 to-red-700">
+            <div className="absolute inset-0 opacity-10">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(255,255,255,0.2),transparent_50%)]" />
             </div>
 
-            <div className="relative z-10 container mx-auto px-4 py-24 md:py-32 text-center text-white">
-                <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-                    <span className="text-xs font-black tracking-widest uppercase">{t('Contact', '联系')}</span>
-                    <span className="text-xs text-white/60">·</span>
-                    <span className="text-xs text-white/80">{t('Get in touch', '联系我们')}</span>
+            <div className="relative z-10 container mx-auto px-6 py-20 md:py-28 text-center text-white">
+                <div className="inline-flex items-center gap-2 bg-white/20 border border-white/30 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
+                    <Phone size={14} />
+                    <span className="text-xs font-bold tracking-widest uppercase">{t('Contact', '联系')}</span>
                 </div>
-                <h1 className="text-4xl md:text-6xl font-black tracking-tight">{t('Contact Us', '联系我们')}</h1>
-                <p className="text-white/75 mt-5 max-w-3xl mx-auto text-lg leading-relaxed">
-                    {t('Homebush showroom · Clyde service center · Alphard/Vellfire specialist support', 'Homebush 展馆看车 · Clyde 保养维修中心 · 埃尔法/威尔法 专业支持')}
+                <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{t('Get in Touch', '联系我们')}</h1>
+                <p className="text-white/90 mt-5 max-w-2xl mx-auto text-lg">
+                    {t('Homebush showroom · Clyde service center', 'Homebush 展厅 · Clyde 服务中心')}
                 </p>
             </div>
         </header>
