@@ -1401,10 +1401,10 @@ const AlphardHomePage = ({ cars }) => {
                                         filter: 'vellfire'
                                     },
                                     { 
-                                        name: t('GAC', '广汽传祺'), 
-                                        desc: t('Premium Chinese luxury MPVs.', '国产高端 MPV 之选。'),
-                                        image: '/stock/2024 GAC Trumpchi E9/cover.jpg',
-                                        filter: 'gac'
+                                        name: t('Executive Lounge', '行政套房'), 
+                                        desc: t('Ultimate luxury seating experience.', '极致奢华座椅体验。'),
+                                        image: '/stock/25 Toyota Vellfire Executive Lounge/cover.jpg',
+                                        filter: 'executive'
                                     },
                                     { 
                                         name: t('All Vehicles', '全部车辆'), 
@@ -1505,7 +1505,7 @@ const AlphardHomePage = ({ cars }) => {
                                         onClick={() => navigate(`/vehicle/${car.id}`)}
                                     >
                                         <div className="relative h-52">
-                                            <img src={getCarImage(car)} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                            <img src={getCarImage(car.folderName, car.imageCount, 'cover', car)} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                                             <span className="absolute top-4 left-4 bg-white text-[10px] font-bold uppercase tracking-[0.15em] px-3 py-1.5 rounded-full">
                                                 {t('New Arrival', '新到')}
