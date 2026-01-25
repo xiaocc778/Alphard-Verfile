@@ -2911,19 +2911,70 @@ export function AppContent() {
 
     const TOP_NAV_ITEMS = useMemo(
         () => [
-            { label: 'Models', to: '/inventory' },
-            { label: 'Shop', to: '/sell' },
-            { label: 'Services', to: '/services' },
-            { label: 'Owners', to: '/owners' },
-            { label: 'Explore', to: '/about' },
-            { label: 'Support', to: '/support' },
+            {
+                label: 'Models',
+                to: '/inventory',
+                dropdown: [
+                    { label: 'Alphard', to: '/inventory?q=alphard' },
+                    { label: 'Vellfire', to: '/inventory?q=vellfire' },
+                    { label: 'GAC', to: '/inventory?q=gac' },
+                    { label: t('All vehicles', '全部车辆'), to: '/inventory' },
+                ],
+            },
+            {
+                label: 'Shop',
+                to: '/sell',
+                dropdown: [
+                    { label: t('New vehicles', '新车'), to: '/inventory' },
+                    { label: t('Pre-owned', '二手车'), to: '/inventory' },
+                    { label: t('Accessories', '配件'), to: '/contact' },
+                    { label: t('Trade-in', '以旧换新'), to: '/sell' },
+                ],
+            },
+            {
+                label: 'Services',
+                to: '/services',
+                dropdown: [
+                    { label: t('Maintenance', '保养'), to: '/services' },
+                    { label: t('Repairs', '维修'), to: '/services' },
+                    { label: t('Book a service', '预约服务'), to: '/contact' },
+                    { label: t('Finance enquiry', '金融咨询'), to: '/contact' },
+                ],
+            },
+            {
+                label: 'Owners',
+                to: '/owners',
+                dropdown: [
+                    { label: t('Warranty', '质保'), to: '/owners' },
+                    { label: t('Owner resources', '车主资源'), to: '/owners' },
+                    { label: t('Roadside assist', '道路救援'), to: '/support' },
+                ],
+            },
+            {
+                label: 'Explore',
+                to: '/about',
+                dropdown: [
+                    { label: t('About us', '关于我们'), to: '/about' },
+                    { label: t('Latest arrivals', '最新到店'), to: '/inventory' },
+                    { label: t('Careers', '加入我们'), to: '/contact' },
+                ],
+            },
+            {
+                label: 'Support',
+                to: '/support',
+                dropdown: [
+                    { label: t('Contact us', '联系我们'), to: '/contact' },
+                    { label: t('FAQs', '常见问题'), to: '/support' },
+                    { label: SALES_PHONE_DISPLAY, to: `tel:${SALES_PHONE}` },
+                ],
+            },
         ],
-        []
+        [t]
     );
 
-    const NavItem = ({ path, label, hasDropdown }) => (
+    const NavItem = ({ path, label, dropdown }) => (
         <div className="group relative h-full flex items-center">
-            {hasDropdown ? (
+            {dropdown?.length ? (
                 <button
                     type="button"
                     className="flex items-center gap-1.5 text-text-heading hover:text-brand transition-colors font-bold text-sm tracking-wide"
@@ -2938,44 +2989,38 @@ export function AppContent() {
                     {label}
                 </Link>
             )}
-            {hasDropdown && (
+            {dropdown?.length ? (
                 <div className="absolute top-full left-0 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform -translate-y-2 group-hover:translate-y-0 z-50">
                     <div className="bg-white shadow-2xl rounded-lg border border-black/10 overflow-hidden w-72 p-2">
                         <div className="px-4 py-2">
-                            <p className="text-[10px] font-bold tracking-[0.22em] text-text-muted uppercase">{t('Featured', '精选')}</p>
+                            <p className="text-[10px] font-bold tracking-[0.22em] text-text-muted uppercase">{t('Browse', '浏览')}</p>
                         </div>
-                        <Link
-                            to="/inventory"
-                            className="block w-full text-left px-4 py-3 text-sm font-semibold text-text-heading hover:bg-surface rounded-lg transition-colors"
-                        >
-                            {t('Alphard / Vellfire', '埃尔法 / 威尔法')} <span className="text-xs text-text-muted font-semibold">· {t('MPV', 'MPV')}</span>
-                        </Link>
-                        <div className="px-4 pt-4 pb-2">
-                            <p className="text-[10px] font-bold tracking-[0.22em] text-text-muted uppercase">{t('Top brands', '热门品牌')}</p>
-                        </div>
-                        <div className="max-h-72 overflow-auto px-1 pb-2">
-                            {topBrands.map(({ brand, count }) => (
-                                <Link
-                                    key={brand}
-                                    to={`/inventory?brand=${encodeURIComponent(brand)}`}
-                                    className="block w-full text-left px-3 py-2.5 text-sm font-semibold text-text-body hover:bg-surface rounded-lg transition-colors flex items-center justify-between"
-                                >
-                                    <span>{brand}</span>
-                                    <span className="text-xs text-text-muted font-bold">{count}</span>
-                                </Link>
-                            ))}
-                        </div>
-                        <div className="border-t border-black/10 mt-1 pt-2 px-2">
-                            <Link
-                                to="/inventory"
-                                className="block w-full text-center px-4 py-2 text-sm font-bold text-text-heading hover:text-brand rounded-lg transition-colors"
-                            >
-                                {t('View all inventory', '查看全部库存')}
-                            </Link>
+                        <div className="max-h-80 overflow-auto px-1 pb-2">
+                            {dropdown.map((item) => {
+                                const isTel = typeof item.to === 'string' && item.to.startsWith('tel:');
+                                const Key = `${label}-${item.label}-${item.to}`;
+                                return isTel ? (
+                                    <a
+                                        key={Key}
+                                        href={item.to}
+                                        className="block w-full text-left px-3 py-2.5 text-sm font-semibold text-text-body hover:bg-surface rounded-lg transition-colors"
+                                    >
+                                        {item.label}
+                                    </a>
+                                ) : (
+                                    <Link
+                                        key={Key}
+                                        to={item.to}
+                                        className="block w-full text-left px-3 py-2.5 text-sm font-semibold text-text-body hover:bg-surface rounded-lg transition-colors"
+                                    >
+                                        {item.label}
+                                    </Link>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
-            )}
+            ) : null}
         </div>
     );
 
@@ -2996,7 +3041,7 @@ export function AppContent() {
                         {/* Primary nav */}
                         <div className="hidden md:flex items-center gap-10 h-full">
                             {TOP_NAV_ITEMS.map((item) => (
-                                <NavItem key={item.label} path={item.to} label={item.label} />
+                                <NavItem key={item.label} path={item.to} label={item.label} dropdown={item.dropdown} />
                             ))}
                         </div>
                     </div>
