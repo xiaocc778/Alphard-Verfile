@@ -12,20 +12,15 @@ const HeroSection = ({ t }) => {
       return;
     }
 
-    let ticking = false;
     const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        const y = window.scrollY || 0;
-        // Show copy when user scrolls down (even a little), hide at very top
-        setCopyVisible(y > 30);
-        ticking = false;
-      });
+      const y = window.scrollY || 0;
+      // Show copy when scrolled down, hide when at/near top
+      setCopyVisible(y > 30);
     };
 
-    // Don't call onScroll immediately - start hidden
-    // Only update on actual scroll events
+    // Check initial position (in case page loads with scroll position)
+    onScroll();
+
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -43,14 +38,15 @@ const HeroSection = ({ t }) => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/25 to-black/10" />
       </div>
 
-      {/* Copy - hidden at top, fades in on scroll */}
+      {/* Copy - hidden at top, fades in/out on scroll */}
       <div className="relative z-10 h-full flex items-center">
         <div className="container mx-auto px-6">
           <div
-            className="max-w-3xl mx-auto text-center text-white transition-all duration-700 ease-out"
+            className="max-w-3xl mx-auto text-center text-white"
             style={{
               opacity: copyVisible ? 1 : 0,
               transform: copyVisible ? 'translateY(0)' : 'translateY(32px)',
+              transition: 'opacity 600ms ease-out, transform 600ms ease-out',
             }}
           >
             <h2 className="text-3xl md:text-5xl font-semibold tracking-tight">
