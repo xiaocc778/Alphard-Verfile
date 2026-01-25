@@ -2599,12 +2599,62 @@ const OwnersPage = () => {
 
 const SupportPage = () => {
     const { t } = useLanguage();
-    const faqs = [
-        { q: t('What are your opening hours?', '营业时间是什么？'), a: t('Showroom: Mon-Sat 9am-6pm, Sun 10am-4pm. Service: Mon-Sat 8:30am-5:30pm.', '展厅：周一至周六 9am-6pm，周日 10am-4pm。服务：周一至周六 8:30am-5:30pm。') },
-        { q: t('Do you offer test drives?', '可以试驾吗？'), a: t('Yes, please contact us to book a test drive at our Homebush showroom.', '可以，请联系我们在 Homebush 展厅预约试驾。') },
-        { q: t('Can I trade in my current vehicle?', '可以置换吗？'), a: t('Yes, we accept trade-ins. Contact us for a valuation.', '可以，我们接受置换。联系我们获取估价。') },
-        { q: t('Do you ship interstate?', '可以跨州运送吗？'), a: t('Yes, we can arrange delivery Australia-wide.', '可以，我们可以安排全澳配送。') },
-    ];
+    const faqs = useMemo(
+        () => [
+            {
+                key: 'hours',
+                q: t('What are your opening hours?', '营业时间是什么？'),
+                a: t(
+                    'Showroom: Mon-Sat 9am-6pm, Sun 10am-4pm. Service: Mon-Sat 8:30am-5:30pm.',
+                    '展厅：周一至周六 9am-6pm，周日 10am-4pm。服务：周一至周六 8:30am-5:30pm。'
+                ),
+                icon: <Clock size={18} className="text-white" />,
+                img: '/stock/back/services-hero.jpg.jpg',
+                tag: t('Hours', '营业时间'),
+            },
+            {
+                key: 'location',
+                q: t('Where are you located?', '你们在哪里？'),
+                a: t(
+                    'We have a Homebush showroom and a Clyde service centre. Tap to open Google Maps.',
+                    '我们有 Homebush 展厅与 Clyde 服务中心，点击可打开地图导航。'
+                ),
+                icon: <MapPin size={18} className="text-white" />,
+                img: '/stock/back/explore-hero.jpg.jpg',
+                tag: t('Location', '地址'),
+            },
+            {
+                key: 'testdrive',
+                q: t('Do you offer test drives?', '可以试驾吗？'),
+                a: t(
+                    'Yes. Contact us to book a test drive at our Homebush showroom.',
+                    '可以。请联系我们在 Homebush 展厅预约试驾。'
+                ),
+                icon: <Car size={18} className="text-white" />,
+                img: '/stock/2024 Toyota Vellfire/1.jpg',
+                tag: t('Test drive', '试驾'),
+            },
+            {
+                key: 'tradein',
+                q: t('Can I trade in my current vehicle?', '可以置换吗？'),
+                a: t('Yes, we accept trade-ins. Contact us for a valuation.', '可以，我们接受置换。联系我们获取估价。'),
+                icon: <DollarSign size={18} className="text-white" />,
+                img: '/stock/back/shop-hero.jpg.jpg',
+                tag: t('Trade-in', '置换'),
+            },
+            {
+                key: 'shipping',
+                q: t('Do you ship interstate?', '可以跨州运送吗？'),
+                a: t('Yes, we can arrange delivery Australia-wide.', '可以，我们可以安排全澳配送。'),
+                icon: <Truck size={18} className="text-white" />,
+                img: '/stock/2024 Toyota Vellfire/2.jpg',
+                tag: t('Delivery', '配送'),
+            },
+        ],
+        [t]
+    );
+    const [activeFaqKey, setActiveFaqKey] = useState('hours');
+    const activeFaq = useMemo(() => faqs.find((x) => x.key === activeFaqKey) || faqs[0], [activeFaqKey, faqs]);
     return (
         <div className="min-h-screen bg-page">
             {/* Hero (image background) */}
@@ -2643,16 +2693,115 @@ const SupportPage = () => {
             <section className="py-16 md:py-20">
                 <div className="container mx-auto px-6">
                     <h2 className="text-2xl md:text-3xl font-bold text-text-heading text-center mb-12">{t('Frequently Asked Questions', '常见问题')}</h2>
-                    <div className="max-w-3xl mx-auto space-y-4">
-                        {faqs.map((faq, idx) => (
-                            <details key={idx} className="toyota-card p-6 group">
-                                <summary className="font-bold text-text-heading cursor-pointer list-none flex justify-between items-center">
-                                    {faq.q}
-                                    <ChevronDown size={20} className="text-text-muted group-open:rotate-180 transition-transform" />
-                                </summary>
-                                <p className="mt-4 text-text-body text-sm">{faq.a}</p>
-                            </details>
-                        ))}
+                    <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-8 items-start">
+                        {/* Left: FAQ list */}
+                        <div className="space-y-3">
+                            {faqs.map((faq) => {
+                                const isActive = faq.key === activeFaqKey;
+                                return (
+                                    <div key={faq.key} className={`toyota-card p-0 overflow-hidden ${isActive ? 'ring-2 ring-brand/20' : ''}`}>
+                                        <button
+                                            type="button"
+                                            onClick={() => setActiveFaqKey(faq.key)}
+                                            className="w-full text-left px-6 py-5 flex items-center justify-between gap-4"
+                                            aria-expanded={isActive}
+                                        >
+                                            <div>
+                                                <p className="font-bold text-text-heading">{faq.q}</p>
+                                                <p className={`mt-2 text-sm ${isActive ? 'text-text-body' : 'text-text-muted'} line-clamp-2`}>{faq.a}</p>
+                                            </div>
+                                            <ChevronDown size={20} className={`text-text-muted transition-transform ${isActive ? 'rotate-180' : ''}`} />
+                                        </button>
+
+                                        {/* Mobile: media panel under the active item */}
+                                        {isActive && (
+                                            <div className="lg:hidden border-t border-black/5 bg-section">
+                                                <div className="p-5">
+                                                    <div className="relative aspect-[16/9] rounded-2xl overflow-hidden">
+                                                        <div
+                                                            className="absolute inset-0 bg-cover bg-center"
+                                                            style={{ backgroundImage: `url('${faq.img}')` }}
+                                                            aria-hidden="true"
+                                                        />
+                                                        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-transparent" aria-hidden="true" />
+                                                        <div className="absolute left-4 top-4 inline-flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur-sm text-white rounded-full px-4 py-2">
+                                                            {faq.icon}
+                                                            <span className="text-xs font-bold tracking-widest uppercase">{faq.tag}</span>
+                                                        </div>
+                                                    </div>
+                                                    {faq.key === 'location' && (
+                                                        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+                                                            <a
+                                                                href={`https://www.google.com/maps?q=${encodeURIComponent(SHOWROOM_ADDRESS)}`}
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                className="toyota-btn-secondary py-3 px-6 text-center"
+                                                            >
+                                                                {t('Open Homebush map', '打开 Homebush 地图')}
+                                                            </a>
+                                                            <a
+                                                                href={`https://www.google.com/maps?q=${encodeURIComponent(SERVICE_ADDRESS)}`}
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                className="toyota-btn-secondary py-3 px-6 text-center"
+                                                            >
+                                                                {t('Open Clyde map', '打开 Clyde 地图')}
+                                                            </a>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Right: media panel (desktop) */}
+                        <div className="hidden lg:block sticky top-28">
+                            <div className="toyota-card overflow-hidden">
+                                <div className="relative aspect-[16/10]">
+                                    <div
+                                        className="absolute inset-0 bg-cover bg-center"
+                                        style={{ backgroundImage: `url('${activeFaq?.img}')` }}
+                                        aria-hidden="true"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/35 to-transparent" aria-hidden="true" />
+                                    <div className="absolute left-6 top-6 inline-flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur-sm text-white rounded-full px-4 py-2">
+                                        {activeFaq?.icon}
+                                        <span className="text-xs font-bold tracking-widest uppercase">{activeFaq?.tag}</span>
+                                    </div>
+                                    <div className="absolute left-6 bottom-6 right-6 text-white">
+                                        <p className="text-lg font-bold" style={{ textShadow: '0 1px 14px rgba(0,0,0,0.45)' }}>
+                                            {activeFaq?.q}
+                                        </p>
+                                        <p className="text-white/85 mt-2 text-sm" style={{ textShadow: '0 1px 14px rgba(0,0,0,0.45)' }}>
+                                            {activeFaq?.a}
+                                        </p>
+                                        {activeFaq?.key === 'location' && (
+                                            <div className="mt-4 flex flex-wrap gap-3">
+                                                <a
+                                                    href={`https://www.google.com/maps?q=${encodeURIComponent(SHOWROOM_ADDRESS)}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="inline-flex items-center justify-center rounded-full border border-white/25 bg-white/10 backdrop-blur-sm px-5 py-2 text-sm font-bold text-white hover:bg-white/15 transition-colors"
+                                                >
+                                                    {t('Homebush map', 'Homebush 地图')}
+                                                </a>
+                                                <a
+                                                    href={`https://www.google.com/maps?q=${encodeURIComponent(SERVICE_ADDRESS)}`}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="inline-flex items-center justify-center rounded-full border border-white/25 bg-white/10 backdrop-blur-sm px-5 py-2 text-sm font-bold text-white hover:bg-white/15 transition-colors"
+                                                >
+                                                    {t('Clyde map', 'Clyde 地图')}
+                                                </a>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
