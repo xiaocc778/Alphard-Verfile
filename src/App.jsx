@@ -1428,7 +1428,7 @@ const AlphardHomePage = ({ cars }) => {
                                     <p className="text-text-muted mt-4">
                                         {t('Make it yours with accessories designed to integrate seamlessly.', '原厂配件，无缝融合，彰显个性。')}
                                     </p>
-                                    <button className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-brand hover:text-brand/80 transition-colors">
+                                    <button onClick={() => navigate('/contact')} className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-brand hover:text-brand/80 transition-colors">
                                         {t('Explore accessories', '查看配件')} <ArrowRight size={16} />
                                     </button>
                                 </div>
@@ -1444,7 +1444,7 @@ const AlphardHomePage = ({ cars }) => {
                                     <p className="text-text-muted mt-4">
                                         {t('Discover flexible options and estimate your personalised repayments.', '快速测算分期方案，灵活选择，轻松拥车。')}
                                     </p>
-                                    <button className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-brand hover:text-brand/80 transition-colors">
+                                    <button onClick={() => navigate('/contact')} className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-brand hover:text-brand/80 transition-colors">
                                         {t('Estimate my repayments', '估算分期')} <ArrowRight size={16} />
                                     </button>
                                 </div>
@@ -1511,22 +1511,26 @@ const AlphardHomePage = ({ cars }) => {
                                     { 
                                         title: t('Quality Assured', '品质保障'), 
                                         desc: t('Every vehicle inspected and certified.', '每辆车经过严格检测认证。'),
-                                        icon: <ShieldCheck size={28} className="text-brand" />
+                                        icon: <ShieldCheck size={28} className="text-brand" />,
+                                        to: '/about'
                                     },
                                     { 
                                         title: t('Trade-In Service', '以旧换新'), 
                                         desc: t('Get a fair value for your current vehicle.', '您的座驾，我们高价收购。'),
-                                        icon: <Car size={28} className="text-brand" />
+                                        icon: <Car size={28} className="text-brand" />,
+                                        to: '/sell'
                                     },
                                     { 
                                         title: t('Current Offers', '优惠活动'), 
                                         desc: t('Browse deals designed to give you more.', '精选优惠，为您省更多。'),
-                                        icon: <DollarSign size={28} className="text-brand" />
+                                        icon: <DollarSign size={28} className="text-brand" />,
+                                        to: '/inventory'
                                     },
                                     { 
                                         title: t('Contact Us', '联系我们'), 
                                         desc: t('Our team speaks English, Mandarin & Cantonese.', '中英粤三语服务，沟通无障碍。'),
-                                        icon: <Phone size={28} className="text-brand" />
+                                        icon: <Phone size={28} className="text-brand" />,
+                                        to: '/contact'
                                     },
                                 ].map((item, idx) => (
                                     <div 
@@ -1534,6 +1538,7 @@ const AlphardHomePage = ({ cars }) => {
                                         className="toyota-card p-6 cursor-pointer group reveal hover:shadow-lg transition-shadow" 
                                         data-reveal 
                                         data-reveal-delay={idx + 1}
+                                        onClick={() => navigate(item.to)}
                                     >
                                         <div className="mb-4">{item.icon}</div>
                                         <h3 className="font-bold text-text-heading group-hover:text-brand transition-colors">{item.title}</h3>
@@ -1565,7 +1570,7 @@ const AlphardHomePage = ({ cars }) => {
                                     onClick={() => navigate('/inventory')}
                                     className="toyota-btn-secondary px-6 py-3"
                                 >
-                                    {t('View all', '查看全部')} {safeCars.length}+ {t('vehicles', '台')}
+                                    {t('View all', '查看全部')} {safeCars.length} {t('vehicles', '台')}
                                 </button>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
