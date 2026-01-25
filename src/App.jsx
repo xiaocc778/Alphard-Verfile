@@ -1300,6 +1300,35 @@ const AlphardHomePage = ({ cars }) => {
         return searchStr.includes('alphard') || searchStr.includes('vellfire');
     }).length;
 
+    // Hero copy reveal: trigger is at bottom of Welcome section
+    // When trigger scrolls out of viewport, show Hero copy
+    const triggerRef = React.useRef(null);
+    const [heroCopyVisible, setHeroCopyVisible] = useState(false);
+
+    useEffect(() => {
+        if (typeof window === 'undefined' || !triggerRef.current) return;
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            setHeroCopyVisible(true);
+            return;
+        }
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                // When trigger is NOT intersecting (scrolled out), show copy
+                // When trigger IS intersecting (scrolled back), hide copy
+                setHeroCopyVisible(!entry.isIntersecting);
+            },
+            {
+                root: null,
+                rootMargin: '0px 0px 0px 0px',
+                threshold: 0,
+            }
+        );
+
+        observer.observe(triggerRef.current);
+        return () => observer.disconnect();
+    }, []);
+
     return (
         <div className="relative">
             <section className="bg-white">
@@ -1313,9 +1342,11 @@ const AlphardHomePage = ({ cars }) => {
                         </p>
                     </div>
                 </div>
+                {/* Trigger: when this scrolls out of view, Hero copy appears */}
+                <div ref={triggerRef} className="h-1 w-full" aria-hidden="true" />
             </section>
 
-            <HeroSection t={t} />
+            <HeroSection t={t} copyVisible={heroCopyVisible} />
 
             <main className="relative z-10 bg-white">
                 {/* ========== FEATURE HIGHLIGHTS (Toyota-style) ========== */}

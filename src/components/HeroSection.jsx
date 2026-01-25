@@ -1,52 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
-const HeroSection = ({ t }) => {
-  const [copyVisible, setCopyVisible] = useState(false);
-  const sectionRef = useRef(null);
-  const triggerRef = useRef(null);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    // Respect reduced motion preference
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setCopyVisible(true);
-      return;
-    }
-
-    // Use IntersectionObserver to detect when trigger point is passed
-    // Trigger is placed 30% down from top of Hero
-    // When trigger scrolls UP past viewport center, show copy
-    // When trigger scrolls DOWN past viewport center, hide copy
-    if (!triggerRef.current) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // When trigger is intersecting (visible), hide copy
-        // When trigger is NOT intersecting (scrolled past), show copy
-        setCopyVisible(!entry.isIntersecting);
-      },
-      {
-        root: null,
-        // Trigger when element crosses 40% from top of viewport
-        rootMargin: '-40% 0px -60% 0px',
-        threshold: 0,
-      }
-    );
-
-    observer.observe(triggerRef.current);
-    return () => observer.disconnect();
-  }, []);
-
+const HeroSection = ({ t, copyVisible = false }) => {
   return (
-    <section ref={sectionRef} className="relative h-screen sticky top-0 z-0 overflow-hidden bg-black">
-      {/* Trigger point - when this scrolls past 40% of viewport, copy appears */}
-      <div 
-        ref={triggerRef} 
-        className="absolute top-[15%] left-0 w-full h-1 pointer-events-none" 
-        aria-hidden="true" 
-      />
-
+    <section className="relative h-screen sticky top-0 z-0 overflow-hidden bg-black">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
@@ -58,7 +14,7 @@ const HeroSection = ({ t }) => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/25 to-black/10" />
       </div>
 
-      {/* Copy - hidden initially, fades in/out based on scroll position */}
+      {/* Copy - controlled by parent via copyVisible prop */}
       <div className="relative z-10 h-full flex items-center">
         <div className="container mx-auto px-6">
           <div
