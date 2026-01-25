@@ -11,24 +11,32 @@ const HeroSection = ({ t, copyVisible = false }) => {
           className="absolute inset-0 h-full w-full object-cover parallax-layer scale-105"
           style={{ '--parallax-speed': 0.12 }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/25 to-black/10" />
+        {/* Gradient overlay - darker on left for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />
       </div>
 
-      {/* Copy - controlled by parent via copyVisible prop */}
+      {/* Copy - left aligned */}
       <div className="relative z-10 h-full flex items-center">
-        <div className="container mx-auto px-6">
+        <div className="container mx-auto px-6 md:px-12 lg:px-16">
           <div
-            className="max-w-3xl mx-auto text-center text-white"
+            className="max-w-2xl text-left"
             style={{
               opacity: copyVisible ? 1 : 0,
               transform: copyVisible ? 'translateY(0)' : 'translateY(40px)',
               transition: 'opacity 500ms ease-out, transform 500ms ease-out',
             }}
           >
-            <h2 className="text-3xl md:text-5xl font-semibold tracking-tight">
+            <h2 
+              className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white"
+              style={{ textShadow: '0 2px 20px rgba(0,0,0,0.4)' }}
+            >
               {t('Redefine your driving experience.', '重塑你的驾驶体验。')}
             </h2>
-            <p className="mt-5 text-lg md:text-xl text-white/85">
+            <p 
+              className="mt-5 text-lg md:text-xl text-white/90 max-w-lg"
+              style={{ textShadow: '0 1px 10px rgba(0,0,0,0.3)' }}
+            >
               {t(
                 'Luxury people movers and executive transport, curated for Australia.',
                 '澳洲精选行政级豪华 MPV 与商务出行。'
