@@ -2116,6 +2116,9 @@ const CarDetailPage = ({ cars }) => {
 // --- About Page ---
 const AboutPage = () => {
     const { t } = useLanguage();
+    const [mapTarget, setMapTarget] = useState('showroom'); // 'showroom' | 'service'
+    const mapAddress = mapTarget === 'service' ? SERVICE_ADDRESS : SHOWROOM_ADDRESS;
+    const mapEmbedSrc = `https://www.google.com/maps?q=${encodeURIComponent(mapAddress)}&output=embed`;
     return (
     <div className="min-h-screen bg-white">
         {/* Hero - image + Toyota-like overlays */}
@@ -2232,16 +2235,65 @@ const AboutPage = () => {
                                         );
                                     })}
                                 </div>
-                                <div className="mt-8 bg-slate-950 text-white rounded-2xl p-6">
-                                    <h4 className="font-black text-white mb-4 flex items-center gap-2">
-                                        <MapPin className="text-red-500" size={18} /> {t('Visit / Contact', '到店 / 联系')}
-                                    </h4>
-                                    <div className="space-y-3 text-sm text-white/80">
-                                        <div className="flex items-start gap-3"><span className="text-white/50">{t('Showroom', '展厅')}</span><span className="font-semibold text-white">{SHOWROOM_ADDRESS}</span></div>
-                                        <div className="flex items-start gap-3"><span className="text-white/50">{t('Service', '服务')}</span><span className="font-semibold text-white">{SERVICE_ADDRESS}</span></div>
-                                        <div className="flex items-start gap-3"><span className="text-white/50">{t('Phone', '电话')}</span><a className="font-semibold text-white hover:text-red-300" href={`tel:${SALES_PHONE}`}>{SALES_PHONE_DISPLAY}</a></div>
-                                        <div className="flex items-start gap-3"><span className="text-white/50">{t('WeChat', '微信')}</span><span className="font-semibold text-white">{WECHAT_ID}</span></div>
-                                        <div className="flex items-start gap-3"><span className="text-white/50">{t('Hours', '营业时间')}</span><span className="font-semibold text-white">{t('Daily', '每天')} 10:00 – 5:30</span></div>
+                                <div className="mt-8 grid gap-4 md:grid-cols-2">
+                                    {/* Visit / Contact card */}
+                                    <div className="bg-slate-950 text-white rounded-2xl p-6">
+                                        <h4 className="font-black text-white mb-4 flex items-center gap-2">
+                                            <MapPin className="text-red-500" size={18} /> {t('Visit / Contact', '到店 / 联系')}
+                                        </h4>
+                                        <div className="space-y-3 text-sm text-white/80">
+                                            <div className="flex items-start gap-3"><span className="text-white/50">{t('Showroom', '展厅')}</span><span className="font-semibold text-white">{SHOWROOM_ADDRESS}</span></div>
+                                            <div className="flex items-start gap-3"><span className="text-white/50">{t('Service', '服务')}</span><span className="font-semibold text-white">{SERVICE_ADDRESS}</span></div>
+                                            <div className="flex items-start gap-3"><span className="text-white/50">{t('Phone', '电话')}</span><a className="font-semibold text-white hover:text-red-300" href={`tel:${SALES_PHONE}`}>{SALES_PHONE_DISPLAY}</a></div>
+                                            <div className="flex items-start gap-3"><span className="text-white/50">{t('WeChat', '微信')}</span><span className="font-semibold text-white">{WECHAT_ID}</span></div>
+                                            <div className="flex items-start gap-3"><span className="text-white/50">{t('Hours', '营业时间')}</span><span className="font-semibold text-white">{t('Daily', '每天')} 10:00 – 5:30</span></div>
+                                        </div>
+                                    </div>
+
+                                    {/* Google Map card */}
+                                    <div className="rounded-2xl overflow-hidden border border-black/10 bg-white">
+                                        <div className="p-4 flex items-center justify-between gap-3">
+                                            <div className="flex items-center gap-2 text-sm font-bold text-text-heading">
+                                                <MapPin size={16} className="text-brand" />
+                                                {t('Map', '地图')}
+                                            </div>
+                                            <div className="inline-flex items-center gap-2 rounded-full bg-surface border border-black/10 p-1">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setMapTarget('showroom')}
+                                                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors ${mapTarget === 'showroom' ? 'bg-white text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
+                                                >
+                                                    {t('Homebush', 'Homebush')}
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setMapTarget('service')}
+                                                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors ${mapTarget === 'service' ? 'bg-white text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
+                                                >
+                                                    {t('Clyde', 'Clyde')}
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="relative aspect-[16/11] bg-section">
+                                            <iframe
+                                                title="Google Map"
+                                                src={mapEmbedSrc}
+                                                className="absolute inset-0 w-full h-full"
+                                                loading="lazy"
+                                                referrerPolicy="no-referrer-when-downgrade"
+                                            />
+                                        </div>
+                                        <div className="p-4 flex items-center justify-between gap-3 text-sm">
+                                            <span className="text-text-muted truncate">{mapAddress}</span>
+                                            <a
+                                                href={`https://www.google.com/maps?q=${encodeURIComponent(mapAddress)}`}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="font-bold text-brand hover:text-brand/80 whitespace-nowrap"
+                                            >
+                                                {t('Open', '打开')}
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="mt-8 flex flex-col sm:flex-row gap-3">
