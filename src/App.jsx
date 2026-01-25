@@ -1300,6 +1300,33 @@ const AlphardHomePage = ({ cars }) => {
         return searchStr.includes('alphard') || searchStr.includes('vellfire');
     }).length;
 
+    // Hero copy reveal: show copy when Welcome section scrolls out of view
+    const sentinelRef = React.useRef(null);
+    const [heroCopyVisible, setHeroCopyVisible] = useState(false);
+
+    useEffect(() => {
+        if (typeof window === 'undefined' || !sentinelRef.current) return;
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            setHeroCopyVisible(true);
+            return;
+        }
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                // When sentinel is NOT intersecting (scrolled out of view), show copy
+                setHeroCopyVisible(!entry.isIntersecting);
+            },
+            {
+                root: null,
+                rootMargin: '0px 0px 0px 0px',
+                threshold: 0,
+            }
+        );
+
+        observer.observe(sentinelRef.current);
+        return () => observer.disconnect();
+    }, []);
+
     return (
         <div className="relative">
             <section className="bg-white">
@@ -1309,13 +1336,15 @@ const AlphardHomePage = ({ cars }) => {
                             {t('Welcome to Best Auto', '欢迎来到 Best Auto')}
                         </h1>
                         <p className="mt-4 text-lg md:text-xl text-text-body">
-                            {t('Your journey starts here, let’s go.', '旅程从这里开始，一起出发。')}
+                            {t('Your journey starts here, let's go.', '旅程从这里开始，一起出发。')}
                         </p>
                     </div>
                 </div>
+                {/* Sentinel: when this scrolls out of view, Hero copy fades in */}
+                <div ref={sentinelRef} className="h-1 w-full" aria-hidden="true" />
             </section>
 
-            <HeroSection t={t} />
+            <HeroSection t={t} copyVisible={heroCopyVisible} />
 
             <main className="relative z-10 bg-white">
                 {/* ========== FEATURE HIGHLIGHTS (Toyota-style) ========== */}
