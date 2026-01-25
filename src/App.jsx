@@ -2534,20 +2534,35 @@ const OwnersPage = () => {
     ];
     return (
         <div className="min-h-screen bg-page">
-            {/* Hero */}
-            <header className="relative overflow-hidden bg-gradient-to-br from-slate-800 via-slate-700 to-slate-800">
-                <div className="absolute inset-0 opacity-20">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_60%)]" />
-                </div>
-                <div className="relative container mx-auto px-6 py-20 md:py-28 text-center text-white">
+            {/* Hero (image background) */}
+            <header className="relative overflow-hidden h-[62vh] min-h-[460px]">
+                <div
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{ backgroundImage: "url('/stock/2024 Toyota Vellfire/3.jpg')" }}
+                    aria-hidden="true"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" aria-hidden="true" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-black/35" aria-hidden="true" />
+
+                <div className="relative container mx-auto px-6 h-full flex items-center">
+                    <div className="max-w-3xl text-white">
                     <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 px-4 py-2 rounded-full mb-6">
                         <Users size={16} />
                         <span className="text-xs font-bold tracking-widest uppercase">{t('Owners', '车主')}</span>
                     </div>
-                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{t('Owner Benefits', '车主权益')}</h1>
-                    <p className="text-white/70 mt-5 max-w-2xl mx-auto text-lg">
+                    <h1
+                        className="text-4xl md:text-6xl font-bold tracking-tight"
+                        style={{ textShadow: '0 2px 24px rgba(0,0,0,0.55)' }}
+                    >
+                        {t('Owner Benefits', '车主权益')}
+                    </h1>
+                    <p
+                        className="text-white/85 mt-5 max-w-xl text-lg"
+                        style={{ textShadow: '0 1px 14px rgba(0,0,0,0.45)' }}
+                    >
                         {t('Exclusive resources and support for Best Auto vehicle owners.', 'Best Auto 车主专属资源和支持。')}
                     </p>
+                    </div>
                 </div>
             </header>
 
@@ -2592,20 +2607,35 @@ const SupportPage = () => {
     ];
     return (
         <div className="min-h-screen bg-page">
-            {/* Hero */}
-            <header className="relative overflow-hidden bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900">
-                <div className="absolute inset-0 opacity-20">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_60%,rgba(255,255,255,0.1),transparent_50%)]" />
-                </div>
-                <div className="relative container mx-auto px-6 py-20 md:py-28 text-center text-white">
+            {/* Hero (image background) */}
+            <header className="relative overflow-hidden h-[62vh] min-h-[460px]">
+                <div
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{ backgroundImage: "url('/stock/2024 Toyota Vellfire/4.jpg')" }}
+                    aria-hidden="true"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-transparent" aria-hidden="true" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-black/35" aria-hidden="true" />
+
+                <div className="relative container mx-auto px-6 h-full flex items-center">
+                    <div className="max-w-3xl text-white">
                     <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 px-4 py-2 rounded-full mb-6">
                         <HelpCircle size={16} />
                         <span className="text-xs font-bold tracking-widest uppercase">{t('Support', '支持')}</span>
                     </div>
-                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{t('How Can We Help?', '我们能帮您什么？')}</h1>
-                    <p className="text-white/70 mt-5 max-w-2xl mx-auto text-lg">
+                    <h1
+                        className="text-4xl md:text-6xl font-bold tracking-tight"
+                        style={{ textShadow: '0 2px 24px rgba(0,0,0,0.55)' }}
+                    >
+                        {t('How Can We Help?', '我们能帮您什么？')}
+                    </h1>
+                    <p
+                        className="text-white/85 mt-5 max-w-xl text-lg"
+                        style={{ textShadow: '0 1px 14px rgba(0,0,0,0.45)' }}
+                    >
                         {t('Find answers to common questions or contact our team directly.', '查找常见问题的答案或直接联系我们的团队。')}
                     </p>
+                    </div>
                 </div>
             </header>
 
