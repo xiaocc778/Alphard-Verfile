@@ -1346,7 +1346,7 @@ const AlphardHomePage = ({ cars }) => {
                 <div ref={triggerRef} className="h-1 w-full" aria-hidden="true" />
             </section>
 
-            <HeroSection t={t} copyVisible={heroCopyVisible} />
+            <HeroSection t={t} copyVisible={heroCopyVisible} onExplore={() => navigate('/inventory')} />
 
             <main className="relative z-10 bg-white">
                 {/* ========== 1. FIND YOUR IDEAL VEHICLE ========== */}
