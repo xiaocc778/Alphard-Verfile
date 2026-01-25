@@ -2462,7 +2462,7 @@ const ServicesPage = () => {
                                 <span className="text-xs font-bold tracking-widest uppercase">{t('Services', '服务')}</span>
                             </div>
                             <h1
-                                className="text-4xl md:text-6xl font-bold tracking-tight"
+                                className="text-4xl md:text-6xl font-bold tracking-tight text-white"
                                 style={{ textShadow: '0 2px 24px rgba(0,0,0,0.55)' }}
                             >
                                 {t('Service & Maintenance', '保养与维修')}
@@ -2551,7 +2551,7 @@ const OwnersPage = () => {
                         <span className="text-xs font-bold tracking-widest uppercase">{t('Owners', '车主')}</span>
                     </div>
                     <h1
-                        className="text-4xl md:text-6xl font-bold tracking-tight"
+                        className="text-4xl md:text-6xl font-bold tracking-tight text-white"
                         style={{ textShadow: '0 2px 24px rgba(0,0,0,0.55)' }}
                     >
                         {t('Owner Benefits', '车主权益')}
@@ -2624,7 +2624,7 @@ const SupportPage = () => {
                         <span className="text-xs font-bold tracking-widest uppercase">{t('Support', '支持')}</span>
                     </div>
                     <h1
-                        className="text-4xl md:text-6xl font-bold tracking-tight"
+                        className="text-4xl md:text-6xl font-bold tracking-tight text-white"
                         style={{ textShadow: '0 2px 24px rgba(0,0,0,0.55)' }}
                     >
                         {t('How Can We Help?', '我们能帮您什么？')}
