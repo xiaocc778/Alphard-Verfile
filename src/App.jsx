@@ -2156,7 +2156,7 @@ const AboutPage = () => {
         <div className="container mx-auto px-4 py-16 md:py-20">
             <div className="max-w-5xl mx-auto">
                 <div className="grid lg:grid-cols-12 gap-10 items-start">
-                    <div className="lg:col-span-7">
+                    <div className="lg:col-span-6">
                         <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-6">{t('About us', '公司简介')}</h2>
                         <p className="text-lg text-slate-600 leading-8">
                             {t(
@@ -2207,7 +2207,7 @@ const AboutPage = () => {
                         </div>
                     </div>
 
-                    <div className="lg:col-span-5">
+                    <div className="lg:col-span-6">
                         <div className="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/60 overflow-hidden">
                             <div className="p-8">
                                 <h3 className="text-xl font-black text-slate-900 mb-6">{t('⭐ Our positioning', '⭐ 我们的核心定位')}</h3>
@@ -2232,7 +2232,8 @@ const AboutPage = () => {
                                         );
                                     })}
                                 </div>
-                                <div className="mt-8 grid gap-4 xl:grid-cols-2">
+                                {/* Stack by default to avoid cramped columns in the sidebar */}
+                                <div className="mt-8 grid gap-4">
                                     {/* Visit / Contact card */}
                                     <div className="bg-slate-950 text-white rounded-2xl p-6">
                                         <h4 className="font-black text-white mb-4 flex items-center gap-2">
@@ -2252,39 +2253,38 @@ const AboutPage = () => {
                                         <h4 className="font-black text-text-heading mb-4 flex items-center gap-2">
                                             <MapPin className="text-brand" size={18} /> {t('Locations', '地址导航')}
                                         </h4>
-                                        <div className="space-y-3">
+                                        <div className="grid gap-3 sm:grid-cols-2">
                                             <a
                                                 href={`https://www.google.com/maps?q=${encodeURIComponent(SHOWROOM_ADDRESS)}`}
                                                 target="_blank"
                                                 rel="noreferrer"
-                                                className="block rounded-xl border border-black/10 bg-section hover:bg-black/5 transition-colors p-4"
+                                                className="group block rounded-xl border border-black/10 bg-section hover:bg-black/5 transition-colors p-4"
                                             >
                                                 <div className="flex items-start justify-between gap-4">
-                                                    <div>
+                                                    <div className="min-w-0">
                                                         <p className="text-xs font-bold tracking-[0.18em] uppercase text-text-muted">{t('Showroom', '展厅')}</p>
-                                                        <p className="mt-1 font-bold text-text-heading leading-snug">{SHOWROOM_ADDRESS}</p>
+                                                        <p className="mt-1 font-bold text-text-heading leading-snug truncate">{SHOWROOM_ADDRESS}</p>
+                                                        <p className="mt-1 text-xs text-text-muted">{t('Open in Google Maps', '在 Google 地图中打开')}</p>
                                                     </div>
-                                                    <span className="text-sm font-bold text-brand whitespace-nowrap">{t('Open', '打开')}</span>
+                                                    <span className="text-sm font-bold text-brand whitespace-nowrap group-hover:text-brand/80">{t('Open', '打开')}</span>
                                                 </div>
                                             </a>
                                             <a
                                                 href={`https://www.google.com/maps?q=${encodeURIComponent(SERVICE_ADDRESS)}`}
                                                 target="_blank"
                                                 rel="noreferrer"
-                                                className="block rounded-xl border border-black/10 bg-section hover:bg-black/5 transition-colors p-4"
+                                                className="group block rounded-xl border border-black/10 bg-section hover:bg-black/5 transition-colors p-4"
                                             >
                                                 <div className="flex items-start justify-between gap-4">
-                                                    <div>
+                                                    <div className="min-w-0">
                                                         <p className="text-xs font-bold tracking-[0.18em] uppercase text-text-muted">{t('Service centre', '服务中心')}</p>
-                                                        <p className="mt-1 font-bold text-text-heading leading-snug">{SERVICE_ADDRESS}</p>
+                                                        <p className="mt-1 font-bold text-text-heading leading-snug truncate">{SERVICE_ADDRESS}</p>
+                                                        <p className="mt-1 text-xs text-text-muted">{t('Open in Google Maps', '在 Google 地图中打开')}</p>
                                                     </div>
-                                                    <span className="text-sm font-bold text-brand whitespace-nowrap">{t('Open', '打开')}</span>
+                                                    <span className="text-sm font-bold text-brand whitespace-nowrap group-hover:text-brand/80">{t('Open', '打开')}</span>
                                                 </div>
                                             </a>
                                         </div>
-                                        <p className="mt-4 text-xs text-text-muted">
-                                            {t('Opens in Google Maps.', '点击将在 Google Maps 中打开。')}
-                                        </p>
                                     </div>
                                 </div>
                                 <div className="mt-8 flex flex-col sm:flex-row gap-3">
