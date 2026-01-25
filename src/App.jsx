@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState, useEffect } from 'react';
 // 1. 引入路由核心组件
 import { BrowserRouter, Routes, Route, Link, useNavigate, useParams, useLocation } from 'react-router-dom';
 // 2. 引入图标库
-import { MapPin, Phone, MessageCircle, Menu, X, ChevronDown, ArrowLeft, Mail, Info, Instagram, Facebook, Globe, Wrench, ShieldCheck, Clock, DollarSign, ChevronLeft, ChevronRight, CheckCircle2, Star, Award, Users, Car, Sparkles, Play, ArrowRight, Shield, Truck, ThumbsUp, Search, User } from 'lucide-react';
+import { MapPin, Phone, MessageCircle, Menu, X, ChevronDown, ArrowLeft, Mail, Info, Instagram, Facebook, Globe, Wrench, ShieldCheck, Clock, DollarSign, ChevronLeft, ChevronRight, CheckCircle2, Star, Award, Users, Car, Sparkles, Play, ArrowRight, Shield, Truck, ThumbsUp, Search, User, HelpCircle, Settings, FileText, BookOpen } from 'lucide-react';
 import HeroSection from './components/HeroSection.jsx';
 // 3. 引入车辆数据
 import { cars as carsFromData } from './carsData.js';
@@ -2356,71 +2356,247 @@ const ContactPage = () => {
 const SellPage = () => {
     const { t } = useLanguage();
     return (
-        <div className="min-h-screen bg-page flex items-center justify-center">
-            <div className="text-center p-12 toyota-card max-w-2xl mx-4">
-                <DollarSign size={64} className="mx-auto text-slate-300 mb-6" />
-                <h1 className="text-4xl font-bold text-text-heading mb-4">{t('Sell Your Car', '卖车')}</h1>
-                <p className="text-lg text-text-body mb-8">
-                    {t('Instant valuations coming soon. Please contact us directly for trade-in offers.', '即时估价即将上线，置换请直接联系我们。')}
-                </p>
-                <Link to="/contact" className="toyota-btn-primary py-4 px-10">
-                    {t('Contact Team', '联系团队')}
-                </Link>
-            </div>
+        <div className="min-h-screen bg-page">
+            {/* Hero */}
+            <header className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+                <div className="absolute inset-0 opacity-20">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(255,255,255,0.1),transparent_50%)]" />
+                </div>
+                <div className="relative container mx-auto px-6 py-20 md:py-28 text-center text-white">
+                    <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 px-4 py-2 rounded-full mb-6">
+                        <DollarSign size={16} />
+                        <span className="text-xs font-bold tracking-widest uppercase">{t('Trade-in', '置换')}</span>
+                    </div>
+                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{t('Sell or Trade Your Car', '卖车或置换')}</h1>
+                    <p className="text-white/70 mt-5 max-w-2xl mx-auto text-lg">
+                        {t('Get a competitive offer for your vehicle. Trade-in towards an Alphard or Vellfire.', '获得有竞争力的报价，置换埃尔法或威尔法。')}
+                    </p>
+                </div>
+            </header>
+
+            {/* Steps */}
+            <section className="py-16 md:py-20">
+                <div className="container mx-auto px-6">
+                    <h2 className="text-2xl md:text-3xl font-bold text-text-heading text-center mb-12">{t('How It Works', '如何操作')}</h2>
+                    <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                        {[
+                            { step: '01', title: t('Submit Details', '提交资料'), desc: t('Share your vehicle info and photos via our contact form.', '通过联系表单提交您的车辆信息和照片。') },
+                            { step: '02', title: t('Get a Quote', '获取报价'), desc: t('Our team will review and provide a fair market offer.', '我们的团队将审核并提供合理的市场报价。') },
+                            { step: '03', title: t('Complete Trade', '完成交易'), desc: t('Accept the offer and apply it towards your new vehicle.', '接受报价并用于购买新车。') },
+                        ].map((item) => (
+                            <div key={item.step} className="text-center">
+                                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-brand/10 text-brand font-bold text-xl flex items-center justify-center">{item.step}</div>
+                                <h3 className="font-bold text-text-heading mb-2">{item.title}</h3>
+                                <p className="text-text-body text-sm">{item.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* CTA */}
+            <section className="py-16 bg-section">
+                <div className="container mx-auto px-6 text-center">
+                    <h2 className="text-2xl md:text-3xl font-bold text-text-heading mb-4">{t('Ready to Get Started?', '准备好了吗？')}</h2>
+                    <p className="text-text-body mb-8 max-w-xl mx-auto">{t('Contact our team with your vehicle details for a no-obligation valuation.', '联系我们的团队，提交您的车辆资料，获得无义务的估价。')}</p>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <Link to="/contact" className="toyota-btn-primary py-4 px-10">{t('Get Valuation', '获取估价')}</Link>
+                        <a href={`tel:${SALES_PHONE}`} className="toyota-btn-secondary py-4 px-10 flex items-center justify-center gap-2"><Phone size={18} /> {SALES_PHONE_DISPLAY}</a>
+                    </div>
+                </div>
+            </section>
         </div>
     );
 };
 
 const ServicesPage = () => {
     const { t } = useLanguage();
+    const services = [
+        { icon: Wrench, title: t('Regular Maintenance', '常规保养'), desc: t('Oil changes, filters, brake pads, and scheduled servicing for your Alphard or Vellfire.', '机油更换、滤芯、刹车片及埃尔法/威尔法定期保养。') },
+        { icon: Settings, title: t('Repairs & Diagnostics', '维修与诊断'), desc: t('Expert diagnosis and repair for mechanical, electrical, and electronic systems.', '机械、电气和电子系统的专业诊断与维修。') },
+        { icon: ShieldCheck, title: t('Warranty Support', '质保服务'), desc: t('We honour manufacturer warranties and offer extended protection plans.', '我们履行厂家质保并提供延长保护计划。') },
+        { icon: Car, title: t('Detailing & Care', '美容护理'), desc: t('Interior deep cleaning, paint correction, and ceramic coating services.', '内饰深度清洁、漆面修复和镀晶服务。') },
+    ];
     return (
-        <div className="min-h-screen bg-page flex items-center justify-center">
-            <div className="text-center p-12 toyota-card max-w-2xl mx-4">
-                <Wrench size={64} className="mx-auto text-slate-300 mb-6" />
-                <h1 className="text-4xl font-bold text-text-heading mb-4">{t('Services', '服务')}</h1>
-                <p className="text-lg text-text-body mb-8">
-                    {t('Maintenance, repairs, and ownership support. Full service details are coming soon.', '保养、维修与用车支持，完整服务信息即将上线。')}
-                </p>
-                <Link to="/contact" className="toyota-btn-primary py-4 px-10">
-                    {t('Book a Service', '预约服务')}
-                </Link>
-            </div>
+        <div className="min-h-screen bg-page">
+            {/* Hero */}
+            <header className="relative overflow-hidden bg-gradient-to-br from-red-700 via-red-600 to-red-700">
+                <div className="absolute inset-0 opacity-20">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(255,255,255,0.15),transparent_50%)]" />
+                </div>
+                <div className="relative container mx-auto px-6 py-20 md:py-28 text-center text-white">
+                    <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 px-4 py-2 rounded-full mb-6">
+                        <Wrench size={16} />
+                        <span className="text-xs font-bold tracking-widest uppercase">{t('Services', '服务')}</span>
+                    </div>
+                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{t('Service & Maintenance', '保养与维修')}</h1>
+                    <p className="text-white/80 mt-5 max-w-2xl mx-auto text-lg">
+                        {t('Specialist care for your Alphard, Vellfire, and luxury MPV at our Clyde service centre.', '在我们的 Clyde 服务中心为您的埃尔法、威尔法和豪华 MPV 提供专业护理。')}
+                    </p>
+                </div>
+            </header>
+
+            {/* Service Cards */}
+            <section className="py-16 md:py-20">
+                <div className="container mx-auto px-6">
+                    <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                        {services.map((svc, idx) => (
+                            <div key={idx} className="toyota-card p-8 flex gap-5">
+                                <div className="w-14 h-14 rounded-full bg-brand/10 text-brand flex-shrink-0 flex items-center justify-center">
+                                    <svc.icon size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-text-heading text-lg mb-2">{svc.title}</h3>
+                                    <p className="text-text-body text-sm">{svc.desc}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Location */}
+            <section className="py-16 bg-section">
+                <div className="container mx-auto px-6 text-center">
+                    <h2 className="text-2xl md:text-3xl font-bold text-text-heading mb-4">{t('Service Centre Location', '服务中心位置')}</h2>
+                    <p className="text-text-body mb-2">{SERVICE_ADDRESS}</p>
+                    <p className="text-text-muted text-sm mb-8">{t('Monday – Saturday: 8:30am – 5:30pm', '周一至周六：8:30am – 5:30pm')}</p>
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                        <Link to="/contact" className="toyota-btn-primary py-4 px-10">{t('Book a Service', '预约服务')}</Link>
+                        <a href={`tel:${SERVICE_PHONE}`} className="toyota-btn-secondary py-4 px-10 flex items-center justify-center gap-2"><Phone size={18} /> {SERVICE_PHONE_DISPLAY}</a>
+                    </div>
+                </div>
+            </section>
         </div>
     );
 };
 
 const OwnersPage = () => {
     const { t } = useLanguage();
+    const benefits = [
+        { icon: ShieldCheck, title: t('Warranty Coverage', '质保覆盖'), desc: t('Understand your warranty terms and coverage periods.', '了解您的质保条款和覆盖期限。') },
+        { icon: FileText, title: t('Service History', '服务记录'), desc: t('Keep track of all maintenance performed on your vehicle.', '记录您车辆的所有保养维修。') },
+        { icon: BookOpen, title: t('Owner Manuals', '车主手册'), desc: t('Access digital copies of your vehicle manuals and guides.', '获取您车辆手册和指南的电子版。') },
+        { icon: Phone, title: t('Roadside Assistance', '道路救援'), desc: t('24/7 support when you need it most.', '24/7 全天候支持。') },
+    ];
     return (
-        <div className="min-h-screen bg-page flex items-center justify-center">
-            <div className="text-center p-12 toyota-card max-w-2xl mx-4">
-                <Users size={64} className="mx-auto text-slate-300 mb-6" />
-                <h1 className="text-4xl font-bold text-text-heading mb-4">{t('Owners', '车主专区')}</h1>
-                <p className="text-lg text-text-body mb-8">
-                    {t('Ownership tips, care guides, and service history tools will be available soon.', '用车指南、养护建议与服务记录功能即将上线。')}
-                </p>
-                <Link to="/contact" className="toyota-btn-secondary py-4 px-10">
-                    {t('Contact Support', '联系支持')}
-                </Link>
-            </div>
+        <div className="min-h-screen bg-page">
+            {/* Hero */}
+            <header className="relative overflow-hidden bg-gradient-to-br from-slate-800 via-slate-700 to-slate-800">
+                <div className="absolute inset-0 opacity-20">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_60%)]" />
+                </div>
+                <div className="relative container mx-auto px-6 py-20 md:py-28 text-center text-white">
+                    <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 px-4 py-2 rounded-full mb-6">
+                        <Users size={16} />
+                        <span className="text-xs font-bold tracking-widest uppercase">{t('Owners', '车主')}</span>
+                    </div>
+                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{t('Owner Benefits', '车主权益')}</h1>
+                    <p className="text-white/70 mt-5 max-w-2xl mx-auto text-lg">
+                        {t('Exclusive resources and support for Best Auto vehicle owners.', 'Best Auto 车主专属资源和支持。')}
+                    </p>
+                </div>
+            </header>
+
+            {/* Benefits Grid */}
+            <section className="py-16 md:py-20">
+                <div className="container mx-auto px-6">
+                    <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                        {benefits.map((item, idx) => (
+                            <div key={idx} className="toyota-card p-8 flex gap-5">
+                                <div className="w-14 h-14 rounded-full bg-slate-100 text-slate-600 flex-shrink-0 flex items-center justify-center">
+                                    <item.icon size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-text-heading text-lg mb-2">{item.title}</h3>
+                                    <p className="text-text-body text-sm">{item.desc}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* CTA */}
+            <section className="py-16 bg-section">
+                <div className="container mx-auto px-6 text-center">
+                    <h2 className="text-2xl md:text-3xl font-bold text-text-heading mb-4">{t('Need Assistance?', '需要帮助？')}</h2>
+                    <p className="text-text-body mb-8 max-w-xl mx-auto">{t('Our owner support team is here to help with any questions.', '我们的车主支持团队随时为您解答问题。')}</p>
+                    <Link to="/contact" className="toyota-btn-primary py-4 px-10">{t('Contact Support', '联系支持')}</Link>
+                </div>
+            </section>
         </div>
     );
 };
 
 const SupportPage = () => {
     const { t } = useLanguage();
+    const faqs = [
+        { q: t('What are your opening hours?', '营业时间是什么？'), a: t('Showroom: Mon-Sat 9am-6pm, Sun 10am-4pm. Service: Mon-Sat 8:30am-5:30pm.', '展厅：周一至周六 9am-6pm，周日 10am-4pm。服务：周一至周六 8:30am-5:30pm。') },
+        { q: t('Do you offer test drives?', '可以试驾吗？'), a: t('Yes, please contact us to book a test drive at our Homebush showroom.', '可以，请联系我们在 Homebush 展厅预约试驾。') },
+        { q: t('Can I trade in my current vehicle?', '可以置换吗？'), a: t('Yes, we accept trade-ins. Contact us for a valuation.', '可以，我们接受置换。联系我们获取估价。') },
+        { q: t('Do you ship interstate?', '可以跨州运送吗？'), a: t('Yes, we can arrange delivery Australia-wide.', '可以，我们可以安排全澳配送。') },
+    ];
     return (
-        <div className="min-h-screen bg-page flex items-center justify-center">
-            <div className="text-center p-12 toyota-card max-w-2xl mx-4">
-                <ShieldCheck size={64} className="mx-auto text-slate-300 mb-6" />
-                <h1 className="text-4xl font-bold text-text-heading mb-4">{t('Support', '支持')}</h1>
-                <p className="text-lg text-text-body mb-8">
-                    {t('Need help? We are here for sales, service, and warranty enquiries.', '需要帮助？销售、保养与质保问题随时联系。')}
-                </p>
-                <Link to="/contact" className="toyota-btn-primary py-4 px-10">
-                    {t('Get Support', '获取支持')}
-                </Link>
-            </div>
+        <div className="min-h-screen bg-page">
+            {/* Hero */}
+            <header className="relative overflow-hidden bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900">
+                <div className="absolute inset-0 opacity-20">
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_60%,rgba(255,255,255,0.1),transparent_50%)]" />
+                </div>
+                <div className="relative container mx-auto px-6 py-20 md:py-28 text-center text-white">
+                    <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 px-4 py-2 rounded-full mb-6">
+                        <HelpCircle size={16} />
+                        <span className="text-xs font-bold tracking-widest uppercase">{t('Support', '支持')}</span>
+                    </div>
+                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{t('How Can We Help?', '我们能帮您什么？')}</h1>
+                    <p className="text-white/70 mt-5 max-w-2xl mx-auto text-lg">
+                        {t('Find answers to common questions or contact our team directly.', '查找常见问题的答案或直接联系我们的团队。')}
+                    </p>
+                </div>
+            </header>
+
+            {/* FAQ */}
+            <section className="py-16 md:py-20">
+                <div className="container mx-auto px-6">
+                    <h2 className="text-2xl md:text-3xl font-bold text-text-heading text-center mb-12">{t('Frequently Asked Questions', '常见问题')}</h2>
+                    <div className="max-w-3xl mx-auto space-y-4">
+                        {faqs.map((faq, idx) => (
+                            <details key={idx} className="toyota-card p-6 group">
+                                <summary className="font-bold text-text-heading cursor-pointer list-none flex justify-between items-center">
+                                    {faq.q}
+                                    <ChevronDown size={20} className="text-text-muted group-open:rotate-180 transition-transform" />
+                                </summary>
+                                <p className="mt-4 text-text-body text-sm">{faq.a}</p>
+                            </details>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Contact Options */}
+            <section className="py-16 bg-section">
+                <div className="container mx-auto px-6">
+                    <h2 className="text-2xl md:text-3xl font-bold text-text-heading text-center mb-12">{t('Contact Us', '联系我们')}</h2>
+                    <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                        <div className="toyota-card p-8 text-center">
+                            <Phone size={32} className="mx-auto text-brand mb-4" />
+                            <h3 className="font-bold text-text-heading mb-2">{t('Sales', '销售')}</h3>
+                            <a href={`tel:${SALES_PHONE}`} className="text-brand font-bold">{SALES_PHONE_DISPLAY}</a>
+                        </div>
+                        <div className="toyota-card p-8 text-center">
+                            <Wrench size={32} className="mx-auto text-brand mb-4" />
+                            <h3 className="font-bold text-text-heading mb-2">{t('Service', '服务')}</h3>
+                            <a href={`tel:${SERVICE_PHONE}`} className="text-brand font-bold">{SERVICE_PHONE_DISPLAY}</a>
+                        </div>
+                        <div className="toyota-card p-8 text-center">
+                            <Mail size={32} className="mx-auto text-brand mb-4" />
+                            <h3 className="font-bold text-text-heading mb-2">{t('Email', '邮箱')}</h3>
+                            <Link to="/contact" className="text-brand font-bold hover:underline">{t('Send Message', '发送消息')}</Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     );
 };
@@ -2628,8 +2804,8 @@ export function AppContent() {
                             <ul className="space-y-2.5 text-sm">
                                 <li><Link to="/inventory" className="hover:text-brand transition-colors">{t('New vehicles', '新车')}</Link></li>
                                 <li><Link to="/inventory" className="hover:text-brand transition-colors">{t('Pre-owned', '二手车')}</Link></li>
-                                <li><span className="text-text-muted">{t('Accessories', '配件')}</span></li>
-                                <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Find a Dealer', '找经销商')}</Link></li>
+                                <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Accessories', '配件')}</Link></li>
+                                <li><Link to="/sell" className="hover:text-brand transition-colors">{t('Trade-in', '以旧换新')}</Link></li>
                             </ul>
                         </div>
 
@@ -2637,10 +2813,10 @@ export function AppContent() {
                         <div>
                             <h5 className="font-bold text-text-heading text-sm mb-4">{t('Services', '服务')}</h5>
                             <ul className="space-y-2.5 text-sm">
-                                <li><span className="text-text-muted">{t('Finance', '金融')}</span></li>
-                                <li><span className="text-text-muted">{t('Insurance', '保险')}</span></li>
+                                <li><Link to="/services" className="hover:text-brand transition-colors">{t('Maintenance', '保养')}</Link></li>
+                                <li><Link to="/services" className="hover:text-brand transition-colors">{t('Repairs', '维修')}</Link></li>
                                 <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Book a service', '预约服务')}</Link></li>
-                                <li><span className="text-text-muted">{t('Trade-in', '以旧换新')}</span></li>
+                                <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Finance enquiry', '金融咨询')}</Link></li>
                             </ul>
                         </div>
 
@@ -2648,9 +2824,9 @@ export function AppContent() {
                         <div>
                             <h5 className="font-bold text-text-heading text-sm mb-4">{t('Owners', '车主')}</h5>
                             <ul className="space-y-2.5 text-sm">
-                                <li><span className="text-text-muted">{t('Warranty', '质保')}</span></li>
-                                <li><span className="text-text-muted">{t('Manuals', '手册')}</span></li>
-                                <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Roadside assist', '道路救援')}</Link></li>
+                                <li><Link to="/owners" className="hover:text-brand transition-colors">{t('Warranty', '质保')}</Link></li>
+                                <li><Link to="/owners" className="hover:text-brand transition-colors">{t('Owner resources', '车主资源')}</Link></li>
+                                <li><Link to="/support" className="hover:text-brand transition-colors">{t('Roadside assist', '道路救援')}</Link></li>
                             </ul>
                         </div>
 
@@ -2659,8 +2835,8 @@ export function AppContent() {
                             <h5 className="font-bold text-text-heading text-sm mb-4">{t('Explore', '探索')}</h5>
                             <ul className="space-y-2.5 text-sm">
                                 <li><Link to="/about" className="hover:text-brand transition-colors">{t('About us', '关于我们')}</Link></li>
-                                <li><span className="text-text-muted">{t('Latest news', '最新动态')}</span></li>
-                                <li><span className="text-text-muted">{t('Careers', '加入我们')}</span></li>
+                                <li><Link to="/inventory" className="hover:text-brand transition-colors">{t('Latest arrivals', '最新到店')}</Link></li>
+                                <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Careers', '加入我们')}</Link></li>
                             </ul>
                         </div>
 
@@ -2669,7 +2845,7 @@ export function AppContent() {
                             <h5 className="font-bold text-text-heading text-sm mb-4">{t('Support', '支持')}</h5>
                             <ul className="space-y-2.5 text-sm">
                                 <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Contact us', '联系我们')}</Link></li>
-                                <li><span className="text-text-muted">{t('FAQs', '常见问题')}</span></li>
+                                <li><Link to="/support" className="hover:text-brand transition-colors">{t('FAQs', '常见问题')}</Link></li>
                                 <li><a href={`tel:${SALES_PHONE}`} className="hover:text-brand transition-colors">{SALES_PHONE_DISPLAY}</a></li>
                             </ul>
                         </div>
@@ -2698,8 +2874,8 @@ export function AppContent() {
                                     {SALES_PHONE_DISPLAY}
                                 </a>
                                 <div className="flex items-center gap-3">
-                                    <a href="#" className="w-9 h-9 bg-white border border-black/10 rounded-full flex items-center justify-center hover:bg-brand hover:border-brand hover:text-white transition-all"><Instagram size={16} /></a>
-                                    <a href="#" className="w-9 h-9 bg-white border border-black/10 rounded-full flex items-center justify-center hover:bg-brand hover:border-brand hover:text-white transition-all"><Facebook size={16} /></a>
+                                    <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" className="w-9 h-9 bg-white border border-black/10 rounded-full flex items-center justify-center hover:bg-brand hover:border-brand hover:text-white transition-all" aria-label="Instagram"><Instagram size={16} /></a>
+                                    <a href="https://www.facebook.com/" target="_blank" rel="noreferrer" className="w-9 h-9 bg-white border border-black/10 rounded-full flex items-center justify-center hover:bg-brand hover:border-brand hover:text-white transition-all" aria-label="Facebook"><Facebook size={16} /></a>
                                 </div>
                             </div>
                         </div>
@@ -2712,9 +2888,9 @@ export function AppContent() {
                         <div className="max-w-site mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-text-muted">
                             <p>&copy; 2026 {BRAND_NAME}. {t('All rights reserved.', '保留所有权利。')}</p>
                             <div className="flex flex-wrap justify-center gap-6">
-                                <span className="hover:text-text-body transition-colors cursor-pointer">{t('Privacy policy', '隐私政策')}</span>
-                                <span className="hover:text-text-body transition-colors cursor-pointer">{t('Conditions of use', '使用条款')}</span>
-                                <span className="hover:text-text-body transition-colors cursor-pointer">{t('Complaints', '投诉')}</span>
+                                <Link to="/support" className="hover:text-text-body transition-colors">{t('Privacy policy', '隐私政策')}</Link>
+                                <Link to="/support" className="hover:text-text-body transition-colors">{t('Conditions of use', '使用条款')}</Link>
+                                <Link to="/contact" className="hover:text-text-body transition-colors">{t('Complaints', '投诉')}</Link>
                             </div>
                         </div>
                     </div>
