@@ -2360,53 +2360,73 @@ const ContactPage = () => {
 // --- Simple Pages ---
 const SellPage = () => {
     const { t } = useLanguage();
+    const navigate = useNavigate();
     return (
-        <div className="min-h-screen bg-page">
-            {/* Hero */}
-            <header className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-                <div className="absolute inset-0 opacity-20">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(255,255,255,0.1),transparent_50%)]" />
-                </div>
-                <div className="relative container mx-auto px-6 py-20 md:py-28 text-center text-white">
-                    <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 px-4 py-2 rounded-full mb-6">
-                        <DollarSign size={16} />
-                        <span className="text-xs font-bold tracking-widest uppercase">{t('Trade-in', '置换')}</span>
-                    </div>
-                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{t('Sell or Trade Your Car', '卖车或置换')}</h1>
-                    <p className="text-white/70 mt-5 max-w-2xl mx-auto text-lg">
-                        {t('Get a competitive offer for your vehicle. Trade-in towards an Alphard or Vellfire.', '获得有竞争力的报价，置换埃尔法或威尔法。')}
-                    </p>
-                </div>
-            </header>
-
-            {/* Steps */}
-            <section className="py-16 md:py-20">
-                <div className="container mx-auto px-6">
-                    <h2 className="text-2xl md:text-3xl font-bold text-text-heading text-center mb-12">{t('How It Works', '如何操作')}</h2>
-                    <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-                        {[
-                            { step: '01', title: t('Submit Details', '提交资料'), desc: t('Share your vehicle info and photos via our contact form.', '通过联系表单提交您的车辆信息和照片。') },
-                            { step: '02', title: t('Get a Quote', '获取报价'), desc: t('Our team will review and provide a fair market offer.', '我们的团队将审核并提供合理的市场报价。') },
-                            { step: '03', title: t('Complete Trade', '完成交易'), desc: t('Accept the offer and apply it towards your new vehicle.', '接受报价并用于购买新车。') },
-                        ].map((item) => (
-                            <div key={item.step} className="text-center">
-                                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-brand/10 text-brand font-bold text-xl flex items-center justify-center">{item.step}</div>
-                                <h3 className="font-bold text-text-heading mb-2">{item.title}</h3>
-                                <p className="text-text-body text-sm">{item.desc}</p>
-                            </div>
-                        ))}
+        <div className="min-h-screen bg-white">
+            {/* Hero with full image */}
+            <section className="relative h-[70vh] min-h-[500px]">
+                <img 
+                    src="/stock/2024 Toyota Vellfire/cover.jpg" 
+                    alt="" 
+                    className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+                <div className="relative z-10 h-full flex items-center">
+                    <div className="container mx-auto px-6 md:px-12">
+                        <div className="max-w-xl">
+                            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight">
+                                {t('Trade-In', '以旧换新')}
+                            </h1>
+                            <p className="text-white/80 mt-4 text-lg">
+                                {t('Upgrade to Alphard or Vellfire today.', '今天就置换埃尔法或威尔法。')}
+                            </p>
+                            <button 
+                                onClick={() => navigate('/contact')}
+                                className="mt-8 toyota-btn-primary py-4 px-10"
+                            >
+                                {t('Get a Quote', '获取报价')}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            {/* CTA */}
-            <section className="py-16 bg-section">
-                <div className="container mx-auto px-6 text-center">
-                    <h2 className="text-2xl md:text-3xl font-bold text-text-heading mb-4">{t('Ready to Get Started?', '准备好了吗？')}</h2>
-                    <p className="text-text-body mb-8 max-w-xl mx-auto">{t('Contact our team with your vehicle details for a no-obligation valuation.', '联系我们的团队，提交您的车辆资料，获得无义务的估价。')}</p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link to="/contact" className="toyota-btn-primary py-4 px-10">{t('Get Valuation', '获取估价')}</Link>
-                        <a href={`tel:${SALES_PHONE}`} className="toyota-btn-secondary py-4 px-10 flex items-center justify-center gap-2"><Phone size={18} /> {SALES_PHONE_DISPLAY}</a>
+            {/* Simple value props with image */}
+            <section className="py-20">
+                <div className="container mx-auto px-6">
+                    <div className="max-w-site mx-auto grid md:grid-cols-2 gap-12 items-center">
+                        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
+                            <img 
+                                src="/stock/2023 Toyota Alphard 2.5L/cover.jpg" 
+                                alt="" 
+                                className="absolute inset-0 w-full h-full object-cover"
+                            />
+                        </div>
+                        <div>
+                            <h2 className="text-3xl md:text-4xl font-bold text-text-heading">
+                                {t('Fair. Fast. Simple.', '公平 · 快捷 · 简单')}
+                            </h2>
+                            <ul className="mt-8 space-y-4">
+                                <li className="flex items-start gap-4">
+                                    <CheckCircle2 className="text-brand flex-shrink-0 mt-1" size={22} />
+                                    <span className="text-text-body">{t('Competitive market valuations', '有竞争力的市场估价')}</span>
+                                </li>
+                                <li className="flex items-start gap-4">
+                                    <CheckCircle2 className="text-brand flex-shrink-0 mt-1" size={22} />
+                                    <span className="text-text-body">{t('Same-day offers available', '当日即可获得报价')}</span>
+                                </li>
+                                <li className="flex items-start gap-4">
+                                    <CheckCircle2 className="text-brand flex-shrink-0 mt-1" size={22} />
+                                    <span className="text-text-body">{t('Apply value to your new vehicle', '抵扣新车款项')}</span>
+                                </li>
+                            </ul>
+                            <button 
+                                onClick={() => navigate('/contact')}
+                                className="mt-10 toyota-btn-primary py-4 px-10"
+                            >
+                                {t('Enquire Now', '立即咨询')}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>
