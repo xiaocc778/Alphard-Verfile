@@ -2122,7 +2122,7 @@ const AboutPage = () => {
         <header className="relative overflow-hidden h-[62vh] min-h-[460px]">
             <div className="absolute inset-0">
                 <img
-                    src="/stock/2024 Toyota Vellfire/6.jpg"
+                    src="/stock/back/explore-hero.jpg.jpg"
                     alt=""
                     className="w-full h-full object-cover"
                 />
@@ -2369,11 +2369,11 @@ const SellPage = () => {
             {/* Hero with full image */}
             <section className="relative h-[70vh] min-h-[500px]">
                 <img 
-                    src="/stock/2024 Toyota Vellfire/cover.jpg" 
+                    src="/stock/back/shop-hero.jpg.jpg" 
                     alt="" 
                     className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-transparent" />
                 <div className="relative z-10 h-full flex items-center">
                     <div className="container mx-auto px-6 md:px-12">
                         <div className="max-w-xl">
@@ -2451,7 +2451,7 @@ const ServicesPage = () => {
             <header className="relative overflow-hidden h-[62vh] min-h-[460px]">
                 <div className="absolute inset-0">
                     <img
-                        src="/stock/2024 Toyota Vellfire/13.jpg"
+                        src="/stock/back/services-hero.jpg.jpg"
                         alt=""
                         className="w-full h-full object-cover"
                     />
