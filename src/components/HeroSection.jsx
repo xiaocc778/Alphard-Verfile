@@ -15,8 +15,9 @@ const HeroSection = ({ t }) => {
       <div className="relative z-10 h-full flex items-center">
         <div className="container mx-auto px-6">
           <div
-            className="max-w-3xl text-white parallax-layer"
+            className="max-w-3xl mx-auto text-center text-white parallax-layer reveal reveal-slide"
             style={{ '--parallax-speed': 0.4 }}
+            data-reveal
           >
             <h2 className="text-3xl md:text-5xl font-semibold tracking-tight">
               {t('Redefine your driving experience.', '重塑你的驾驶体验。')}
