@@ -2,7 +2,7 @@ import React from 'react';
 
 const HeroSection = ({ t }) => {
   return (
-    <section className="relative h-screen sticky top-0 z-0 overflow-hidden">
+    <section className="relative h-screen sticky top-0 z-0 overflow-hidden bg-black">
       <div className="absolute inset-0">
         <img
           src="/stock/2024 Toyota Vellfire/cover.jpg"
@@ -16,14 +16,11 @@ const HeroSection = ({ t }) => {
         <div className="container mx-auto px-6">
           <div
             className="max-w-3xl text-white parallax-layer"
-            style={{ '--parallax-speed': 0.5 }}
+            style={{ '--parallax-speed': 0.4 }}
           >
-            <p className="text-xs font-bold uppercase tracking-[0.4em] text-white/70">
-              {t('Best Auto', 'Best Auto')}
-            </p>
-            <h1 className="mt-4 text-4xl md:text-6xl font-semibold tracking-tight">
+            <h2 className="text-3xl md:text-5xl font-semibold tracking-tight">
               {t('Redefine your driving experience.', '重塑你的驾驶体验。')}
-            </h1>
+            </h2>
             <p className="mt-5 text-lg md:text-xl text-white/85">
               {t(
                 'Luxury people movers and executive transport, curated for Australia.',

@@ -1302,6 +1302,19 @@ const AlphardHomePage = ({ cars }) => {
 
     return (
         <div className="relative">
+            <section className="bg-white">
+                <div className="container mx-auto px-6 py-16 md:py-20">
+                    <div className="max-w-4xl mx-auto text-center reveal" data-reveal>
+                        <h1 className="text-4xl md:text-6xl font-semibold tracking-tight text-text-heading">
+                            {t('Welcome to Best Auto', '欢迎来到 Best Auto')}
+                        </h1>
+                        <p className="mt-4 text-lg md:text-xl text-text-body">
+                            {t('Your journey starts here, let’s go.', '旅程从这里开始，一起出发。')}
+                        </p>
+                    </div>
+                </div>
+            </section>
+
             <HeroSection t={t} />
 
             <main className="relative z-10 bg-white">
