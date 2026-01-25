@@ -2120,16 +2120,14 @@ const AboutPage = () => {
     <div className="min-h-screen bg-white">
         {/* Hero - image + Toyota-like overlays */}
         <header className="relative overflow-hidden h-[62vh] min-h-[460px]">
-            <div className="absolute inset-0">
-                <img
-                    src="/stock/back/explore-hero.jpg.jpg"
-                    alt=""
-                    className="w-full h-full object-cover"
-                />
-                {/* Overlays for readability */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-black/35" />
-            </div>
+            <div
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: "url('/stock/back/explore-hero.jpg.jpg')" }}
+                aria-hidden="true"
+            />
+            {/* Overlays for readability */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" aria-hidden="true" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-black/35" aria-hidden="true" />
 
             <div className="relative z-10 container mx-auto px-6 h-full flex items-center">
                 <div className="max-w-3xl">
@@ -2368,12 +2366,12 @@ const SellPage = () => {
         <div className="min-h-screen bg-white">
             {/* Hero with full image */}
             <section className="relative h-[70vh] min-h-[500px]">
-                <img 
-                    src="/stock/back/shop-hero.jpg.jpg" 
-                    alt="" 
-                    className="absolute inset-0 w-full h-full object-cover"
+                <div
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{ backgroundImage: "url('/stock/back/shop-hero.jpg.jpg')" }}
+                    aria-hidden="true"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-transparent" aria-hidden="true" />
                 <div className="relative z-10 h-full flex items-center">
                     <div className="container mx-auto px-6 md:px-12">
                         <div className="max-w-xl">
@@ -2449,15 +2447,13 @@ const ServicesPage = () => {
         <div className="min-h-screen bg-white">
             {/* Hero (steering wheel) */}
             <header className="relative overflow-hidden h-[62vh] min-h-[460px]">
-                <div className="absolute inset-0">
-                    <img
-                        src="/stock/back/services-hero.jpg.jpg"
-                        alt=""
-                        className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-transparent" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-black/35" />
-                </div>
+                <div
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{ backgroundImage: "url('/stock/back/services-hero.jpg.jpg')" }}
+                    aria-hidden="true"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-transparent" aria-hidden="true" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-black/35" aria-hidden="true" />
                 <div className="relative z-10 h-full flex items-center">
                     <div className="container mx-auto px-6">
                         <div className="max-w-2xl text-white">
