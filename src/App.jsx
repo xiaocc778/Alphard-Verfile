@@ -1300,33 +1300,6 @@ const AlphardHomePage = ({ cars }) => {
         return searchStr.includes('alphard') || searchStr.includes('vellfire');
     }).length;
 
-    // Hero copy reveal: show copy when Welcome section scrolls out of view
-    const sentinelRef = React.useRef(null);
-    const [heroCopyVisible, setHeroCopyVisible] = useState(false);
-
-    useEffect(() => {
-        if (typeof window === 'undefined' || !sentinelRef.current) return;
-        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            setHeroCopyVisible(true);
-            return;
-        }
-
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                // When sentinel is NOT intersecting (scrolled out of view), show copy
-                setHeroCopyVisible(!entry.isIntersecting);
-            },
-            {
-                root: null,
-                rootMargin: '0px 0px 0px 0px',
-                threshold: 0,
-            }
-        );
-
-        observer.observe(sentinelRef.current);
-        return () => observer.disconnect();
-    }, []);
-
     return (
         <div className="relative">
             <section className="bg-white">
@@ -1340,11 +1313,9 @@ const AlphardHomePage = ({ cars }) => {
                         </p>
                     </div>
                 </div>
-                {/* Sentinel: when this scrolls out of view, Hero copy fades in */}
-                <div ref={sentinelRef} className="h-1 w-full" aria-hidden="true" />
             </section>
 
-            <HeroSection t={t} copyVisible={heroCopyVisible} />
+            <HeroSection t={t} />
 
             <main className="relative z-10 bg-white">
                 {/* ========== FEATURE HIGHLIGHTS (Toyota-style) ========== */}

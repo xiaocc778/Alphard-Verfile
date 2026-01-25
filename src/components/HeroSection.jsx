@@ -1,6 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-const HeroSection = ({ t, copyVisible = false }) => {
+const HeroSection = ({ t }) => {
+  const [copyVisible, setCopyVisible] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // Respect reduced motion preference
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setCopyVisible(true);
+      return;
+    }
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY || 0;
+        // Show copy when user scrolls down (even a little), hide at very top
+        setCopyVisible(y > 30);
+        ticking = false;
+      });
+    };
+
+    // Don't call onScroll immediately - start hidden
+    // Only update on actual scroll events
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <section className="relative h-screen sticky top-0 z-0 overflow-hidden bg-black">
       {/* Background Image */}
@@ -14,7 +43,7 @@ const HeroSection = ({ t, copyVisible = false }) => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/25 to-black/10" />
       </div>
 
-      {/* Copy - initially hidden, fades in when copyVisible is true */}
+      {/* Copy - hidden at top, fades in on scroll */}
       <div className="relative z-10 h-full flex items-center">
         <div className="container mx-auto px-6">
           <div
@@ -22,7 +51,6 @@ const HeroSection = ({ t, copyVisible = false }) => {
             style={{
               opacity: copyVisible ? 1 : 0,
               transform: copyVisible ? 'translateY(0)' : 'translateY(32px)',
-              visibility: copyVisible ? 'visible' : 'hidden',
             }}
           >
             <h2 className="text-3xl md:text-5xl font-semibold tracking-tight">
