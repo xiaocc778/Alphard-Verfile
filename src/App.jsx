@@ -2116,9 +2116,6 @@ const CarDetailPage = ({ cars }) => {
 // --- About Page ---
 const AboutPage = () => {
     const { t } = useLanguage();
-    const [mapTarget, setMapTarget] = useState('showroom'); // 'showroom' | 'service'
-    const mapAddress = mapTarget === 'service' ? SERVICE_ADDRESS : SHOWROOM_ADDRESS;
-    const mapEmbedSrc = `https://www.google.com/maps?q=${encodeURIComponent(mapAddress)}&output=embed`;
     return (
     <div className="min-h-screen bg-white">
         {/* Hero - image + Toyota-like overlays */}
@@ -2235,7 +2232,7 @@ const AboutPage = () => {
                                         );
                                     })}
                                 </div>
-                                <div className="mt-8 grid gap-4 md:grid-cols-2">
+                                <div className="mt-8 grid gap-4 xl:grid-cols-2">
                                     {/* Visit / Contact card */}
                                     <div className="bg-slate-950 text-white rounded-2xl p-6">
                                         <h4 className="font-black text-white mb-4 flex items-center gap-2">
@@ -2250,50 +2247,44 @@ const AboutPage = () => {
                                         </div>
                                     </div>
 
-                                    {/* Google Map card */}
-                                    <div className="rounded-2xl overflow-hidden border border-black/10 bg-white">
-                                        <div className="p-4 flex items-center justify-between gap-3">
-                                            <div className="flex items-center gap-2 text-sm font-bold text-text-heading">
-                                                <MapPin size={16} className="text-brand" />
-                                                {t('Map', '地图')}
-                                            </div>
-                                            <div className="inline-flex items-center gap-2 rounded-full bg-surface border border-black/10 p-1">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setMapTarget('showroom')}
-                                                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors ${mapTarget === 'showroom' ? 'bg-white text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
-                                                >
-                                                    {t('Homebush', 'Homebush')}
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setMapTarget('service')}
-                                                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors ${mapTarget === 'service' ? 'bg-white text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
-                                                >
-                                                    {t('Clyde', 'Clyde')}
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <div className="relative aspect-[16/11] bg-section">
-                                            <iframe
-                                                title="Google Map"
-                                                src={mapEmbedSrc}
-                                                className="absolute inset-0 w-full h-full"
-                                                loading="lazy"
-                                                referrerPolicy="no-referrer-when-downgrade"
-                                            />
-                                        </div>
-                                        <div className="p-4 flex items-center justify-between gap-3 text-sm">
-                                            <span className="text-text-muted truncate">{mapAddress}</span>
+                                    {/* Location card (no embedded map) */}
+                                    <div className="bg-white rounded-2xl border border-black/10 p-6">
+                                        <h4 className="font-black text-text-heading mb-4 flex items-center gap-2">
+                                            <MapPin className="text-brand" size={18} /> {t('Locations', '地址导航')}
+                                        </h4>
+                                        <div className="space-y-3">
                                             <a
-                                                href={`https://www.google.com/maps?q=${encodeURIComponent(mapAddress)}`}
+                                                href={`https://www.google.com/maps?q=${encodeURIComponent(SHOWROOM_ADDRESS)}`}
                                                 target="_blank"
                                                 rel="noreferrer"
-                                                className="font-bold text-brand hover:text-brand/80 whitespace-nowrap"
+                                                className="block rounded-xl border border-black/10 bg-section hover:bg-black/5 transition-colors p-4"
                                             >
-                                                {t('Open', '打开')}
+                                                <div className="flex items-start justify-between gap-4">
+                                                    <div>
+                                                        <p className="text-xs font-bold tracking-[0.18em] uppercase text-text-muted">{t('Showroom', '展厅')}</p>
+                                                        <p className="mt-1 font-bold text-text-heading leading-snug">{SHOWROOM_ADDRESS}</p>
+                                                    </div>
+                                                    <span className="text-sm font-bold text-brand whitespace-nowrap">{t('Open', '打开')}</span>
+                                                </div>
+                                            </a>
+                                            <a
+                                                href={`https://www.google.com/maps?q=${encodeURIComponent(SERVICE_ADDRESS)}`}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="block rounded-xl border border-black/10 bg-section hover:bg-black/5 transition-colors p-4"
+                                            >
+                                                <div className="flex items-start justify-between gap-4">
+                                                    <div>
+                                                        <p className="text-xs font-bold tracking-[0.18em] uppercase text-text-muted">{t('Service centre', '服务中心')}</p>
+                                                        <p className="mt-1 font-bold text-text-heading leading-snug">{SERVICE_ADDRESS}</p>
+                                                    </div>
+                                                    <span className="text-sm font-bold text-brand whitespace-nowrap">{t('Open', '打开')}</span>
+                                                </div>
                                             </a>
                                         </div>
+                                        <p className="mt-4 text-xs text-text-muted">
+                                            {t('Opens in Google Maps.', '点击将在 Google Maps 中打开。')}
+                                        </p>
                                     </div>
                                 </div>
                                 <div className="mt-8 flex flex-col sm:flex-row gap-3">
