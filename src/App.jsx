@@ -2925,8 +2925,7 @@ export function AppContent() {
                 label: 'Shop',
                 to: '/sell',
                 dropdown: [
-                    { label: t('New vehicles', '新车'), to: '/inventory' },
-                    { label: t('Pre-owned', '二手车'), to: '/inventory' },
+                    { label: t('Vehicles', '车辆库存'), to: '/inventory' },
                     { label: t('Accessories', '配件'), to: '/contact' },
                     { label: t('Trade-in', '以旧换新'), to: '/sell' },
                 ],
