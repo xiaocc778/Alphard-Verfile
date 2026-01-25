@@ -3,6 +3,7 @@ import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link, useNavigate, useParams, useLocation } from 'react-router-dom';
 // 2. 引入图标库
 import { MapPin, Phone, MessageCircle, Menu, X, ChevronDown, ArrowLeft, Mail, Info, Instagram, Facebook, Globe, Wrench, ShieldCheck, Clock, DollarSign, ChevronLeft, ChevronRight, CheckCircle2, Star, Award, Users, Car, Sparkles, Play, ArrowRight, Shield, Truck, ThumbsUp, Search, User } from 'lucide-react';
+import HeroSection from './components/HeroSection.jsx';
 // 3. 引入车辆数据
 import { cars as carsFromData } from './carsData.js';
 import { useCarsData } from './hooks/useCarsData.js';
@@ -160,6 +161,9 @@ const useScrollReveal = () => {
 const useParallaxHero = () => {
     useEffect(() => {
         if (typeof window === 'undefined') return;
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            return;
+        }
         const root = document.documentElement;
         let rafId = 0;
         const onScroll = () => {
@@ -1297,30 +1301,12 @@ const AlphardHomePage = ({ cars }) => {
     }).length;
 
     return (
-        <>
-            {/* ========== HERO (Toyota-style: split title band + full-bleed image) ========== */}
-            <header className="bg-white">
-                <div className="container mx-auto px-6 py-16 md:py-20">
-                    <div className="max-w-4xl mx-auto text-center reveal" data-reveal>
-                        <h1 className="text-4xl md:text-6xl font-semibold tracking-tight text-text-heading">
-                            {t('Welcome to Best Auto', '欢迎来到 Best Auto')}
-                        </h1>
-                        <p className="mt-4 text-lg md:text-xl text-text-body">
-                            {t('Your journey starts here, let’s go.', '旅程从这里开始，一起出发。')}
-                        </p>
-                    </div>
-                </div>
-                <div className="relative h-[52vh] md:h-[62vh] overflow-hidden">
-                    <img
-                        src="/stock/2024 Toyota Vellfire/cover.jpg"
-                        alt=""
-                        className="absolute inset-0 w-full h-full object-cover"
-                    />
-                </div>
-            </header>
+        <div className="relative">
+            <HeroSection t={t} />
 
-            {/* ========== FEATURE HIGHLIGHTS (Toyota-style) ========== */}
-            <section className="py-16 bg-section">
+            <main className="relative z-10 bg-white">
+                {/* ========== FEATURE HIGHLIGHTS (Toyota-style) ========== */}
+                <section className="py-16 bg-section">
                 <div className="container mx-auto px-6">
                     <div className="max-w-site mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
                         {[
@@ -1355,10 +1341,10 @@ const AlphardHomePage = ({ cars }) => {
                         ))}
                     </div>
                 </div>
-            </section>
+                </section>
 
-            {/* ========== SEE WHAT'S NEW ========== */}
-            <section className="py-20 bg-white">
+                {/* ========== SEE WHAT'S NEW ========== */}
+                <section className="py-20 bg-white">
                 <div className="container mx-auto px-6">
                     <div className="max-w-site mx-auto">
                         <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-10 reveal" data-reveal data-reveal-delay="1">
@@ -1399,10 +1385,10 @@ const AlphardHomePage = ({ cars }) => {
                         </div>
                     </div>
                 </div>
-            </section>
+                </section>
 
-            {/* ========== INVENTORY PREVIEW ========== */}
-            <section className="py-20 bg-section">
+                {/* ========== INVENTORY PREVIEW ========== */}
+                <section className="py-20 bg-section">
                 <div className="container mx-auto px-6">
                     <div className="max-w-site mx-auto">
                         <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-10 reveal" data-reveal data-reveal-delay="1">
@@ -1426,8 +1412,9 @@ const AlphardHomePage = ({ cars }) => {
                         </div>
                     </div>
                 </div>
-            </section>
-        </>
+                </section>
+            </main>
+        </div>
     );
 };
 
