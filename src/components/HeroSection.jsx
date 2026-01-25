@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const HeroSection = ({ t }) => {
   const [copyVisible, setCopyVisible] = useState(false);
+  const sectionRef = useRef(null);
+  const triggerRef = useRef(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -12,21 +14,39 @@ const HeroSection = ({ t }) => {
       return;
     }
 
-    const onScroll = () => {
-      const y = window.scrollY || 0;
-      // Show copy when scrolled down, hide when at/near top
-      setCopyVisible(y > 30);
-    };
+    // Use IntersectionObserver to detect when trigger point is passed
+    // Trigger is placed 30% down from top of Hero
+    // When trigger scrolls UP past viewport center, show copy
+    // When trigger scrolls DOWN past viewport center, hide copy
+    if (!triggerRef.current) return;
 
-    // Check initial position (in case page loads with scroll position)
-    onScroll();
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // When trigger is intersecting (visible), hide copy
+        // When trigger is NOT intersecting (scrolled past), show copy
+        setCopyVisible(!entry.isIntersecting);
+      },
+      {
+        root: null,
+        // Trigger when element crosses 40% from top of viewport
+        rootMargin: '-40% 0px -60% 0px',
+        threshold: 0,
+      }
+    );
 
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    observer.observe(triggerRef.current);
+    return () => observer.disconnect();
   }, []);
 
   return (
-    <section className="relative h-screen sticky top-0 z-0 overflow-hidden bg-black">
+    <section ref={sectionRef} className="relative h-screen sticky top-0 z-0 overflow-hidden bg-black">
+      {/* Trigger point - when this scrolls past 40% of viewport, copy appears */}
+      <div 
+        ref={triggerRef} 
+        className="absolute top-[15%] left-0 w-full h-1 pointer-events-none" 
+        aria-hidden="true" 
+      />
+
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
@@ -38,15 +58,15 @@ const HeroSection = ({ t }) => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/25 to-black/10" />
       </div>
 
-      {/* Copy - hidden at top, fades in/out on scroll */}
+      {/* Copy - hidden initially, fades in/out based on scroll position */}
       <div className="relative z-10 h-full flex items-center">
         <div className="container mx-auto px-6">
           <div
             className="max-w-3xl mx-auto text-center text-white"
             style={{
               opacity: copyVisible ? 1 : 0,
-              transform: copyVisible ? 'translateY(0)' : 'translateY(32px)',
-              transition: 'opacity 600ms ease-out, transform 600ms ease-out',
+              transform: copyVisible ? 'translateY(0)' : 'translateY(40px)',
+              transition: 'opacity 500ms ease-out, transform 500ms ease-out',
             }}
           >
             <h2 className="text-3xl md:text-5xl font-semibold tracking-tight">
