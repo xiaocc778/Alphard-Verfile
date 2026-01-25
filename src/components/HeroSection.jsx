@@ -6,7 +6,7 @@ const HeroSection = ({ t, copyVisible = false }) => {
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
-          src="/stock/2024 Toyota Vellfire/cover.jpg"
+          src="/stock/back/hero-alphard.jpg.jpg"
           alt=""
           className="absolute inset-0 h-full w-full object-cover parallax-layer scale-105"
           style={{ '--parallax-speed': 0.12 }}
