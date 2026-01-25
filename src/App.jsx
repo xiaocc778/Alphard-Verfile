@@ -2118,21 +2118,40 @@ const AboutPage = () => {
     const { t } = useLanguage();
     return (
     <div className="min-h-screen bg-white">
-        {/* Hero - clean slate gradient */}
-        <header className="relative overflow-hidden bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900">
-            <div className="absolute inset-0 opacity-20">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(255,255,255,0.15),transparent_50%)]" />
+        {/* Hero - image + Toyota-like overlays */}
+        <header className="relative overflow-hidden h-[62vh] min-h-[460px]">
+            <div className="absolute inset-0">
+                <img
+                    src="/stock/back/hero-alphard.jpg.jpg"
+                    alt=""
+                    className="w-full h-full object-cover"
+                />
+                {/* Overlays for readability */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-black/35" />
             </div>
 
-            <div className="relative z-10 container mx-auto px-6 py-20 md:py-28 text-center text-white">
-                <div className="inline-flex items-center gap-2 bg-white/15 border border-white/25 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-                    <Award size={14} />
-                    <span className="text-xs font-bold tracking-widest uppercase">{t('About', '关于')}</span>
+            <div className="relative z-10 container mx-auto px-6 h-full flex items-center">
+                <div className="max-w-3xl">
+                    <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6 text-white">
+                        <Award size={14} />
+                        <span className="text-xs font-bold tracking-widest uppercase">{t('About', '关于')}</span>
+                        <span className="text-xs text-white/60">·</span>
+                        <span className="text-xs text-white/80">{t('Alphard & Vellfire Specialist', '埃尔法 / 威尔法 专家')}</span>
+                    </div>
+                    <h1
+                        className="text-4xl md:text-6xl font-bold tracking-tight text-white"
+                        style={{ textShadow: '0 2px 24px rgba(0,0,0,0.55)' }}
+                    >
+                        {BRAND_NAME} Pty Ltd
+                    </h1>
+                    <p
+                        className="text-white/85 mt-5 max-w-2xl text-lg md:text-xl"
+                        style={{ textShadow: '0 1px 14px rgba(0,0,0,0.45)' }}
+                    >
+                        {t('Specialist in Toyota Alphard & Vellfire · Sales · Service · Repairs', '埃尔法 / 威尔法 专营｜销售 · 保养 · 维修')}
+                    </p>
                 </div>
-                <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{BRAND_NAME}</h1>
-                <p className="text-white/80 mt-5 max-w-2xl mx-auto text-lg">
-                    {t('Alphard & Vellfire Specialist · Sales · Service · Repairs', '埃尔法 / 威尔法 专营｜销售 · 保养 · 维修')}
-                </p>
             </div>
         </header>
 
