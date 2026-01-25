@@ -1349,113 +1349,256 @@ const AlphardHomePage = ({ cars }) => {
             <HeroSection t={t} copyVisible={heroCopyVisible} />
 
             <main className="relative z-10 bg-white">
-                {/* ========== FEATURE HIGHLIGHTS (Toyota-style) ========== */}
-                <section className="py-16 bg-section">
-                <div className="container mx-auto px-6">
-                    <div className="max-w-site mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        {[
-                            {
-                                title: t('Toyota Genuine Accessories', '原厂精品配件'),
-                                desc: t('Personalise your vehicle with seamless-fit accessories.', '原厂配件，匹配度更高，风格更统一。'),
-                                cta: t('Explore accessories', '查看配件'),
-                                image: '/stock/2024 Toyota Vellfire/cover.jpg',
-                            },
-                            {
-                                title: t('Flexible finance options', '灵活金融方案'),
-                                desc: t('Estimate repayments and tailor a plan that fits.', '快速测算分期方案，灵活选择。'),
-                                cta: t('Estimate my repayments', '估算分期'),
-                                image: '/stock/2023 Toyota Alphard 2.5L/cover.jpg',
-                            },
-                        ].map((item) => (
-                            <div key={item.title} className="toyota-card overflow-hidden reveal" data-reveal data-reveal-delay="2">
-                                <div className="relative h-64">
-                                    <img src={item.image} alt="" className="absolute inset-0 w-full h-full object-cover" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
-                                    <div className="absolute bottom-5 left-6 right-6 text-white">
-                                        <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">{t('Featured', '精选')}</p>
-                                        <h3 className="text-2xl font-black mt-2">{item.title}</h3>
-                                        <p className="text-sm text-white/85 mt-2">{item.desc}</p>
-                                    </div>
-                                </div>
-                                <div className="p-6 flex items-center justify-between">
-                                    <span className="text-sm font-bold text-text-heading">{item.cta}</span>
-                                    <ArrowRight size={18} className="text-brand" />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                </section>
-
-                {/* ========== SEE WHAT'S NEW ========== */}
-                <section className="py-20 bg-white">
-                <div className="container mx-auto px-6">
-                    <div className="max-w-site mx-auto">
-                        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-10 reveal" data-reveal data-reveal-delay="1">
-                            <div>
-                                <p className="text-xs font-bold uppercase tracking-[0.3em] text-text-muted">{t("See what's new", '最新动态')}</p>
-                                <h2 className="text-3xl md:text-4xl font-black text-text-heading mt-3">{t('Highlights from Best Auto', 'Best Auto 最新亮点')}</h2>
-                            </div>
-                            <button
+                {/* ========== 1. PRODUCT SPOTLIGHT (类似 New HiLux) ========== */}
+                <section className="relative h-[70vh] md:h-[80vh] overflow-hidden reveal" data-reveal>
+                    <img 
+                        src="/stock/2024 Toyota Vellfire/cover.jpg" 
+                        alt="" 
+                        className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="text-center text-white px-6">
+                            <h2 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight text-white/90">
+                                {t('New Alphard', '全新埃尔法')}
+                            </h2>
+                            <p className="mt-4 text-lg md:text-xl text-white/70">
+                                {t('The ultimate in luxury travel', '极致奢华出行体验')}
+                            </p>
+                            <button 
                                 onClick={() => navigate('/inventory')}
-                                className="toyota-btn-secondary px-6 py-3"
+                                className="mt-8 px-8 py-3 border border-white/60 text-white rounded-full hover:bg-white hover:text-black transition-all duration-300 font-bold"
                             >
-                                {t('View all vehicles', '查看全部车辆')}
+                                {t('Tell me more', '了解更多')}
                             </button>
                         </div>
+                    </div>
+                </section>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {safeCars.slice(0, 3).map((car, idx) => (
-                                <div key={car.id} className="toyota-card overflow-hidden reveal" data-reveal data-reveal-delay={(idx % 3) + 1}>
-                                    <div className="relative h-52">
-                                        <img src={getCarImage(car)} alt="" className="absolute inset-0 w-full h-full object-cover" />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent" />
-                                        <span className="absolute top-4 left-4 bg-white/90 text-[10px] font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-full">
-                                            {t('New', '新到')}
+                {/* ========== 2. FIND YOUR IDEAL VEHICLE ========== */}
+                <section className="py-20 bg-white">
+                    <div className="container mx-auto px-6">
+                        <div className="max-w-site mx-auto">
+                            <div className="text-center mb-12 reveal" data-reveal>
+                                <h2 className="text-3xl md:text-4xl font-bold text-text-heading">
+                                    {t('Find your ideal vehicle', '找到您的理想座驾')}
+                                </h2>
+                                <p className="mt-3 text-text-muted">{t('Browse our vehicles.', '浏览我们的车辆。')}</p>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                                {[
+                                    { 
+                                        name: t('Alphard', '埃尔法'), 
+                                        desc: t('Executive luxury for discerning travelers.', '行政级豪华，尊贵出行首选。'),
+                                        image: '/stock/2023 Toyota Alphard 2.5L/cover.jpg',
+                                        filter: 'alphard'
+                                    },
+                                    { 
+                                        name: t('Vellfire', '威尔法'), 
+                                        desc: t('Bold design meets refined comfort.', '动感外观，舒适内在。'),
+                                        image: '/stock/2024 Toyota Vellfire/cover.jpg',
+                                        filter: 'vellfire'
+                                    },
+                                    { 
+                                        name: t('GAC', '广汽传祺'), 
+                                        desc: t('Premium Chinese luxury MPVs.', '国产高端 MPV 之选。'),
+                                        image: '/stock/2024 GAC Trumpchi E9/cover.jpg',
+                                        filter: 'gac'
+                                    },
+                                    { 
+                                        name: t('All Vehicles', '全部车辆'), 
+                                        desc: t('View our complete inventory.', '查看全部库存。'),
+                                        image: '/stock/back/hero-alphard.jpg.jpg',
+                                        filter: ''
+                                    },
+                                ].map((cat, idx) => (
+                                    <div 
+                                        key={cat.name} 
+                                        className="group cursor-pointer reveal" 
+                                        data-reveal 
+                                        data-reveal-delay={idx + 1}
+                                        onClick={() => navigate(cat.filter ? `/inventory?q=${cat.filter}` : '/inventory')}
+                                    >
+                                        <div className="relative aspect-[4/3] rounded-lg overflow-hidden mb-4">
+                                            <img 
+                                                src={cat.image} 
+                                                alt="" 
+                                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                                        </div>
+                                        <h3 className="font-bold text-text-heading group-hover:text-brand transition-colors">{cat.name}</h3>
+                                        <p className="text-sm text-text-muted mt-1 hidden md:block">{cat.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* ========== 3. 双栏推广区 (Accessories + Finance) ========== */}
+                <section className="py-16 bg-section">
+                    <div className="container mx-auto px-6">
+                        <div className="max-w-site mx-auto space-y-6">
+                            {/* Accessories */}
+                            <div className="grid md:grid-cols-2 gap-0 toyota-card overflow-hidden reveal" data-reveal data-reveal-delay="1">
+                                <div className="relative h-64 md:h-auto">
+                                    <img src="/stock/2024 Toyota Vellfire/cover.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
+                                </div>
+                                <div className="p-8 md:p-12 flex flex-col justify-center bg-white">
+                                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand">{t('Featured', '精选')}</p>
+                                    <h3 className="text-2xl md:text-3xl font-bold text-text-heading mt-3">
+                                        {t('Genuine Accessories', '原厂精品配件')}
+                                    </h3>
+                                    <p className="text-text-muted mt-4">
+                                        {t('Make it yours with accessories designed to integrate seamlessly.', '原厂配件，无缝融合，彰显个性。')}
+                                    </p>
+                                    <button className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-brand hover:text-brand/80 transition-colors">
+                                        {t('Explore accessories', '查看配件')} <ArrowRight size={16} />
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Finance */}
+                            <div className="grid md:grid-cols-2 gap-0 toyota-card overflow-hidden reveal" data-reveal data-reveal-delay="2">
+                                <div className="p-8 md:p-12 flex flex-col justify-center bg-white order-2 md:order-1">
+                                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand">{t('Finance', '金融服务')}</p>
+                                    <h3 className="text-2xl md:text-3xl font-bold text-text-heading mt-3">
+                                        {t('Flexible Finance Options', '灵活金融方案')}
+                                    </h3>
+                                    <p className="text-text-muted mt-4">
+                                        {t('Discover flexible options and estimate your personalised repayments.', '快速测算分期方案，灵活选择，轻松拥车。')}
+                                    </p>
+                                    <button className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-brand hover:text-brand/80 transition-colors">
+                                        {t('Estimate my repayments', '估算分期')} <ArrowRight size={16} />
+                                    </button>
+                                </div>
+                                <div className="relative h-64 md:h-auto order-1 md:order-2">
+                                    <img src="/stock/2023 Toyota Alphard 2.5L/cover.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* ========== 4. SEE WHAT'S NEW ========== */}
+                <section className="py-20 bg-white">
+                    <div className="container mx-auto px-6">
+                        <div className="max-w-site mx-auto">
+                            <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-10 reveal" data-reveal>
+                                <div>
+                                    <p className="text-xs font-bold uppercase tracking-[0.3em] text-text-muted">{t("See what's new", '最新动态')}</p>
+                                    <h2 className="text-3xl md:text-4xl font-bold text-text-heading mt-3">
+                                        {t("We're here for tomorrow, as well as today.", '我们为您的今天与明天，时刻准备。')}
+                                    </h2>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {safeCars.slice(0, 3).map((car, idx) => (
+                                    <div 
+                                        key={car.id} 
+                                        className="toyota-card overflow-hidden cursor-pointer group reveal" 
+                                        data-reveal 
+                                        data-reveal-delay={idx + 1}
+                                        onClick={() => navigate(`/vehicle/${car.id}`)}
+                                    >
+                                        <div className="relative h-52">
+                                            <img src={getCarImage(car)} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                                            <span className="absolute top-4 left-4 bg-white text-[10px] font-bold uppercase tracking-[0.15em] px-3 py-1.5 rounded-full">
+                                                {t('New Arrival', '新到')}
+                                            </span>
+                                        </div>
+                                        <div className="p-6">
+                                            <h3 className="text-lg font-bold text-text-heading group-hover:text-brand transition-colors">{car.title}</h3>
+                                            <p className="text-sm text-text-muted mt-2">{t('Available now', '现车在售')}</p>
+                                            <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-brand">
+                                                {t('Dive in', '了解更多')} <ArrowRight size={16} />
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* ========== 5. EXPLORE MORE ========== */}
+                <section className="py-16 bg-section">
+                    <div className="container mx-auto px-6">
+                        <div className="max-w-site mx-auto">
+                            <h2 className="text-2xl md:text-3xl font-bold text-text-heading mb-10 reveal" data-reveal>
+                                {t('Explore more from Best Auto', '探索更多 Best Auto 服务')}
+                            </h2>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                                {[
+                                    { 
+                                        title: t('Quality Assured', '品质保障'), 
+                                        desc: t('Every vehicle inspected and certified.', '每辆车经过严格检测认证。'),
+                                        icon: <ShieldCheck size={28} className="text-brand" />
+                                    },
+                                    { 
+                                        title: t('Trade-In Service', '以旧换新'), 
+                                        desc: t('Get a fair value for your current vehicle.', '您的座驾，我们高价收购。'),
+                                        icon: <Car size={28} className="text-brand" />
+                                    },
+                                    { 
+                                        title: t('Current Offers', '优惠活动'), 
+                                        desc: t('Browse deals designed to give you more.', '精选优惠，为您省更多。'),
+                                        icon: <DollarSign size={28} className="text-brand" />
+                                    },
+                                    { 
+                                        title: t('Contact Us', '联系我们'), 
+                                        desc: t('Our team speaks English, Mandarin & Cantonese.', '中英粤三语服务，沟通无障碍。'),
+                                        icon: <Phone size={28} className="text-brand" />
+                                    },
+                                ].map((item, idx) => (
+                                    <div 
+                                        key={item.title} 
+                                        className="toyota-card p-6 cursor-pointer group reveal hover:shadow-lg transition-shadow" 
+                                        data-reveal 
+                                        data-reveal-delay={idx + 1}
+                                    >
+                                        <div className="mb-4">{item.icon}</div>
+                                        <h3 className="font-bold text-text-heading group-hover:text-brand transition-colors">{item.title}</h3>
+                                        <p className="text-sm text-text-muted mt-2 hidden md:block">{item.desc}</p>
+                                        <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-brand">
+                                            {t('Tell me more', '了解更多')} <ArrowRight size={14} />
                                         </span>
                                     </div>
-                                    <div className="p-6">
-                                        <h3 className="text-lg font-black text-text-heading">{car.title}</h3>
-                                        <p className="text-sm text-text-muted mt-2">{t('Available now · Verified stock', '现车在售 · 已验车')}</p>
-                                        <button
-                                            onClick={() => navigate(`/vehicle/${car.id}`)}
-                                            className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-brand hover:text-brand-700 transition-colors"
-                                        >
-                                            {t('Tell me more', '了解更多')} <ArrowRight size={16} />
-                                        </button>
-                                    </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
                     </div>
-                </div>
                 </section>
 
-                {/* ========== INVENTORY PREVIEW ========== */}
-                <section className="py-20 bg-section">
-                <div className="container mx-auto px-6">
-                    <div className="max-w-site mx-auto">
-                        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-10 reveal" data-reveal data-reveal-delay="1">
-                            <div>
-                                <span className="inline-block bg-white text-text-muted font-bold text-[11px] uppercase tracking-[0.14em] px-4 py-2 rounded-full border border-black/10 mb-4">
-                                    {t('Curated inventory', '精选车源')}
-                                </span>
-                                <h2 className="text-3xl md:text-4xl font-black text-text-heading">
-                                    {t('Executive Lounge Highlights', '行政贵宾精选')}
-                                </h2>
+                {/* ========== 6. INVENTORY PREVIEW ========== */}
+                <section className="py-20 bg-white">
+                    <div className="container mx-auto px-6">
+                        <div className="max-w-site mx-auto">
+                            <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-10 reveal" data-reveal>
+                                <div>
+                                    <span className="inline-block bg-section text-text-muted font-bold text-[11px] uppercase tracking-[0.14em] px-4 py-2 rounded-full border border-black/5 mb-4">
+                                        {t('Curated inventory', '精选车源')}
+                                    </span>
+                                    <h2 className="text-3xl md:text-4xl font-bold text-text-heading">
+                                        {t('Executive Lounge Highlights', '行政贵宾精选')}
+                                    </h2>
+                                </div>
+                                <button
+                                    onClick={() => navigate('/inventory')}
+                                    className="toyota-btn-secondary px-6 py-3"
+                                >
+                                    {t('View all', '查看全部')} {safeCars.length}+ {t('vehicles', '台')}
+                                </button>
                             </div>
-                            <button
-                                onClick={() => navigate('/inventory')}
-                                className="toyota-btn-secondary px-6 py-3"
-                            >
-                                {t('View all inventory', '查看全部现车')}
-                            </button>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {safeCars.slice(0, 6).map(car => <CarCard key={car.id} car={car} />)}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {safeCars.slice(0, 6).map(car => <CarCard key={car.id} car={car} />)}
+                            </div>
                         </div>
                     </div>
-                </div>
                 </section>
             </main>
         </div>
@@ -2489,63 +2632,116 @@ export function AppContent() {
                 </Routes>
             </main>
 
-            <footer className="bg-white border-t border-black/10 text-text-body pt-16 pb-12">
-                <div className="container mx-auto px-4">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-3">
-                                <img src={LOGO_URL} alt="Logo" className="h-8 w-auto object-contain" />
-                                <span className="font-black text-text-heading tracking-[0.22em] text-lg uppercase">{BRAND_NAME}</span>
-                            </div>
-                            <p className="text-sm leading-7 text-text-body">
-                                {t(
-                                    'Your trusted partner for premium pre-owned vehicles in Sydney. Quality cars, transparent pricing, and exceptional service since 2015.',
-                                    '悉尼精品二手车值得信赖的伙伴。优质车源、透明定价与专业服务，始于 2015。'
-                                )}
-                            </p>
-                            <div className="flex gap-4">
-                                <a href="#" className="w-10 h-10 bg-surface border border-black/10 rounded-full flex items-center justify-center hover:bg-brand hover:border-brand hover:text-white transition-all"><Instagram size={18} /></a>
-                                <a href="#" className="w-10 h-10 bg-surface border border-black/10 rounded-full flex items-center justify-center hover:bg-brand hover:border-brand hover:text-white transition-all"><Facebook size={18} /></a>
-                            </div>
-                        </div>
+            {/* ========== TOYOTA-STYLE FOOTER ========== */}
+            <footer className="bg-white border-t border-black/10 text-text-body">
+                {/* Main Footer Links */}
+                <div className="container mx-auto px-6 py-16">
+                    <div className="max-w-site mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 md:gap-6">
+                        {/* Column 1: Models */}
                         <div>
-                            <h4 className="text-text-heading font-bold mb-6 tracking-widest text-xs uppercase">{t('Homebush Showroom', 'Homebush 展厅')}</h4>
-                            <div className="space-y-4 text-sm">
-                                <a href={`https://www.google.com/maps?q=${encodeURIComponent(SHOWROOM_ADDRESS)}`} target="_blank" rel="noreferrer" className="flex items-start gap-3 hover:text-brand transition-colors group"><MapPin size={16} className="text-brand mt-1" /><span className="leading-relaxed">{SHOWROOM_ADDRESS}</span></a>
-                                <a href={`tel:${SALES_PHONE}`} className="flex items-center gap-3 hover:text-brand transition-colors group"><Phone size={16} className="text-brand" /><span>{SALES_PHONE_DISPLAY}</span></a>
-                                <p className="flex items-center gap-3"><MessageCircle size={16} className="text-brand" /><span>{t('WeChat', '微信')}: {WECHAT_ID}</span></p>
-                                <p className="flex items-center gap-3"><Clock size={16} className="text-brand" /><span>{t('Daily', '每天')} 10:00 – 5:30</span></p>
-                            </div>
+                            <h5 className="font-bold text-text-heading text-sm mb-4">{t('Models', '车型')}</h5>
+                            <ul className="space-y-2.5 text-sm">
+                                <li><Link to="/inventory?q=alphard" className="hover:text-brand transition-colors">Alphard</Link></li>
+                                <li><Link to="/inventory?q=vellfire" className="hover:text-brand transition-colors">Vellfire</Link></li>
+                                <li><Link to="/inventory?q=gac" className="hover:text-brand transition-colors">GAC</Link></li>
+                                <li><Link to="/inventory" className="hover:text-brand transition-colors">{t('All vehicles', '全部车辆')}</Link></li>
+                            </ul>
                         </div>
+
+                        {/* Column 2: Shop */}
                         <div>
-                            <h4 className="text-text-heading font-bold mb-6 tracking-widest text-xs uppercase">{t('Clyde Service Centre', 'Clyde 服务中心')}</h4>
-                            <div className="space-y-4 text-sm">
-                                <a href={`https://www.google.com/maps?q=${encodeURIComponent(SERVICE_ADDRESS)}`} target="_blank" rel="noreferrer" className="flex items-start gap-3 hover:text-brand transition-colors group"><MapPin size={16} className="text-brand mt-1" /><span className="leading-relaxed">{SERVICE_ADDRESS}</span></a>
-                                <a href={`tel:${SERVICE_PHONE}`} className="flex items-center gap-3 hover:text-brand transition-colors group"><Phone size={16} className="text-brand" /><span>{SERVICE_PHONE_DISPLAY}</span></a>
-                            </div>
+                            <h5 className="font-bold text-text-heading text-sm mb-4">{t('Shop', '选购')}</h5>
+                            <ul className="space-y-2.5 text-sm">
+                                <li><Link to="/inventory" className="hover:text-brand transition-colors">{t('New vehicles', '新车')}</Link></li>
+                                <li><Link to="/inventory" className="hover:text-brand transition-colors">{t('Pre-owned', '二手车')}</Link></li>
+                                <li><span className="text-text-muted">{t('Accessories', '配件')}</span></li>
+                                <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Find a Dealer', '找经销商')}</Link></li>
+                            </ul>
                         </div>
+
+                        {/* Column 3: Services */}
                         <div>
-                            <h4 className="text-text-heading font-bold mb-6 tracking-widest text-xs uppercase">{t('Quick Links', '快速链接')}</h4>
-                            <ul className="space-y-3 text-sm">
-                                {[
-                                    { label: t('Home', '首页'), to: '/' },
-                                    { label: t('Collection', '专属车源'), to: '/inventory' },
-                                    { label: t('Contact', '联系'), to: '/contact' },
-                                ].map((item) => (
-                                    <li key={item.to}>
-                                        <Link to={item.to} className="hover:text-brand transition-colors inline-block">
-                                            {item.label}
-                                        </Link>
-                                    </li>
-                                ))}
+                            <h5 className="font-bold text-text-heading text-sm mb-4">{t('Services', '服务')}</h5>
+                            <ul className="space-y-2.5 text-sm">
+                                <li><span className="text-text-muted">{t('Finance', '金融')}</span></li>
+                                <li><span className="text-text-muted">{t('Insurance', '保险')}</span></li>
+                                <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Book a service', '预约服务')}</Link></li>
+                                <li><span className="text-text-muted">{t('Trade-in', '以旧换新')}</span></li>
+                            </ul>
+                        </div>
+
+                        {/* Column 4: Owners */}
+                        <div>
+                            <h5 className="font-bold text-text-heading text-sm mb-4">{t('Owners', '车主')}</h5>
+                            <ul className="space-y-2.5 text-sm">
+                                <li><span className="text-text-muted">{t('Warranty', '质保')}</span></li>
+                                <li><span className="text-text-muted">{t('Manuals', '手册')}</span></li>
+                                <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Roadside assist', '道路救援')}</Link></li>
+                            </ul>
+                        </div>
+
+                        {/* Column 5: Explore */}
+                        <div>
+                            <h5 className="font-bold text-text-heading text-sm mb-4">{t('Explore', '探索')}</h5>
+                            <ul className="space-y-2.5 text-sm">
+                                <li><Link to="/about" className="hover:text-brand transition-colors">{t('About us', '关于我们')}</Link></li>
+                                <li><span className="text-text-muted">{t('Latest news', '最新动态')}</span></li>
+                                <li><span className="text-text-muted">{t('Careers', '加入我们')}</span></li>
+                            </ul>
+                        </div>
+
+                        {/* Column 6: Support */}
+                        <div>
+                            <h5 className="font-bold text-text-heading text-sm mb-4">{t('Support', '支持')}</h5>
+                            <ul className="space-y-2.5 text-sm">
+                                <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Contact us', '联系我们')}</Link></li>
+                                <li><span className="text-text-muted">{t('FAQs', '常见问题')}</span></li>
+                                <li><a href={`tel:${SALES_PHONE}`} className="hover:text-brand transition-colors">{SALES_PHONE_DISPLAY}</a></li>
                             </ul>
                         </div>
                     </div>
-                    <div className="border-t border-black/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-text-muted">
-                        <p>&copy; 2026 {BRAND_NAME}. {t('All rights reserved.', '保留所有权利。')}</p>
-                        <div className="flex gap-8 hover:text-text-body transition-colors cursor-pointer">
-                            <span>{t('Privacy Policy', '隐私政策')}</span>
-                            <span>{t('Terms & Conditions', '条款与条件')}</span>
+                </div>
+
+                {/* Contact Bar */}
+                <div className="border-t border-black/5 bg-section">
+                    <div className="container mx-auto px-6 py-8">
+                        <div className="max-w-site mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                            <div className="flex items-center gap-4">
+                                <img src={LOGO_URL} alt="Logo" className="h-10 w-auto object-contain" />
+                                <div>
+                                    <p className="font-bold text-text-heading">{BRAND_NAME}</p>
+                                    <p className="text-sm text-text-muted">{t('Premium Alphard & Vellfire Specialist', 'Alphard & Vellfire 专营')}</p>
+                                </div>
+                            </div>
+                            <div className="flex flex-wrap items-center gap-4">
+                                <a href={`https://www.google.com/maps?q=${encodeURIComponent(SHOWROOM_ADDRESS)}`} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm hover:text-brand transition-colors">
+                                    <MapPin size={16} className="text-brand" />
+                                    <span className="hidden sm:inline">{SHOWROOM_ADDRESS}</span>
+                                    <span className="sm:hidden">{t('Homebush', 'Homebush')}</span>
+                                </a>
+                                <a href={`tel:${SALES_PHONE}`} className="flex items-center gap-2 text-sm hover:text-brand transition-colors">
+                                    <Phone size={16} className="text-brand" />
+                                    {SALES_PHONE_DISPLAY}
+                                </a>
+                                <div className="flex items-center gap-3">
+                                    <a href="#" className="w-9 h-9 bg-white border border-black/10 rounded-full flex items-center justify-center hover:bg-brand hover:border-brand hover:text-white transition-all"><Instagram size={16} /></a>
+                                    <a href="#" className="w-9 h-9 bg-white border border-black/10 rounded-full flex items-center justify-center hover:bg-brand hover:border-brand hover:text-white transition-all"><Facebook size={16} /></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Copyright */}
+                <div className="border-t border-black/5">
+                    <div className="container mx-auto px-6 py-6">
+                        <div className="max-w-site mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-text-muted">
+                            <p>&copy; 2026 {BRAND_NAME}. {t('All rights reserved.', '保留所有权利。')}</p>
+                            <div className="flex flex-wrap justify-center gap-6">
+                                <span className="hover:text-text-body transition-colors cursor-pointer">{t('Privacy policy', '隐私政策')}</span>
+                                <span className="hover:text-text-body transition-colors cursor-pointer">{t('Conditions of use', '使用条款')}</span>
+                                <span className="hover:text-text-body transition-colors cursor-pointer">{t('Complaints', '投诉')}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
