@@ -2122,7 +2122,7 @@ const AboutPage = () => {
         <header className="relative overflow-hidden h-[62vh] min-h-[460px]">
             <div className="absolute inset-0">
                 <img
-                    src="/stock/back/hero-alphard.jpg.jpg"
+                    src="/stock/2024 Toyota Vellfire/6.jpg"
                     alt=""
                     className="w-full h-full object-cover"
                 />
@@ -2446,21 +2446,50 @@ const ServicesPage = () => {
         { icon: Car, title: t('Detailing & Care', '美容护理'), desc: t('Interior deep cleaning, paint correction, and ceramic coating services.', '内饰深度清洁、漆面修复和镀晶服务。') },
     ];
     return (
-        <div className="min-h-screen bg-page">
-            {/* Hero */}
-            <header className="relative overflow-hidden bg-gradient-to-br from-red-700 via-red-600 to-red-700">
-                <div className="absolute inset-0 opacity-20">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(255,255,255,0.15),transparent_50%)]" />
+        <div className="min-h-screen bg-white">
+            {/* Hero (steering wheel) */}
+            <header className="relative overflow-hidden h-[62vh] min-h-[460px]">
+                <div className="absolute inset-0">
+                    <img
+                        src="/stock/2024 Toyota Vellfire/13.jpg"
+                        alt=""
+                        className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-black/35" />
                 </div>
-                <div className="relative container mx-auto px-6 py-20 md:py-28 text-center text-white">
-                    <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 px-4 py-2 rounded-full mb-6">
-                        <Wrench size={16} />
-                        <span className="text-xs font-bold tracking-widest uppercase">{t('Services', '服务')}</span>
+                <div className="relative z-10 h-full flex items-center">
+                    <div className="container mx-auto px-6">
+                        <div className="max-w-2xl text-white">
+                            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
+                                <Wrench size={14} />
+                                <span className="text-xs font-bold tracking-widest uppercase">{t('Services', '服务')}</span>
+                            </div>
+                            <h1
+                                className="text-4xl md:text-6xl font-bold tracking-tight"
+                                style={{ textShadow: '0 2px 24px rgba(0,0,0,0.55)' }}
+                            >
+                                {t('Service & Maintenance', '保养与维修')}
+                            </h1>
+                            <p
+                                className="text-white/85 mt-5 max-w-xl text-lg"
+                                style={{ textShadow: '0 1px 14px rgba(0,0,0,0.45)' }}
+                            >
+                                {t('Specialist care at our Clyde service centre.', 'Clyde 服务中心 · 专业保养与维修。')}
+                            </p>
+                            <div className="mt-8 flex flex-col sm:flex-row gap-3">
+                                <Link to="/contact" className="toyota-btn-primary py-4 px-10">
+                                    {t('Book a Service', '预约服务')}
+                                </Link>
+                                <a
+                                    href={`tel:${SERVICE_PHONE}`}
+                                    className="toyota-btn-secondary py-4 px-10 flex items-center justify-center gap-2 bg-white/15 border-white/25 text-white hover:bg-white/20"
+                                >
+                                    <Phone size={18} /> {SERVICE_PHONE_DISPLAY}
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                    <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{t('Service & Maintenance', '保养与维修')}</h1>
-                    <p className="text-white/80 mt-5 max-w-2xl mx-auto text-lg">
-                        {t('Specialist care for your Alphard, Vellfire, and luxury MPV at our Clyde service centre.', '在我们的 Clyde 服务中心为您的埃尔法、威尔法和豪华 MPV 提供专业护理。')}
-                    </p>
                 </div>
             </header>
 
