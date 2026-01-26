@@ -42,7 +42,7 @@ const PROMO_VIDEO = {
     },
     mp4: "",
     webm: "",
-    poster: "/stock/2024 Toyota Vellfire/cover.jpg",
+    poster: "/stock/2024 Toyota Vellfire/cover (2).jpg",
 };
 
 // --- 🛠️ 核心工具：图片路径生成器 ---
@@ -56,6 +56,13 @@ const getCarImage = (folderName, imageCount, type = 'cover', car = null) => {
         return ["https://images.unsplash.com/photo-1600661653561-629509216228?auto=format&fit=crop&q=80&w=1000"];
     }
     if (type === 'cover') {
+        const hay = `${folderName} ${car?.title || ''}`;
+        const isAlphardOrVellfire = /alphard|vellfire/i.test(hay);
+        if (isAlphardOrVellfire) {
+            // Backend renamed primary cover to "cover (2).jpg" for Alphard/Vellfire series.
+            // Use it as first choice; <img onError> will fall back to cover.jpg if missing.
+            return encodeURI(`/stock/${folderName}/cover (2).jpg`);
+        }
         return `/stock/${folderName}/cover.jpg`;
     }
     const count = imageCount || 0;
@@ -1425,7 +1432,14 @@ const AlphardHomePage = ({ cars }) => {
                             {/* Accessories */}
                             <div className="grid md:grid-cols-2 gap-0 toyota-card overflow-hidden reveal" data-reveal data-reveal-delay="1">
                                 <div className="relative h-64 md:h-auto">
-                                    <img src="/stock/2024 Toyota Vellfire/cover.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
+                                    <img
+                                        src={encodeURI("/stock/2024 Toyota Vellfire/cover (2).jpg")}
+                                        alt=""
+                                        className="absolute inset-0 w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.currentTarget.src = "/stock/2024 Toyota Vellfire/cover.jpg";
+                                        }}
+                                    />
                                 </div>
                                 <div className="p-8 md:p-12 flex flex-col justify-center bg-white">
                                     <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand">{t('Featured', '精选')}</p>
@@ -1456,7 +1470,14 @@ const AlphardHomePage = ({ cars }) => {
                                 </button>
                             </div>
                                 <div className="relative h-64 md:h-auto order-1 md:order-2">
-                                    <img src="/stock/2023 Toyota Alphard 2.5L/cover.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
+                                    <img
+                                        src={encodeURI("/stock/2023 Toyota Alphard 2.5L/cover (2).jpg")}
+                                        alt=""
+                                        className="absolute inset-0 w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.currentTarget.src = "/stock/2023 Toyota Alphard 2.5L/cover.jpg";
+                                        }}
+                                    />
                         </div>
                                 </div>
                                         </div>
@@ -3027,7 +3048,67 @@ export function AppContent() {
     // 只保留本地 public/stock 里有 cover.jpg 的车型（避免“无图车型都用同一张默认图”）
     const carsWithLocalStock = useMemo(() => {
         const list = cars || [];
-        return list.filter((car) => car?.folderName && stockFolderSet.has(car.folderName));
+        const resolveFolderName = (car) => {
+            if (!car) return null;
+            const rawFolder = typeof car.folderName === 'string' ? car.folderName.trim() : '';
+            if (rawFolder && stockFolderSet.has(rawFolder)) return rawFolder;
+
+            const hay = `${car.title || ''} ${rawFolder}`.toLowerCase();
+            const isAlphard = hay.includes('alphard');
+            const isVellfire = hay.includes('vellfire');
+            if (!isAlphard && !isVellfire) return null;
+
+            // Common imported/cached pattern: "Toyota Vellfire 2024" -> "2024 Toyota Vellfire" (or "24 Toyota Vellfire")
+            const m = rawFolder.match(/^toyota\s+(alphard|vellfire)\s+(\d{4})$/i);
+            if (m) {
+                const model = m[1];
+                const year = m[2];
+                const year2 = year.slice(-2);
+                const c1 = `${year} Toyota ${model[0].toUpperCase()}${model.slice(1).toLowerCase()}`;
+                const c2 = `${year2} Toyota ${model[0].toUpperCase()}${model.slice(1).toLowerCase()}`;
+                if (stockFolderSet.has(c1)) return c1;
+                if (stockFolderSet.has(c2)) return c2;
+            }
+
+            // Heuristic: pick best matching stock folder by series + year + trim keywords.
+            const yearFromCar =
+                Number.isFinite(Number(car.year)) ? String(Number(car.year)) : (String(car.title || '').match(/\b(19|20)\d{2}\b/)?.[0] || '');
+            const year2 = yearFromCar ? yearFromCar.slice(-2) : '';
+            const titleLower = String(car.title || '').toLowerCase();
+
+            let best = null;
+            let bestScore = -Infinity;
+            for (const folder of STOCK_FOLDERS) {
+                const f = folder.toLowerCase();
+                if (isVellfire && !f.includes('vellfire')) continue;
+                if (isAlphard && !f.includes('alphard')) continue;
+
+                let score = 0;
+                if (yearFromCar && f.includes(yearFromCar.toLowerCase())) score += 4;
+                if (year2 && f.startsWith(`${year2} `)) score += 3;
+                if (titleLower.includes('executive lounge') && f.includes('executive lounge')) score += 3;
+                if (titleLower.includes('2.5') && f.includes('2.5')) score += 2;
+                if (titleLower.includes('hybrid') && f.includes('hybrid')) score += 2;
+
+                // Prefer a closer length match (avoid mapping a specific trim to a totally different one).
+                score -= Math.abs(folder.length - (rawFolder.length || folder.length)) * 0.02;
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    best = folder;
+                }
+            }
+
+            return bestScore >= 3 ? best : null;
+        };
+
+        return list
+            .map((car) => {
+                const resolved = resolveFolderName(car);
+                if (resolved && resolved !== car.folderName) return { ...car, folderName: resolved };
+                return car;
+            })
+            .filter((car) => car?.folderName && stockFolderSet.has(car.folderName));
     }, [cars, stockFolderSet]);
 
     const brandCounts = useMemo(() => {
