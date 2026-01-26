@@ -3087,7 +3087,6 @@ export function AppContent() {
                 to: '/about',
                 dropdown: [
                     { label: t('About us', '关于我们'), to: '/about' },
-                    { label: t('Latest arrivals', '最新到店'), to: '/inventory' },
                     { label: t('Careers', '加入我们'), to: '/contact' },
                 ],
             },
@@ -3282,7 +3281,6 @@ export function AppContent() {
                             <h5 className="font-bold text-text-heading text-sm mb-4">{t('Explore', '探索')}</h5>
                             <ul className="space-y-2.5 text-sm">
                                 <li><Link to="/about" className="hover:text-brand transition-colors">{t('About us', '关于我们')}</Link></li>
-                                <li><Link to="/inventory" className="hover:text-brand transition-colors">{t('Latest arrivals', '最新到店')}</Link></li>
                                 <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Careers', '加入我们')}</Link></li>
                             </ul>
                         </div>
