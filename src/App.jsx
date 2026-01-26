@@ -193,8 +193,8 @@ const CarCard = ({ car }) => {
     const isPremium = car.title?.toLowerCase().includes('alphard') || car.title?.toLowerCase().includes('vellfire');
 
     const openDetails = () =>
-        navigate(`/vehicle/${car.id}`, {
-            state: { from: `${location.pathname}${location.search}` },
+                navigate(`/vehicle/${car.id}`, {
+                    state: { from: `${location.pathname}${location.search}` },
         });
 
     return (
@@ -494,7 +494,7 @@ const InventoryFilterWidget = ({ tempFilters, setTempFilters, onSearch, onReset,
                     {/* Reset Button */}
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-transparent">{t('Reset', '重置')}</label>
-                            <button
+                        <button
                             onClick={onReset}
                                 className="w-full p-3 toyota-btn-secondary flex items-center justify-center gap-2"
                         >
@@ -1397,11 +1397,11 @@ const AlphardHomePage = ({ cars }) => {
                                         <div className="relative aspect-[4/3] rounded-lg overflow-hidden mb-4">
                                             <img 
                                                 src={cat.image} 
-                                                alt="" 
+                        alt=""
                                                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                                        </div>
+                </div>
                                         <h3 className="font-bold text-text-heading group-hover:text-brand transition-colors">{cat.name}</h3>
                                         <p className="text-sm text-text-muted mt-1 hidden md:block">{cat.desc}</p>
                                     </div>
@@ -1430,7 +1430,7 @@ const AlphardHomePage = ({ cars }) => {
                                     </p>
                                     <button onClick={() => navigate('/contact')} className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-brand hover:text-brand/80 transition-colors">
                                         {t('Explore accessories', '查看配件')} <ArrowRight size={16} />
-                                    </button>
+                                </button>
                                 </div>
                             </div>
 
@@ -1446,14 +1446,14 @@ const AlphardHomePage = ({ cars }) => {
                                     </p>
                                     <button onClick={() => navigate('/contact')} className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-brand hover:text-brand/80 transition-colors">
                                         {t('Estimate my repayments', '估算分期')} <ArrowRight size={16} />
-                                    </button>
-                                </div>
+                                </button>
+                            </div>
                                 <div className="relative h-64 md:h-auto order-1 md:order-2">
                                     <img src="/stock/2023 Toyota Alphard 2.5L/cover.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
-                                </div>
-                            </div>
                         </div>
-                    </div>
+                                </div>
+                                        </div>
+                                </div>
                 </section>
 
                 {/* ========== 4. SEE WHAT'S NEW ========== */}
@@ -1484,15 +1484,15 @@ const AlphardHomePage = ({ cars }) => {
                                             <span className="absolute top-4 left-4 bg-white text-[10px] font-bold uppercase tracking-[0.15em] px-3 py-1.5 rounded-full">
                                                 {t('New Arrival', '新到')}
                                             </span>
-                                        </div>
+                        </div>
                                         <div className="p-6">
                                             <h3 className="text-lg font-bold text-text-heading group-hover:text-brand transition-colors">{car.title}</h3>
                                             <p className="text-sm text-text-muted mt-2">{t('Available now', '现车在售')}</p>
                                             <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-brand">
                                                 {t('Dive in', '了解更多')} <ArrowRight size={16} />
                                             </span>
-                                        </div>
-                                    </div>
+                    </div>
+                </div>
                                 ))}
                             </div>
                         </div>
@@ -1546,39 +1546,39 @@ const AlphardHomePage = ({ cars }) => {
                                         <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-brand">
                                             {t('Tell me more', '了解更多')} <ArrowRight size={14} />
                                         </span>
-                                    </div>
-                                ))}
-                            </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
-                </section>
+                </div>
+            </section>
 
                 {/* ========== 6. INVENTORY PREVIEW ========== */}
                 <section className="py-20 bg-white">
                     <div className="container mx-auto px-6">
                         <div className="max-w-site mx-auto">
                             <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-10 reveal" data-reveal>
-                                <div>
+                        <div>
                                     <span className="inline-block bg-section text-text-muted font-bold text-[11px] uppercase tracking-[0.14em] px-4 py-2 rounded-full border border-black/5 mb-4">
                                         {t('Curated inventory', '精选车源')}
-                                    </span>
+                            </span>
                                     <h2 className="text-3xl md:text-4xl font-bold text-text-heading">
-                                        {t('Executive Lounge Highlights', '行政贵宾精选')}
-                                    </h2>
-                                </div>
-                                <button
-                                    onClick={() => navigate('/inventory')}
+                                {t('Executive Lounge Highlights', '行政贵宾精选')}
+                            </h2>
+                        </div>
+                        <button
+                            onClick={() => navigate('/inventory')}
                                     className="toyota-btn-secondary px-6 py-3"
-                                >
+                        >
                                     {t('View all', '查看全部')} {safeCars.length} {t('vehicles', '台')}
-                                </button>
-                            </div>
+                        </button>
+                    </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {safeCars.slice(0, 6).map(car => <CarCard key={car.id} car={car} />)}
-                            </div>
+                        {safeCars.slice(0, 6).map(car => <CarCard key={car.id} car={car} />)}
                         </div>
                     </div>
-                </section>
+                </div>
+            </section>
             </main>
         </div>
     );
@@ -1802,42 +1802,42 @@ const InventoryPage = ({ cars, category }) => {
             {/* Header (Toyota-style: full-bleed media + light overlay + black text) */}
             <header className="relative overflow-hidden bg-white">
                 <div className="absolute inset-0">
-                    <img
-                        src="/stock/2024 Toyota Vellfire/cover.jpg"
-                        alt=""
+                            <img
+                                src="/stock/2024 Toyota Vellfire/cover.jpg"
+                                alt=""
                         className="absolute inset-0 w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-white/20" />
                     <div className="absolute inset-0 bg-gradient-to-t from-white/85 via-white/35 to-white/10" />
                 </div>
-
+                
                 <div className="relative container mx-auto px-4 py-16 md:py-20">
                     <div className="max-w-3xl">
-                        {isToyotaPage && (
+                    {isToyotaPage && (
                             <div className="inline-flex items-center gap-2 bg-white/90 border border-black/10 px-4 py-2 rounded-full mb-6">
                                 <span className="text-xs font-bold tracking-widest uppercase text-text-heading">{t('Brand Showcase', '品牌专题')}</span>
                                 <span className="text-xs text-text-muted">|</span>
                                 <span className="text-xs text-text-body">{t('Alphard / Vellfire', '埃尔法 / 威尔法')}</span>
-                            </div>
-                        )}
+                    </div>
+                    )}
                         <h1 className="text-4xl md:text-6xl font-black mb-4 text-text-heading">{pageTitle}</h1>
                         <p className="text-text-body max-w-3xl text-lg leading-relaxed">{pageDesc}</p>
 
-                        {isToyotaPage && (
+                    {isToyotaPage && (
                             <div className="mt-8 flex flex-wrap gap-3 text-sm">
                                 <span className="px-4 py-2 rounded-full bg-white/90 border border-black/10 text-text-heading font-semibold">
-                                    {filteredCars.length} {t('Available', '在库')}
-                                </span>
+                                {filteredCars.length} {t('Available', '在库')}
+                            </span>
                                 <span className="px-4 py-2 rounded-full bg-white/90 border border-black/10 text-text-heading font-semibold">
-                                    {t('Alphard/Vellfire Specialist', '埃尔法/威尔法 专家')}
-                                </span>
+                                {t('Alphard/Vellfire Specialist', '埃尔法/威尔法 专家')}
+                            </span>
                                 <span className="px-4 py-2 rounded-full bg-white/90 border border-black/10 text-text-heading font-semibold">
-                                    {t('Service & Repairs', '保养维修')}
-                                </span>
-                            </div>
-                        )}
-                    </div>
+                                {t('Service & Repairs', '保养维修')}
+                            </span>
+                        </div>
+                    )}
                 </div>
+            </div>
             </header>
 
             {/* Toyota 专题页：增加一个专题介绍区，和 Buy a Car 形成“独立页面”感 */}
@@ -2134,9 +2134,9 @@ const AboutPage = () => {
                     <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6 text-white">
                         <Award size={14} />
                         <span className="text-xs font-bold tracking-widest uppercase">{t('About', '关于')}</span>
-                        <span className="text-xs text-white/60">·</span>
-                        <span className="text-xs text-white/80">{t('Alphard & Vellfire Specialist', '埃尔法 / 威尔法 专家')}</span>
-                    </div>
+                    <span className="text-xs text-white/60">·</span>
+                    <span className="text-xs text-white/80">{t('Alphard & Vellfire Specialist', '埃尔法 / 威尔法 专家')}</span>
+                </div>
                     <h1
                         className="text-4xl md:text-6xl font-bold tracking-tight text-white"
                         style={{ textShadow: '0 2px 24px rgba(0,0,0,0.55)' }}
@@ -2236,15 +2236,15 @@ const AboutPage = () => {
                                 <div className="mt-8 grid gap-4">
                                     {/* Visit / Contact card */}
                                     <div className="bg-slate-950 text-white rounded-2xl p-6">
-                                        <h4 className="font-black text-white mb-4 flex items-center gap-2">
-                                            <MapPin className="text-red-500" size={18} /> {t('Visit / Contact', '到店 / 联系')}
-                                        </h4>
-                                        <div className="space-y-3 text-sm text-white/80">
-                                            <div className="flex items-start gap-3"><span className="text-white/50">{t('Showroom', '展厅')}</span><span className="font-semibold text-white">{SHOWROOM_ADDRESS}</span></div>
-                                            <div className="flex items-start gap-3"><span className="text-white/50">{t('Service', '服务')}</span><span className="font-semibold text-white">{SERVICE_ADDRESS}</span></div>
-                                            <div className="flex items-start gap-3"><span className="text-white/50">{t('Phone', '电话')}</span><a className="font-semibold text-white hover:text-red-300" href={`tel:${SALES_PHONE}`}>{SALES_PHONE_DISPLAY}</a></div>
-                                            <div className="flex items-start gap-3"><span className="text-white/50">{t('WeChat', '微信')}</span><span className="font-semibold text-white">{WECHAT_ID}</span></div>
-                                            <div className="flex items-start gap-3"><span className="text-white/50">{t('Hours', '营业时间')}</span><span className="font-semibold text-white">{t('Daily', '每天')} 10:00 – 5:30</span></div>
+                                    <h4 className="font-black text-white mb-4 flex items-center gap-2">
+                                        <MapPin className="text-red-500" size={18} /> {t('Visit / Contact', '到店 / 联系')}
+                                    </h4>
+                                    <div className="space-y-3 text-sm text-white/80">
+                                        <div className="flex items-start gap-3"><span className="text-white/50">{t('Showroom', '展厅')}</span><span className="font-semibold text-white">{SHOWROOM_ADDRESS}</span></div>
+                                        <div className="flex items-start gap-3"><span className="text-white/50">{t('Service', '服务')}</span><span className="font-semibold text-white">{SERVICE_ADDRESS}</span></div>
+                                        <div className="flex items-start gap-3"><span className="text-white/50">{t('Phone', '电话')}</span><a className="font-semibold text-white hover:text-red-300" href={`tel:${SALES_PHONE}`}>{SALES_PHONE_DISPLAY}</a></div>
+                                        <div className="flex items-start gap-3"><span className="text-white/50">{t('WeChat', '微信')}</span><span className="font-semibold text-white">{WECHAT_ID}</span></div>
+                                        <div className="flex items-start gap-3"><span className="text-white/50">{t('Hours', '营业时间')}</span><span className="font-semibold text-white">{t('Daily', '每天')} 10:00 – 5:30</span></div>
                                         </div>
                                     </div>
 
@@ -2556,14 +2556,14 @@ const ServicesPage = () => {
                             <div className="mt-8 flex flex-col sm:flex-row gap-3">
                                 <Link to="/contact" className="toyota-btn-primary py-4 px-10">
                                     {t('Book a Service', '预约服务')}
-                                </Link>
+                </Link>
                                 <a
                                     href={`tel:${SERVICE_PHONE}`}
                                     className="toyota-btn-secondary py-4 px-10 flex items-center justify-center gap-2 bg-white/15 border-white/25 text-white hover:bg-white/20"
                                 >
                                     <Phone size={18} /> {SERVICE_PHONE_DISPLAY}
                                 </a>
-                            </div>
+            </div>
                         </div>
                     </div>
                 </div>
@@ -2971,8 +2971,7 @@ export function AppContent() {
                 label: 'Services',
                 to: '/services',
                 dropdown: [
-                    { label: t('Maintenance', '保养'), to: '/services#maintenance' },
-                    { label: t('Repairs', '维修'), to: '/services#repairs' },
+                    { label: t('Maintenance & Repairs', '保养与维修'), to: '/services' },
                     { label: t('Enquire / Book', '咨询 / 预约'), to: '/contact' },
                 ],
             },
@@ -3043,18 +3042,18 @@ export function AppContent() {
                                         {item.label}
                                     </a>
                                 ) : (
-                                    <Link
+                                <Link
                                         key={Key}
                                         to={item.to}
                                         className="block w-full text-left px-3 py-2.5 text-sm font-semibold text-text-body hover:bg-surface rounded-lg transition-colors"
                                     >
                                         {item.label}
-                                    </Link>
+                                </Link>
                                 );
                             })}
                         </div>
+                        </div>
                     </div>
-                </div>
             ) : null}
         </div>
     );
@@ -3071,7 +3070,7 @@ export function AppContent() {
                         <Link to="/" className="flex items-center gap-3">
                             <img src={LOGO_URL} alt="Logo" className="h-10 w-auto object-contain" />
                             <span className="sr-only">{BRAND_NAME}</span>
-                        </Link>
+                    </Link>
 
                         {/* Primary nav */}
                         <div className="hidden md:flex items-center gap-10 h-full">
@@ -3151,7 +3150,7 @@ export function AppContent() {
                                 <li><Link to="/inventory?q=gac" className="hover:text-brand transition-colors">GAC</Link></li>
                                 <li><Link to="/inventory" className="hover:text-brand transition-colors">{t('All vehicles', '全部车辆')}</Link></li>
                             </ul>
-                        </div>
+                            </div>
 
                         {/* Column 2: Shop */}
                         <div>
@@ -3161,14 +3160,13 @@ export function AppContent() {
                                 <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Accessories', '配件')}</Link></li>
                                 <li><Link to="/sell" className="hover:text-brand transition-colors">{t('Trade-in', '以旧换新')}</Link></li>
                             </ul>
-                        </div>
+                            </div>
 
                         {/* Column 3: Services */}
                         <div>
                             <h5 className="font-bold text-text-heading text-sm mb-4">{t('Services', '服务')}</h5>
                             <ul className="space-y-2.5 text-sm">
-                                <li><Link to="/services#maintenance" className="hover:text-brand transition-colors">{t('Maintenance', '保养')}</Link></li>
-                                <li><Link to="/services#repairs" className="hover:text-brand transition-colors">{t('Repairs', '维修')}</Link></li>
+                                <li><Link to="/services" className="hover:text-brand transition-colors">{t('Maintenance & Repairs', '保养与维修')}</Link></li>
                                 <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Enquire / Book', '咨询 / 预约')}</Link></li>
                             </ul>
                         </div>
@@ -3181,7 +3179,7 @@ export function AppContent() {
                                 <li><Link to="/owners" className="hover:text-brand transition-colors">{t('Owner resources', '车主资源')}</Link></li>
                                 <li><Link to="/support" className="hover:text-brand transition-colors">{t('Roadside assist', '道路救援')}</Link></li>
                             </ul>
-                        </div>
+                            </div>
 
                         {/* Column 5: Explore */}
                         <div>
@@ -3201,8 +3199,8 @@ export function AppContent() {
                                 <li><Link to="/support" className="hover:text-brand transition-colors">{t('FAQs', '常见问题')}</Link></li>
                                 <li><a href={`tel:${SALES_PHONE}`} className="hover:text-brand transition-colors">{SALES_PHONE_DISPLAY}</a></li>
                             </ul>
+                            </div>
                         </div>
-                    </div>
                 </div>
 
                 {/* Contact Bar */}
@@ -3211,11 +3209,11 @@ export function AppContent() {
                         <div className="max-w-site mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                             <div className="flex items-center gap-4">
                                 <img src={LOGO_URL} alt="Logo" className="h-10 w-auto object-contain" />
-                                <div>
+                        <div>
                                     <p className="font-bold text-text-heading">{BRAND_NAME}</p>
                                     <p className="text-sm text-text-muted">{t('Premium Alphard & Vellfire Specialist', 'Alphard & Vellfire 专营')}</p>
-                                </div>
-                            </div>
+                        </div>
+                    </div>
                             <div className="flex flex-wrap items-center gap-4">
                                 <a href={`https://www.google.com/maps?q=${encodeURIComponent(SHOWROOM_ADDRESS)}`} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm hover:text-brand transition-colors">
                                     <MapPin size={16} className="text-brand" />
@@ -3239,7 +3237,7 @@ export function AppContent() {
                 <div className="border-t border-black/5">
                     <div className="container mx-auto px-6 py-6">
                         <div className="max-w-site mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-text-muted">
-                            <p>&copy; 2026 {BRAND_NAME}. {t('All rights reserved.', '保留所有权利。')}</p>
+                        <p>&copy; 2026 {BRAND_NAME}. {t('All rights reserved.', '保留所有权利。')}</p>
                             <div className="flex flex-wrap justify-center gap-6">
                                 <Link to="/support" className="hover:text-text-body transition-colors">{t('Privacy policy', '隐私政策')}</Link>
                                 <Link to="/support" className="hover:text-text-body transition-colors">{t('Conditions of use', '使用条款')}</Link>
