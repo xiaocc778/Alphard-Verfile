@@ -47,11 +47,12 @@ const PROMO_VIDEO = {
 
 // --- 🛠️ 核心工具：图片路径生成器 ---
 const getCarImage = (folderName, imageCount, type = 'cover', car = null) => {
-    // Prefer explicit URLs if provided (e.g. scraped cover images)
-    if (car && type === 'cover' && car.coverUrl) return car.coverUrl;
+    // Prefer explicit gallery URLs if provided (e.g. scraped galleries)
     if (car && type === 'gallery' && Array.isArray(car.galleryUrls)) return car.galleryUrls;
 
     if (!folderName) {
+        // If we don't have local stock, fall back to scraped cover URL if present.
+        if (car && type === 'cover' && car.coverUrl) return car.coverUrl;
         if (type === 'cover') return "https://images.unsplash.com/photo-1600661653561-629509216228?auto=format&fit=crop&q=80&w=1000";
         return ["https://images.unsplash.com/photo-1600661653561-629509216228?auto=format&fit=crop&q=80&w=1000"];
     }
@@ -225,7 +226,22 @@ const CarCard = ({ car }) => {
                 <img
                     src={imageUrl}
                     alt={car.title}
-                    onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1600661653561-629509216228?auto=format&fit=crop&q=80&w=1000"; }}
+                    onError={(e) => {
+                        const img = e.currentTarget;
+                        const src = img.getAttribute('src') || '';
+                        const folder = car?.folderName;
+                        // If cover (2) missing, try fullwidth variant, then cover.jpg.
+                        if (folder && (src.includes('cover%20(2).jpg') || src.includes('cover (2).jpg'))) {
+                            const triedFullwidth = src.includes('cover%EF%BC%882%EF%BC%89.jpg') || src.includes('cover（2）.jpg');
+                            if (!triedFullwidth) {
+                                img.setAttribute('src', encodeURI(`/stock/${folder}/cover（2）.jpg`));
+                                return;
+                            }
+                            img.setAttribute('src', encodeURI(`/stock/${folder}/cover.jpg`));
+                            return;
+                        }
+                        img.setAttribute('src', "https://images.unsplash.com/photo-1600661653561-629509216228?auto=format&fit=crop&q=80&w=1000");
+                    }}
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                 />
                 {/* Gradient Overlay */}
@@ -3065,6 +3081,10 @@ export function AppContent() {
             if (!car) return null;
             const rawFolder = typeof car.folderName === 'string' ? car.folderName.trim() : '';
             if (rawFolder && stockFolderSet.has(rawFolder)) return rawFolder;
+
+            // Safety: if imported data doesn't specify a folder, do NOT guess.
+            // Otherwise we may accidentally "invent" local stock for a scraped listing.
+            if (!rawFolder) return null;
 
             const hay = `${car.title || ''} ${rawFolder}`.toLowerCase();
             const isAlphard = hay.includes('alphard');
