@@ -1295,6 +1295,14 @@ const AlphardHomePage = ({ cars }) => {
     const safeCars = cars || [];
     useParallaxHero();
 
+    const heroSlides = useMemo(() => [
+        '/stock/back/hero-alphard.jpg.jpg',
+        '/stock/2024 Toyota Vellfire/cover.jpg',
+        '/stock/25 Toyota Vellfire Executive Lounge/cover.jpg',
+        '/stock/2023 Toyota Alphard 2.5L/cover.jpg',
+        '/stock/2025 Toyota Voxy (BRAND NEW)/cover.jpg',
+    ], []);
+
     const alphardVellfireCount = safeCars.filter(car => {
         const searchStr = `${car.title} ${car.folderName}`.toLowerCase();
         return searchStr.includes('alphard') || searchStr.includes('vellfire');
@@ -1346,7 +1354,7 @@ const AlphardHomePage = ({ cars }) => {
                 <div ref={triggerRef} className="h-1 w-full" aria-hidden="true" />
             </section>
 
-            <HeroSection t={t} copyVisible={heroCopyVisible} onExplore={() => navigate('/inventory')} />
+            <HeroSection t={t} copyVisible={heroCopyVisible} onExplore={() => navigate('/inventory')} slides={heroSlides} />
 
             <main className="relative z-10 bg-white">
                 {/* ========== 1. FIND YOUR IDEAL VEHICLE ========== */}
