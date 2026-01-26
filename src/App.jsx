@@ -1637,7 +1637,7 @@ const InventoryPage = ({ cars, category }) => {
         // 特殊处理：Alphard/Vellfire 页面
         if (category === 'toyota') {
             const searchStr = `${car.title || ''} ${car.folderName || ''}`.toLowerCase();
-            if (!searchStr.includes('alphard') && !searchStr.includes('vellfire')) {
+            if (!searchStr.includes('alphard') && !searchStr.includes('vellfire') && !searchStr.includes('gac')) {
                 return false;
             }
             // Toyota 页面不需要再筛选品牌
@@ -1718,7 +1718,7 @@ const InventoryPage = ({ cars, category }) => {
         if (tempFilters.sortBy && tempFilters.sortBy !== 'newest') params.set('sort', tempFilters.sortBy);
         
         // 更新 URL（这会触发 useEffect 来更新 appliedFilters）
-        const basePath = category === 'toyota' ? '/brands/alphard-vellfire' : '/inventory';
+        const basePath = '/inventory';
         const queryString = params.toString();
         navigate(queryString ? `${basePath}?${queryString}` : basePath);
     };
@@ -1733,8 +1733,7 @@ const InventoryPage = ({ cars, category }) => {
             sortBy: 'newest'
         };
         setTempFilters(defaultFilters);
-        const basePath = category === 'toyota' ? '/brands/alphard-vellfire' : '/inventory';
-        navigate(basePath);
+        navigate('/inventory');
     };
 
     // 页面标题
@@ -1742,8 +1741,8 @@ const InventoryPage = ({ cars, category }) => {
     let pageDesc = t('Browse our selection of quality pre-owned vehicles.', '浏览我们精选的优质二手车。');
 
     if (category === 'toyota') {
-        pageTitle = t('Toyota Alphard & Vellfire', '丰田埃尔法 / 威尔法');
-        pageDesc = t('Alphard/Vellfire showcase · Focused premium MPV selection.', '埃尔法/威尔法 专题页 · 更聚焦、更高端的 MPV 选择');
+        pageTitle = t('Alphard / Vellfire / GAC', '埃尔法 / 威尔法 / GAC');
+        pageDesc = t('Model series · Jump to each section from the Models menu.', '车型系列 · 可从 Models 菜单快速跳转到对应分区');
     } else if (appliedFilters.brand) {
         pageTitle = `${appliedFilters.brand} — ${t('Buy a Car', '选购车辆')}`;
         pageDesc = t(`Browse our ${appliedFilters.brand} collection`, `浏览 ${appliedFilters.brand} 车型集合`);
@@ -1784,7 +1783,7 @@ const InventoryPage = ({ cars, category }) => {
     const activeTags = getActiveFilterTags();
 
     const isToyotaPage = category === 'toyota';
-    const basePath = isToyotaPage ? '/brands/alphard-vellfire' : '/inventory';
+    const basePath = '/inventory';
 
     const removeFilter = (key) => {
         const params = new URLSearchParams(location.search);
@@ -1796,6 +1795,46 @@ const InventoryPage = ({ cars, category }) => {
         const queryString = params.toString();
         navigate(queryString ? `${basePath}?${queryString}` : basePath);
     };
+
+    const getSeriesKey = (car) => {
+        const searchStr = `${car?.title || ''} ${car?.folderName || ''}`.toLowerCase();
+        if (searchStr.includes('alphard')) return 'alphard';
+        if (searchStr.includes('vellfire')) return 'vellfire';
+        if (searchStr.includes('gac')) return 'gac';
+        return 'other';
+    };
+
+    const seriesTotals = useMemo(() => {
+        const totals = { alphard: 0, vellfire: 0, gac: 0, other: 0 };
+        filteredCars.forEach((car) => {
+            const key = getSeriesKey(car);
+            totals[key] = (totals[key] || 0) + 1;
+        });
+        return totals;
+    }, [filteredCars]);
+
+    const seriesVisible = useMemo(() => {
+        const grouped = { alphard: [], vellfire: [], gac: [], other: [] };
+        displayedCars.forEach((car) => {
+            const key = getSeriesKey(car);
+            grouped[key].push(car);
+        });
+        return grouped;
+    }, [displayedCars]);
+
+    useEffect(() => {
+        if (!location.hash) return;
+        const id = location.hash.replace('#', '');
+        const scroll = () => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const yOffset = -96; // sticky header offset
+            const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+        };
+        // Wait for layout/render (esp. when navigating from another page)
+        requestAnimationFrame(scroll);
+    }, [location.hash, displayedCars.length]);
 
     return (
         <div className="min-h-screen bg-page pb-20">
@@ -1974,9 +2013,58 @@ const InventoryPage = ({ cars, category }) => {
                     </div>
                 ) : (
                     <>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                            {displayedCars.map(car => <CarCard key={car.id} car={car} />)}
-                        </div>
+                        {isToyotaPage ? (
+                            <div id="all" className="space-y-12 scroll-mt-24">
+                                {[
+                                    {
+                                        key: 'alphard',
+                                        title: 'Alphard',
+                                        sub: t('Luxury people mover', '豪华 MPV'),
+                                    },
+                                    {
+                                        key: 'vellfire',
+                                        title: 'Vellfire',
+                                        sub: t('Sport-lux MPV', '运动豪华 MPV'),
+                                    },
+                                    {
+                                        key: 'gac',
+                                        title: 'GAC',
+                                        sub: t('Premium MPV series', '高端 MPV 系列'),
+                                    },
+                                ].map((sec) => (
+                                    <section key={sec.key} id={sec.key} className="scroll-mt-24">
+                                        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2 mb-5">
+                                            <div>
+                                                <h3 className="text-2xl md:text-3xl font-black text-text-heading">{sec.title}</h3>
+                                                <p className="text-text-muted text-sm mt-1">{sec.sub}</p>
+                                            </div>
+                                            <div className="text-sm text-text-muted font-semibold">
+                                                {seriesTotals[sec.key] || 0} {t('vehicles', '车辆')}
+                                            </div>
+                                        </div>
+
+                                        {(seriesTotals[sec.key] || 0) === 0 ? (
+                                            <div className="toyota-card p-8 text-center">
+                                                <p className="text-text-body font-semibold">{t('No vehicles in this series right now.', '当前暂无该系列车辆。')}</p>
+                                                <button onClick={() => navigate('/contact')} className="mt-4 toyota-btn-primary px-7 py-3">
+                                                    {t('Enquire', '咨询')}
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                                {seriesVisible[sec.key].map((car) => (
+                                                    <CarCard key={car.id} car={car} />
+                                                ))}
+                                            </div>
+                                        )}
+                                    </section>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                                {displayedCars.map(car => <CarCard key={car.id} car={car} />)}
+                            </div>
+                        )}
                         
                         {/* Load More */}
                         {visibleCount < filteredCars.length && (
@@ -2964,10 +3052,10 @@ export function AppContent() {
                 label: 'Models',
                 to: '/inventory',
                 dropdown: [
-                    { label: 'Alphard', to: '/inventory?q=alphard' },
-                    { label: 'Vellfire', to: '/inventory?q=vellfire' },
-                    { label: 'GAC', to: '/inventory?q=gac' },
-                    { label: t('All vehicles', '全部车辆'), to: '/inventory' },
+                    { label: 'Alphard', to: '/inventory#alphard' },
+                    { label: 'Vellfire', to: '/inventory#vellfire' },
+                    { label: 'GAC', to: '/inventory#gac' },
+                    { label: t('All vehicles', '全部车辆'), to: '/inventory#all' },
                 ],
             },
             {
@@ -3155,10 +3243,10 @@ export function AppContent() {
                         <div>
                             <h5 className="font-bold text-text-heading text-sm mb-4">{t('Models', '车型')}</h5>
                             <ul className="space-y-2.5 text-sm">
-                                <li><Link to="/inventory?q=alphard" className="hover:text-brand transition-colors">Alphard</Link></li>
-                                <li><Link to="/inventory?q=vellfire" className="hover:text-brand transition-colors">Vellfire</Link></li>
-                                <li><Link to="/inventory?q=gac" className="hover:text-brand transition-colors">GAC</Link></li>
-                                <li><Link to="/inventory" className="hover:text-brand transition-colors">{t('All vehicles', '全部车辆')}</Link></li>
+                                <li><Link to="/inventory#alphard" className="hover:text-brand transition-colors">Alphard</Link></li>
+                                <li><Link to="/inventory#vellfire" className="hover:text-brand transition-colors">Vellfire</Link></li>
+                                <li><Link to="/inventory#gac" className="hover:text-brand transition-colors">GAC</Link></li>
+                                <li><Link to="/inventory#all" className="hover:text-brand transition-colors">{t('All vehicles', '全部车辆')}</Link></li>
                             </ul>
                             </div>
 
