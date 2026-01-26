@@ -2326,8 +2326,16 @@ const ContactPage = () => {
                     <Phone size={14} />
                     <span className="text-xs font-bold tracking-widest uppercase">{t('Contact', '联系')}</span>
                 </div>
-                <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{t('Get in Touch', '联系我们')}</h1>
-                <p className="text-white/90 mt-5 max-w-2xl mx-auto text-lg">
+                <h1
+                    className="text-4xl md:text-6xl font-bold tracking-tight !text-white"
+                    style={{ textShadow: '0 2px 22px rgba(0,0,0,0.55)' }}
+                >
+                    {t('Get in Touch', '联系我们')}
+                </h1>
+                <p
+                    className="mt-5 max-w-2xl mx-auto text-lg !text-white/90"
+                    style={{ textShadow: '0 1px 14px rgba(0,0,0,0.45)' }}
+                >
                     {t('Homebush showroom · Clyde service center', 'Homebush 展厅 · Clyde 服务中心')}
                 </p>
             </div>
