@@ -2311,11 +2311,15 @@ const ContactPage = () => {
 
     return (
     <div className="min-h-screen bg-white">
-        {/* Hero - clean red gradient */}
-        <header className="relative overflow-hidden bg-gradient-to-br from-brand via-red-600 to-red-700">
-            <div className="absolute inset-0 opacity-10">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(255,255,255,0.2),transparent_50%)]" />
-            </div>
+        {/* Hero - image background */}
+        <header className="relative overflow-hidden h-[58vh] min-h-[440px]">
+            <div
+                className="absolute inset-0 bg-cover bg-center"
+                style={{ backgroundImage: "url('/stock/2023 Toyota Alphard 2.5L/cover.jpg')" }}
+                aria-hidden="true"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" aria-hidden="true" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-black/30" aria-hidden="true" />
 
             <div className="relative z-10 container mx-auto px-6 py-20 md:py-28 text-center text-white">
                 <div className="inline-flex items-center gap-2 bg-white/20 border border-white/30 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
@@ -2998,7 +3002,6 @@ export function AppContent() {
                 dropdown: [
                     { label: t('Contact us', '联系我们'), to: '/contact' },
                     { label: t('FAQs', '常见问题'), to: '/support' },
-                    { label: SALES_PHONE_DISPLAY, to: `tel:${SALES_PHONE}` },
                 ],
             },
         ],
