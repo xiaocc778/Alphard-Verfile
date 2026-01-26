@@ -2979,8 +2979,7 @@ export function AppContent() {
                 label: 'Owners',
                 to: '/owners',
                 dropdown: [
-                    { label: t('Warranty', '质保'), to: '/owners' },
-                    { label: t('Owner resources', '车主资源'), to: '/owners' },
+                    { label: t('Warranty & Resources', '质保与资源'), to: '/owners' },
                     { label: t('Roadside assist', '道路救援'), to: '/support' },
                 ],
             },
@@ -3175,8 +3174,7 @@ export function AppContent() {
                         <div>
                             <h5 className="font-bold text-text-heading text-sm mb-4">{t('Owners', '车主')}</h5>
                             <ul className="space-y-2.5 text-sm">
-                                <li><Link to="/owners" className="hover:text-brand transition-colors">{t('Warranty', '质保')}</Link></li>
-                                <li><Link to="/owners" className="hover:text-brand transition-colors">{t('Owner resources', '车主资源')}</Link></li>
+                                <li><Link to="/owners" className="hover:text-brand transition-colors">{t('Warranty & Resources', '质保与资源')}</Link></li>
                                 <li><Link to="/support" className="hover:text-brand transition-colors">{t('Roadside assist', '道路救援')}</Link></li>
                             </ul>
                             </div>
