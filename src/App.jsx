@@ -23,8 +23,8 @@ const useLanguage = () => {
 };
 
 // --- Configuration ---
-const LOGO_URL = "https://static.wixstatic.com/media/943eef_77866c00442d480bbe5b61d50c9bb6bb~mv2.jpg/v1/fill/w_387,h_269,al_c,lg_1,q_80,enc_avif,quality_auto/image_edited.jpg";
-const BRAND_NAME = "BEST AUTO";
+const LOGO_URL = "/best-auto.svg";
+const BRAND_NAME = "Best Auto";
 const SALES_PHONE = "+61431618668";
 const SALES_PHONE_DISPLAY = "0431 618 668";
 const SERVICE_PHONE = "+61298973406";
