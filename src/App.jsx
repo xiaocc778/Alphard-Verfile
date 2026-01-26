@@ -3291,7 +3291,6 @@ export function AppContent() {
                             <ul className="space-y-2.5 text-sm">
                                 <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Contact us', '联系我们')}</Link></li>
                                 <li><Link to="/support" className="hover:text-brand transition-colors">{t('FAQs', '常见问题')}</Link></li>
-                                <li><a href={`tel:${SALES_PHONE}`} className="hover:text-brand transition-colors">{SALES_PHONE_DISPLAY}</a></li>
                             </ul>
                             </div>
                         </div>
