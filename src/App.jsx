@@ -3054,8 +3054,6 @@ export function AppContent() {
                 dropdown: [
                     { label: 'Alphard', to: '/inventory#alphard' },
                     { label: 'Vellfire', to: '/inventory#vellfire' },
-                    { label: 'GAC', to: '/inventory#gac' },
-                    { label: t('All vehicles', '全部车辆'), to: '/inventory#all' },
                 ],
             },
             {
@@ -3245,8 +3243,6 @@ export function AppContent() {
                             <ul className="space-y-2.5 text-sm">
                                 <li><Link to="/inventory#alphard" className="hover:text-brand transition-colors">Alphard</Link></li>
                                 <li><Link to="/inventory#vellfire" className="hover:text-brand transition-colors">Vellfire</Link></li>
-                                <li><Link to="/inventory#gac" className="hover:text-brand transition-colors">GAC</Link></li>
-                                <li><Link to="/inventory#all" className="hover:text-brand transition-colors">{t('All vehicles', '全部车辆')}</Link></li>
                             </ul>
                             </div>
 
