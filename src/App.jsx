@@ -1507,7 +1507,20 @@ const AlphardHomePage = ({ cars }) => {
                                         onClick={() => navigate(`/vehicle/${car.id}`)}
                                     >
                                         <div className="relative h-52">
-                                            <img src={getCarImage(car.folderName, car.imageCount, 'cover', car)} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                            <img
+                                                src={getCarImage(car.folderName, car.imageCount, 'cover', car)}
+                                                alt=""
+                                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                onError={(e) => {
+                                                    const img = e.currentTarget;
+                                                    const src = img.getAttribute('src') || '';
+                                                    if (car?.folderName && (src.includes('cover%20(2).jpg') || src.includes('cover (2).jpg'))) {
+                                                        img.setAttribute('src', encodeURI(`/stock/${car.folderName}/cover.jpg`));
+                                                        return;
+                                                    }
+                                                    img.setAttribute('src', "https://images.unsplash.com/photo-1600661653561-629509216228?auto=format&fit=crop&q=80&w=1000");
+                                                }}
+                                            />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                                             <span className="absolute top-4 left-4 bg-white text-[10px] font-bold uppercase tracking-[0.15em] px-3 py-1.5 rounded-full">
                                                 {t('New Arrival', '新到')}
