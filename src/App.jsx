@@ -23,7 +23,7 @@ const useLanguage = () => {
 };
 
 // --- Configuration ---
-const LOGO_URL = "/best-auto.svg";
+const LOGO_URL = "/brand.jpg";
 const BRAND_NAME = "Best Auto";
 const SALES_PHONE = "+61431618668";
 const SALES_PHONE_DISPLAY = "0431 618 668";
