@@ -134,6 +134,7 @@ const ScrollToTop = () => {
 };
 
 const useScrollReveal = () => {
+    const { pathname } = useLocation();
     useEffect(() => {
         if (typeof window === 'undefined') return;
         const elements = Array.from(document.querySelectorAll('[data-reveal]'));
@@ -155,7 +156,7 @@ const useScrollReveal = () => {
         );
         elements.forEach((el) => observer.observe(el));
         return () => observer.disconnect();
-    }, []);
+    }, [pathname]);
 };
 
 const useParallaxHero = () => {
@@ -1292,7 +1293,6 @@ const AlphardHomePage = ({ cars }) => {
     const navigate = useNavigate();
     const { t } = useLanguage();
     const safeCars = cars || [];
-    useScrollReveal();
     useParallaxHero();
 
     const alphardVellfireCount = safeCars.filter(car => {
@@ -3019,6 +3019,7 @@ export function AppContent() {
     const location = useLocation();
     const { lang, t, toggleLang } = useLanguage();
     const { cars, source, setImportedCars, clearImportedCars } = useCarsData({ defaultCars: carsFromData });
+    useScrollReveal();
 
     const stockFolderSet = useMemo(() => new Set(STOCK_FOLDERS), []);
 
@@ -3219,7 +3220,8 @@ export function AppContent() {
             )}
 
             <main className="flex-grow">
-                <Routes>
+                <div key={`${location.pathname}${location.search}`} className="page-enter">
+                    <Routes>
                     <Route path="/" element={<AlphardHomePage cars={carsWithLocalStock} />} />
                     <Route path="/inventory" element={<InventoryPage cars={carsWithLocalStock} category="toyota" />} />
                     <Route path="/vehicle/:id" element={<CarDetailPage cars={carsWithLocalStock} />} />
@@ -3229,7 +3231,8 @@ export function AppContent() {
                     <Route path="/owners" element={<OwnersPage />} />
                     <Route path="/support" element={<SupportPage />} />
                     <Route path="/contact" element={<ContactPage />} />
-                </Routes>
+                    </Routes>
+                </div>
             </main>
 
             {/* ========== TOYOTA-STYLE FOOTER ========== */}
