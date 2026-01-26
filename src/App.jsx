@@ -8,7 +8,7 @@ import HeroSection from './components/HeroSection.jsx';
 import { cars as carsFromData } from './carsData.js';
 import { useCarsData } from './hooks/useCarsData.js';
 import ImportPage from './admin/ImportPage.jsx';
-import { STOCK_FOLDERS } from './stockManifest.js';
+import { STOCK_FOLDERS, STOCK_COVER2 } from './stockManifest.js';
 
 // --- Language ---
 const LANGUAGE_STORAGE_KEY = 'bestauto.language';
@@ -45,6 +45,13 @@ const PROMO_VIDEO = {
     poster: "/stock/2024 Toyota Vellfire/cover (2).jpg",
 };
 
+const getLocalCover = (folderName) => {
+    if (!folderName) return null;
+    const cover2 = STOCK_COVER2?.[folderName];
+    if (cover2) return encodeURI(`/stock/${folderName}/${cover2}`);
+    return `/stock/${folderName}/cover.jpg`;
+};
+
 // --- 🛠️ 核心工具：图片路径生成器 ---
 const getCarImage = (folderName, imageCount, type = 'cover', car = null) => {
     // Prefer explicit gallery URLs if provided (e.g. scraped galleries)
@@ -57,14 +64,9 @@ const getCarImage = (folderName, imageCount, type = 'cover', car = null) => {
         return ["https://images.unsplash.com/photo-1600661653561-629509216228?auto=format&fit=crop&q=80&w=1000"];
     }
     if (type === 'cover') {
-        const hay = `${folderName} ${car?.title || ''}`;
-        const isAlphardOrVellfire = /alphard|vellfire/i.test(hay);
-        if (isAlphardOrVellfire) {
-            // Backend renamed primary cover to "cover (2).jpg" for Alphard/Vellfire series.
-            // Use it as first choice; <img onError> will fall back to cover.jpg if missing.
-            return encodeURI(`/stock/${folderName}/cover (2).jpg`);
-        }
-        return `/stock/${folderName}/cover.jpg`;
+        // Prefer user-curated cover2 naming if present in this folder.
+        const local = getLocalCover(folderName);
+        return local || `/stock/${folderName}/cover.jpg`;
     }
     const count = imageCount || 0;
     if (count === 0) return [];
@@ -1182,10 +1184,10 @@ const HomePage = ({ cars }) => {
 
                     {/* Image Gallery - 3 cars */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                        {[
-                            { img: "/stock/25 Toyota Vellfire Executive Lounge/cover.jpg", name: "2025 Vellfire Executive Lounge", price: "$168,990" },
-                            { img: "/stock/2024 Toyota Vellfire/cover.jpg", name: "2024 Vellfire Hybrid", price: "$115,990" },
-                            { img: "/stock/2023 Toyota Alphard 2.5L/cover.jpg", name: "2023 Alphard 2.5L", price: "$98,990" },
+                            {[
+                            { folder: "25 Toyota Vellfire Executive Lounge", name: "2025 Vellfire Executive Lounge", price: "$168,990" },
+                            { folder: "2024 Toyota Vellfire", name: "2024 Vellfire Hybrid", price: "$115,990" },
+                            { folder: "2023 Toyota Alphard 2.5L", name: "2023 Alphard 2.5L", price: "$98,990" },
                         ].map((car, idx) => (
                             <div 
                                 key={idx} 
@@ -1193,7 +1195,7 @@ const HomePage = ({ cars }) => {
                                 className="group relative rounded-2xl overflow-hidden cursor-pointer h-72"
                             >
                                 <img 
-                                    src={car.img} 
+                                    src={getLocalCover(car.folder)} 
                                     alt={car.name}
                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                     onError={(e) => { e.target.src = "/stock/21 Toyota Alphard/cover.jpg"; }}
@@ -1231,7 +1233,7 @@ const HomePage = ({ cars }) => {
                             onClick={openAlphardSite}
                             className="bg-red-600 hover:bg-red-500 text-white font-bold py-4 px-8 rounded-full transition-all shadow-lg shadow-red-600/30 flex items-center gap-3 whitespace-nowrap"
                         >
-                            {t('View all', '查看全部')} {alphardVellfireCount}+ {t('vehicles', '台')}
+                            {t('View all', '查看全部')} {alphardVellfireCount} {t('Alphard/Vellfire', '埃尔法/威尔法')}
                             <ArrowRight size={18} />
                         </button>
                     </div>
@@ -1573,7 +1575,7 @@ const AlphardHomePage = ({ cars }) => {
                             onClick={() => navigate('/inventory')}
                                     className="toyota-btn-secondary px-6 py-3"
                         >
-                                    {t('View all', '查看全部')} {safeCars.length} {t('vehicles', '台')}
+                                    {t('View all', '查看全部')} {alphardVellfireCount} {t('Alphard/Vellfire', '埃尔法/威尔法')}
                         </button>
                     </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
