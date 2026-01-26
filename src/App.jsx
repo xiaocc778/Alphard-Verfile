@@ -2936,8 +2936,7 @@ export function AppContent() {
                 dropdown: [
                     { label: t('Maintenance', '保养'), to: '/services' },
                     { label: t('Repairs', '维修'), to: '/services' },
-                    { label: t('Book a service', '预约服务'), to: '/contact' },
-                    { label: t('Finance enquiry', '金融咨询'), to: '/contact' },
+                    { label: t('Enquire / Book', '咨询 / 预约'), to: '/contact' },
                 ],
             },
             {
