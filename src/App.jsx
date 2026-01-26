@@ -1308,8 +1308,7 @@ const AlphardHomePage = ({ cars }) => {
         return searchStr.includes('alphard') || searchStr.includes('vellfire');
     }).length;
 
-    // Hero copy reveal: trigger is at bottom of Welcome section
-    // When trigger scrolls out of viewport, show Hero copy
+    // Hero copy reveal: hidden at top, fade in after scrolling past Welcome section.
     const triggerRef = React.useRef(null);
     const [heroCopyVisible, setHeroCopyVisible] = useState(false);
 
@@ -1319,22 +1318,22 @@ const AlphardHomePage = ({ cars }) => {
             setHeroCopyVisible(true);
             return;
         }
-
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                // When trigger is NOT intersecting (scrolled out), show copy
-                // When trigger IS intersecting (scrolled back), hide copy
-                setHeroCopyVisible(!entry.isIntersecting);
-            },
-            {
-                root: null,
-                rootMargin: '0px 0px 0px 0px',
-                threshold: 0,
-            }
-        );
-
-        observer.observe(triggerRef.current);
-        return () => observer.disconnect();
+        let rafId = 0;
+        const onScroll = () => {
+            if (!triggerRef.current) return;
+            cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(() => {
+                const rect = triggerRef.current.getBoundingClientRect();
+                // When trigger goes above viewport, show copy; when back in view, hide.
+                setHeroCopyVisible(rect.top < 0);
+            });
+        };
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => {
+            cancelAnimationFrame(rafId);
+            window.removeEventListener('scroll', onScroll);
+        };
     }, []);
 
     return (
