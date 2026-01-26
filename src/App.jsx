@@ -1637,7 +1637,7 @@ const InventoryPage = ({ cars, category }) => {
         // 特殊处理：Alphard/Vellfire 页面
         if (category === 'toyota') {
             const searchStr = `${car.title || ''} ${car.folderName || ''}`.toLowerCase();
-            if (!searchStr.includes('alphard') && !searchStr.includes('vellfire') && !searchStr.includes('gac')) {
+            if (!searchStr.includes('alphard') && !searchStr.includes('vellfire')) {
                 return false;
             }
             // Toyota 页面不需要再筛选品牌
@@ -1741,7 +1741,7 @@ const InventoryPage = ({ cars, category }) => {
     let pageDesc = t('Browse our selection of quality pre-owned vehicles.', '浏览我们精选的优质二手车。');
 
     if (category === 'toyota') {
-        pageTitle = t('Alphard / Vellfire / GAC', '埃尔法 / 威尔法 / GAC');
+        pageTitle = t('Alphard / Vellfire', '埃尔法 / 威尔法');
         pageDesc = t('Model series · Jump to each section from the Models menu.', '车型系列 · 可从 Models 菜单快速跳转到对应分区');
     } else if (appliedFilters.brand) {
         pageTitle = `${appliedFilters.brand} — ${t('Buy a Car', '选购车辆')}`;
@@ -1800,12 +1800,11 @@ const InventoryPage = ({ cars, category }) => {
         const searchStr = `${car?.title || ''} ${car?.folderName || ''}`.toLowerCase();
         if (searchStr.includes('alphard')) return 'alphard';
         if (searchStr.includes('vellfire')) return 'vellfire';
-        if (searchStr.includes('gac')) return 'gac';
         return 'other';
     };
 
     const seriesTotals = useMemo(() => {
-        const totals = { alphard: 0, vellfire: 0, gac: 0, other: 0 };
+        const totals = { alphard: 0, vellfire: 0, other: 0 };
         filteredCars.forEach((car) => {
             const key = getSeriesKey(car);
             totals[key] = (totals[key] || 0) + 1;
@@ -1814,7 +1813,7 @@ const InventoryPage = ({ cars, category }) => {
     }, [filteredCars]);
 
     const seriesVisible = useMemo(() => {
-        const grouped = { alphard: [], vellfire: [], gac: [], other: [] };
+        const grouped = { alphard: [], vellfire: [], other: [] };
         displayedCars.forEach((car) => {
             const key = getSeriesKey(car);
             grouped[key].push(car);
@@ -2025,11 +2024,6 @@ const InventoryPage = ({ cars, category }) => {
                                         key: 'vellfire',
                                         title: 'Vellfire',
                                         sub: t('Sport-lux MPV', '运动豪华 MPV'),
-                                    },
-                                    {
-                                        key: 'gac',
-                                        title: 'GAC',
-                                        sub: t('Premium MPV series', '高端 MPV 系列'),
                                     },
                                 ].map((sec) => (
                                     <section key={sec.key} id={sec.key} className="scroll-mt-24">
