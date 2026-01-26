@@ -2480,12 +2480,49 @@ const SellPage = () => {
 
 const ServicesPage = () => {
     const { t } = useLanguage();
+    const location = useLocation();
     const services = [
-        { icon: Wrench, title: t('Regular Maintenance', '常规保养'), desc: t('Oil changes, filters, brake pads, and scheduled servicing for your Alphard or Vellfire.', '机油更换、滤芯、刹车片及埃尔法/威尔法定期保养。') },
-        { icon: Settings, title: t('Repairs & Diagnostics', '维修与诊断'), desc: t('Expert diagnosis and repair for mechanical, electrical, and electronic systems.', '机械、电气和电子系统的专业诊断与维修。') },
-        { icon: ShieldCheck, title: t('Warranty Support', '质保服务'), desc: t('We honour manufacturer warranties and offer extended protection plans.', '我们履行厂家质保并提供延长保护计划。') },
-        { icon: Car, title: t('Detailing & Care', '美容护理'), desc: t('Interior deep cleaning, paint correction, and ceramic coating services.', '内饰深度清洁、漆面修复和镀晶服务。') },
+        {
+            id: 'maintenance',
+            icon: Wrench,
+            title: t('Regular Maintenance', '常规保养'),
+            desc: t(
+                'Oil changes, filters, brake pads, and scheduled servicing for your Alphard or Vellfire.',
+                '机油更换、滤芯、刹车片及埃尔法/威尔法定期保养。'
+            ),
+        },
+        {
+            id: 'repairs',
+            icon: Settings,
+            title: t('Repairs & Diagnostics', '维修与诊断'),
+            desc: t(
+                'Expert diagnosis and repair for mechanical, electrical, and electronic systems.',
+                '机械、电气和电子系统的专业诊断与维修。'
+            ),
+        },
+        {
+            icon: ShieldCheck,
+            title: t('Warranty Support', '质保服务'),
+            desc: t('We honour manufacturer warranties and offer extended protection plans.', '我们履行厂家质保并提供延长保护计划。'),
+        },
+        {
+            icon: Car,
+            title: t('Detailing & Care', '美容护理'),
+            desc: t('Interior deep cleaning, paint correction, and ceramic coating services.', '内饰深度清洁、漆面修复和镀晶服务。'),
+        },
     ];
+
+    useEffect(() => {
+        if (!location.hash) return;
+        const id = location.hash.replace('#', '');
+        const el = document.getElementById(id);
+        if (!el) return;
+        // Offset for sticky header
+        const yOffset = -96;
+        const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+    }, [location.hash]);
+
     return (
         <div className="min-h-screen bg-white">
             {/* Hero (steering wheel) */}
@@ -2537,7 +2574,7 @@ const ServicesPage = () => {
                 <div className="container mx-auto px-6">
                     <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                         {services.map((svc, idx) => (
-                            <div key={idx} className="toyota-card p-8 flex gap-5">
+                            <div key={idx} id={svc.id} className="toyota-card p-8 flex gap-5 scroll-mt-24">
                                 <div className="w-14 h-14 rounded-full bg-brand/10 text-brand flex-shrink-0 flex items-center justify-center">
                                     <svc.icon size={24} />
                                 </div>
@@ -2934,8 +2971,8 @@ export function AppContent() {
                 label: 'Services',
                 to: '/services',
                 dropdown: [
-                    { label: t('Maintenance', '保养'), to: '/services' },
-                    { label: t('Repairs', '维修'), to: '/services' },
+                    { label: t('Maintenance', '保养'), to: '/services#maintenance' },
+                    { label: t('Repairs', '维修'), to: '/services#repairs' },
                     { label: t('Enquire / Book', '咨询 / 预约'), to: '/contact' },
                 ],
             },
@@ -3120,8 +3157,7 @@ export function AppContent() {
                         <div>
                             <h5 className="font-bold text-text-heading text-sm mb-4">{t('Shop', '选购')}</h5>
                             <ul className="space-y-2.5 text-sm">
-                                <li><Link to="/inventory" className="hover:text-brand transition-colors">{t('New vehicles', '新车')}</Link></li>
-                                <li><Link to="/inventory" className="hover:text-brand transition-colors">{t('Pre-owned', '二手车')}</Link></li>
+                                <li><Link to="/inventory" className="hover:text-brand transition-colors">{t('Vehicles', '车辆库存')}</Link></li>
                                 <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Accessories', '配件')}</Link></li>
                                 <li><Link to="/sell" className="hover:text-brand transition-colors">{t('Trade-in', '以旧换新')}</Link></li>
                             </ul>
@@ -3131,10 +3167,9 @@ export function AppContent() {
                         <div>
                             <h5 className="font-bold text-text-heading text-sm mb-4">{t('Services', '服务')}</h5>
                             <ul className="space-y-2.5 text-sm">
-                                <li><Link to="/services" className="hover:text-brand transition-colors">{t('Maintenance', '保养')}</Link></li>
-                                <li><Link to="/services" className="hover:text-brand transition-colors">{t('Repairs', '维修')}</Link></li>
-                                <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Book a service', '预约服务')}</Link></li>
-                                <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Finance enquiry', '金融咨询')}</Link></li>
+                                <li><Link to="/services#maintenance" className="hover:text-brand transition-colors">{t('Maintenance', '保养')}</Link></li>
+                                <li><Link to="/services#repairs" className="hover:text-brand transition-colors">{t('Repairs', '维修')}</Link></li>
+                                <li><Link to="/contact" className="hover:text-brand transition-colors">{t('Enquire / Book', '咨询 / 预约')}</Link></li>
                             </ul>
                         </div>
 
