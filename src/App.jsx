@@ -52,6 +52,20 @@ const getLocalCover = (folderName) => {
     return `/stock/${folderName}/cover.jpg`;
 };
 
+// Stock folders to hide from the website (unlisted vehicles)
+const HIDDEN_STOCK_FOLDERS = new Set([
+    "24 Ford Ranger Raptor",
+]);
+
+const isHiddenCar = (car) => {
+    if (!car) return false;
+    const folder = typeof car.folderName === 'string' ? car.folderName.trim() : '';
+    if (folder && HIDDEN_STOCK_FOLDERS.has(folder)) return true;
+    const title = typeof car.title === 'string' ? car.title.toLowerCase() : '';
+    if (title.includes('ford ranger raptor')) return true;
+    return false;
+};
+
 // --- 🛠️ 核心工具：图片路径生成器 ---
 const getCarImage = (folderName, imageCount, type = 'cover', car = null) => {
     // Prefer explicit gallery URLs if provided (e.g. scraped galleries)
@@ -3143,7 +3157,7 @@ export function AppContent() {
                 if (resolved && resolved !== car.folderName) return { ...car, folderName: resolved };
                 return car;
             })
-            .filter((car) => car?.folderName && stockFolderSet.has(car.folderName));
+            .filter((car) => car?.folderName && stockFolderSet.has(car.folderName) && !isHiddenCar(car));
     }, [cars, stockFolderSet]);
 
     const brandCounts = useMemo(() => {
