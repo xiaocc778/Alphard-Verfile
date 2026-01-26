@@ -1499,61 +1499,7 @@ const AlphardHomePage = ({ cars }) => {
                     </div>
                 </section>
 
-                {/* ========== 5. EXPLORE MORE ========== */}
-                <section className="py-16 bg-section">
-                    <div className="container mx-auto px-6">
-                        <div className="max-w-site mx-auto">
-                            <h2 className="text-2xl md:text-3xl font-bold text-text-heading mb-10 reveal" data-reveal>
-                                {t('Explore more from Best Auto', '探索更多 Best Auto 服务')}
-                            </h2>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                                {[
-                                    { 
-                                        title: t('Quality Assured', '品质保障'), 
-                                        desc: t('Every vehicle inspected and certified.', '每辆车经过严格检测认证。'),
-                                        icon: <ShieldCheck size={28} className="text-brand" />,
-                                        to: '/about'
-                                    },
-                                    { 
-                                        title: t('Trade-In Service', '以旧换新'), 
-                                        desc: t('Get a fair value for your current vehicle.', '您的座驾，我们高价收购。'),
-                                        icon: <Car size={28} className="text-brand" />,
-                                        to: '/sell'
-                                    },
-                                    { 
-                                        title: t('Current Offers', '优惠活动'), 
-                                        desc: t('Browse deals designed to give you more.', '精选优惠，为您省更多。'),
-                                        icon: <DollarSign size={28} className="text-brand" />,
-                                        to: '/inventory'
-                                    },
-                                    { 
-                                        title: t('Contact Us', '联系我们'), 
-                                        desc: t('Our team speaks English, Mandarin & Cantonese.', '中英粤三语服务，沟通无障碍。'),
-                                        icon: <Phone size={28} className="text-brand" />,
-                                        to: '/contact'
-                                    },
-                                ].map((item, idx) => (
-                                    <div 
-                                        key={item.title} 
-                                        className="toyota-card p-6 cursor-pointer group reveal hover:shadow-lg transition-shadow" 
-                                        data-reveal 
-                                        data-reveal-delay={idx + 1}
-                                        onClick={() => navigate(item.to)}
-                                    >
-                                        <div className="mb-4">{item.icon}</div>
-                                        <h3 className="font-bold text-text-heading group-hover:text-brand transition-colors">{item.title}</h3>
-                                        <p className="text-sm text-text-muted mt-2 hidden md:block">{item.desc}</p>
-                                        <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-brand">
-                                            {t('Tell me more', '了解更多')} <ArrowRight size={14} />
-                                        </span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-                {/* ========== 6. INVENTORY PREVIEW ========== */}
+                {/* ========== 5. INVENTORY PREVIEW ========== */}
                 <section className="py-20 bg-white">
                     <div className="container mx-auto px-6">
                         <div className="max-w-site mx-auto">
@@ -1579,6 +1525,60 @@ const AlphardHomePage = ({ cars }) => {
                     </div>
                 </div>
             </section>
+
+                {/* ========== 6. EXPLORE MORE ========== */}
+                <section className="py-16 bg-section">
+                    <div className="container mx-auto px-6">
+                        <div className="max-w-site mx-auto">
+                            <h2 className="text-2xl md:text-3xl font-bold text-text-heading mb-10 reveal" data-reveal>
+                                {t('Explore more from Best Auto', '探索更多 Best Auto 服务')}
+                            </h2>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                                {[
+                                    {
+                                        title: t('Quality Assured', '品质保障'),
+                                        desc: t('Every vehicle inspected and certified.', '每辆车经过严格检测认证。'),
+                                        icon: <ShieldCheck size={28} className="text-brand" />,
+                                        to: '/about'
+                                    },
+                                    {
+                                        title: t('Trade-In Service', '以旧换新'),
+                                        desc: t('Get a fair value for your current vehicle.', '您的座驾，我们高价收购。'),
+                                        icon: <Car size={28} className="text-brand" />,
+                                        to: '/sell'
+                                    },
+                                    {
+                                        title: t('Current Offers', '优惠活动'),
+                                        desc: t('Browse deals designed to give you more.', '精选优惠，为您省更多。'),
+                                        icon: <DollarSign size={28} className="text-brand" />,
+                                        to: '/inventory'
+                                    },
+                                    {
+                                        title: t('Contact Us', '联系我们'),
+                                        desc: t('Our team speaks English, Mandarin & Cantonese.', '中英粤三语服务，沟通无障碍。'),
+                                        icon: <Phone size={28} className="text-brand" />,
+                                        to: '/contact'
+                                    },
+                                ].map((item, idx) => (
+                                    <div
+                                        key={item.title}
+                                        className="toyota-card p-6 cursor-pointer group reveal hover:shadow-lg transition-shadow"
+                                        data-reveal
+                                        data-reveal-delay={idx + 1}
+                                        onClick={() => navigate(item.to)}
+                                    >
+                                        <div className="mb-4">{item.icon}</div>
+                                        <h3 className="font-bold text-text-heading group-hover:text-brand transition-colors">{item.title}</h3>
+                                        <p className="text-sm text-text-muted mt-2 hidden md:block">{item.desc}</p>
+                                        <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold text-brand">
+                                            {t('Tell me more', '了解更多')} <ArrowRight size={14} />
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </main>
         </div>
     );
