@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="140" viewBox="0 0 520 140" fill="none" role="img" aria-label="Best Auto">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="520" y2="140" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#E3C46A"/>
+      <stop offset="0.55" stop-color="#D4AF37"/>
+      <stop offset="1" stop-color="#B48B2E"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Premium wordmark: uppercase + generous tracking -->
+  <g>
+    <text
+      x="20"
+      y="86"
+      font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial"
+      font-size="64"
+      font-weight="700"
+      letter-spacing="6"
+      fill="#0B0F1A"
+    >BEST</text>
+
+    <!-- gold divider dot -->
+    <circle cx="270" cy="70" r="5" fill="url(#gold)"/>
+
+    <text
+      x="296"
+      y="86"
+      font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial"
+      font-size="64"
+      font-weight="650"
+      letter-spacing="6"
+      fill="#0B0F1A"
+    >AUTO</text>
+  </g>
+
+  <!-- Hairline underline (gold) -->
+  <path d="M20 104H500" stroke="url(#gold)" stroke-width="2" stroke-linecap="round" opacity="0.95"/>
+</svg>
+

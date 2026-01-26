@@ -8,7 +8,7 @@ import HeroSection from './components/HeroSection.jsx';
 import { cars as carsFromData } from './carsData.js';
 import { useCarsData } from './hooks/useCarsData.js';
 import ImportPage from './admin/ImportPage.jsx';
-import { STOCK_FOLDERS } from './stockManifest.js';
+import { STOCK_FOLDERS, STOCK_COVER2 } from './stockManifest.js';
 
 // --- Language ---
 const LANGUAGE_STORAGE_KEY = 'bestauto.language';
@@ -23,8 +23,8 @@ const useLanguage = () => {
 };
 
 // --- Configuration ---
-const LOGO_URL = "https://static.wixstatic.com/media/943eef_77866c00442d480bbe5b61d50c9bb6bb~mv2.jpg/v1/fill/w_387,h_269,al_c,lg_1,q_80,enc_avif,quality_auto/image_edited.jpg";
-const BRAND_NAME = "BEST AUTO";
+const LOGO_URL = "/brand.jpg";
+const BRAND_NAME = "Best Auto";
 const SALES_PHONE = "+61431618668";
 const SALES_PHONE_DISPLAY = "0431 618 668";
 const SERVICE_PHONE = "+61298973406";
@@ -42,21 +42,45 @@ const PROMO_VIDEO = {
     },
     mp4: "",
     webm: "",
-    poster: "/stock/2024 Toyota Vellfire/cover.jpg",
+    poster: "/stock/2024 Toyota Vellfire/cover (2).jpg",
+};
+
+const getLocalCover = (folderName) => {
+    if (!folderName) return null;
+    const cover2 = STOCK_COVER2?.[folderName];
+    if (cover2) return encodeURI(`/stock/${folderName}/${cover2}`);
+    return `/stock/${folderName}/cover.jpg`;
+};
+
+// Stock folders to hide from the website (unlisted vehicles)
+const HIDDEN_STOCK_FOLDERS = new Set([
+    "24 Ford Ranger Raptor",
+]);
+
+const isHiddenCar = (car) => {
+    if (!car) return false;
+    const folder = typeof car.folderName === 'string' ? car.folderName.trim() : '';
+    if (folder && HIDDEN_STOCK_FOLDERS.has(folder)) return true;
+    const title = typeof car.title === 'string' ? car.title.toLowerCase() : '';
+    if (title.includes('ford ranger raptor')) return true;
+    return false;
 };
 
 // --- 🛠️ 核心工具：图片路径生成器 ---
 const getCarImage = (folderName, imageCount, type = 'cover', car = null) => {
-    // Prefer explicit URLs if provided (e.g. scraped cover images)
-    if (car && type === 'cover' && car.coverUrl) return car.coverUrl;
+    // Prefer explicit gallery URLs if provided (e.g. scraped galleries)
     if (car && type === 'gallery' && Array.isArray(car.galleryUrls)) return car.galleryUrls;
 
     if (!folderName) {
+        // If we don't have local stock, fall back to scraped cover URL if present.
+        if (car && type === 'cover' && car.coverUrl) return car.coverUrl;
         if (type === 'cover') return "https://images.unsplash.com/photo-1600661653561-629509216228?auto=format&fit=crop&q=80&w=1000";
         return ["https://images.unsplash.com/photo-1600661653561-629509216228?auto=format&fit=crop&q=80&w=1000"];
     }
     if (type === 'cover') {
-        return `/stock/${folderName}/cover.jpg`;
+        // Prefer user-curated cover2 naming if present in this folder.
+        const local = getLocalCover(folderName);
+        return local || `/stock/${folderName}/cover.jpg`;
     }
     const count = imageCount || 0;
     if (count === 0) return [];
@@ -218,7 +242,22 @@ const CarCard = ({ car }) => {
                 <img
                     src={imageUrl}
                     alt={car.title}
-                    onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1600661653561-629509216228?auto=format&fit=crop&q=80&w=1000"; }}
+                    onError={(e) => {
+                        const img = e.currentTarget;
+                        const src = img.getAttribute('src') || '';
+                        const folder = car?.folderName;
+                        // If cover (2) missing, try fullwidth variant, then cover.jpg.
+                        if (folder && (src.includes('cover%20(2).jpg') || src.includes('cover (2).jpg'))) {
+                            const triedFullwidth = src.includes('cover%EF%BC%882%EF%BC%89.jpg') || src.includes('cover（2）.jpg');
+                            if (!triedFullwidth) {
+                                img.setAttribute('src', encodeURI(`/stock/${folder}/cover（2）.jpg`));
+                                return;
+                            }
+                            img.setAttribute('src', encodeURI(`/stock/${folder}/cover.jpg`));
+                            return;
+                        }
+                        img.setAttribute('src', "https://images.unsplash.com/photo-1600661653561-629509216228?auto=format&fit=crop&q=80&w=1000");
+                    }}
                     className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                 />
                 {/* Gradient Overlay */}
@@ -1159,10 +1198,10 @@ const HomePage = ({ cars }) => {
 
                     {/* Image Gallery - 3 cars */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                        {[
-                            { img: "/stock/25 Toyota Vellfire Executive Lounge/cover.jpg", name: "2025 Vellfire Executive Lounge", price: "$168,990" },
-                            { img: "/stock/2024 Toyota Vellfire/cover.jpg", name: "2024 Vellfire Hybrid", price: "$115,990" },
-                            { img: "/stock/2023 Toyota Alphard 2.5L/cover.jpg", name: "2023 Alphard 2.5L", price: "$98,990" },
+                            {[
+                            { folder: "25 Toyota Vellfire Executive Lounge", name: "2025 Vellfire Executive Lounge", price: "$168,990" },
+                            { folder: "2024 Toyota Vellfire", name: "2024 Vellfire Hybrid", price: "$115,990" },
+                            { folder: "2023 Toyota Alphard 2.5L", name: "2023 Alphard 2.5L", price: "$98,990" },
                         ].map((car, idx) => (
                             <div 
                                 key={idx} 
@@ -1170,7 +1209,7 @@ const HomePage = ({ cars }) => {
                                 className="group relative rounded-2xl overflow-hidden cursor-pointer h-72"
                             >
                                 <img 
-                                    src={car.img} 
+                                    src={getLocalCover(car.folder)} 
                                     alt={car.name}
                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                     onError={(e) => { e.target.src = "/stock/21 Toyota Alphard/cover.jpg"; }}
@@ -1208,7 +1247,7 @@ const HomePage = ({ cars }) => {
                             onClick={openAlphardSite}
                             className="bg-red-600 hover:bg-red-500 text-white font-bold py-4 px-8 rounded-full transition-all shadow-lg shadow-red-600/30 flex items-center gap-3 whitespace-nowrap"
                         >
-                            {t('View all', '查看全部')} {alphardVellfireCount}+ {t('vehicles', '台')}
+                            {t('View all', '查看全部')} {alphardVellfireCount} {t('Alphard/Vellfire', '埃尔法/威尔法')}
                             <ArrowRight size={18} />
                         </button>
                     </div>
@@ -1295,13 +1334,20 @@ const AlphardHomePage = ({ cars }) => {
     const safeCars = cars || [];
     useParallaxHero();
 
+    const heroSlides = useMemo(() => [
+        '/stock/back/hero-alphard.jpg.jpg',
+        '/stock/2024 Toyota Vellfire/cover.jpg',
+        '/stock/25 Toyota Vellfire Executive Lounge/cover.jpg',
+        '/stock/2023 Toyota Alphard 2.5L/cover.jpg',
+        '/stock/2025 Toyota Voxy (BRAND NEW)/cover.jpg',
+    ], []);
+
     const alphardVellfireCount = safeCars.filter(car => {
         const searchStr = `${car.title} ${car.folderName}`.toLowerCase();
         return searchStr.includes('alphard') || searchStr.includes('vellfire');
     }).length;
 
-    // Hero copy reveal: trigger is at bottom of Welcome section
-    // When trigger scrolls out of viewport, show Hero copy
+    // Hero copy reveal: hidden at top, fade in after scrolling past Welcome section.
     const triggerRef = React.useRef(null);
     const [heroCopyVisible, setHeroCopyVisible] = useState(false);
 
@@ -1311,22 +1357,22 @@ const AlphardHomePage = ({ cars }) => {
             setHeroCopyVisible(true);
             return;
         }
-
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                // When trigger is NOT intersecting (scrolled out), show copy
-                // When trigger IS intersecting (scrolled back), hide copy
-                setHeroCopyVisible(!entry.isIntersecting);
-            },
-            {
-                root: null,
-                rootMargin: '0px 0px 0px 0px',
-                threshold: 0,
-            }
-        );
-
-        observer.observe(triggerRef.current);
-        return () => observer.disconnect();
+        let rafId = 0;
+        const onScroll = () => {
+            if (!triggerRef.current) return;
+            cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(() => {
+                const rect = triggerRef.current.getBoundingClientRect();
+                // When trigger goes above viewport, show copy; when back in view, hide.
+                setHeroCopyVisible(rect.top < 0);
+            });
+        };
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => {
+            cancelAnimationFrame(rafId);
+            window.removeEventListener('scroll', onScroll);
+        };
     }, []);
 
     return (
@@ -1346,7 +1392,7 @@ const AlphardHomePage = ({ cars }) => {
                 <div ref={triggerRef} className="h-1 w-full" aria-hidden="true" />
             </section>
 
-            <HeroSection t={t} copyVisible={heroCopyVisible} onExplore={() => navigate('/inventory')} />
+            <HeroSection t={t} copyVisible={heroCopyVisible} onExplore={() => navigate('/inventory')} slides={heroSlides} />
 
             <main className="relative z-10 bg-white">
                 {/* ========== 1. FIND YOUR IDEAL VEHICLE ========== */}
@@ -1418,7 +1464,14 @@ const AlphardHomePage = ({ cars }) => {
                             {/* Accessories */}
                             <div className="grid md:grid-cols-2 gap-0 toyota-card overflow-hidden reveal" data-reveal data-reveal-delay="1">
                                 <div className="relative h-64 md:h-auto">
-                                    <img src="/stock/2024 Toyota Vellfire/cover.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
+                                    <img
+                                        src={encodeURI("/stock/2024 Toyota Vellfire/cover (2).jpg")}
+                                        alt=""
+                                        className="absolute inset-0 w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.currentTarget.src = "/stock/2024 Toyota Vellfire/cover.jpg";
+                                        }}
+                                    />
                                 </div>
                                 <div className="p-8 md:p-12 flex flex-col justify-center bg-white">
                                     <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand">{t('Featured', '精选')}</p>
@@ -1449,7 +1502,14 @@ const AlphardHomePage = ({ cars }) => {
                                 </button>
                             </div>
                                 <div className="relative h-64 md:h-auto order-1 md:order-2">
-                                    <img src="/stock/2023 Toyota Alphard 2.5L/cover.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
+                                    <img
+                                        src={encodeURI("/stock/2023 Toyota Alphard 2.5L/cover (2).jpg")}
+                                        alt=""
+                                        className="absolute inset-0 w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.currentTarget.src = "/stock/2023 Toyota Alphard 2.5L/cover.jpg";
+                                        }}
+                                    />
                         </div>
                                 </div>
                                         </div>
@@ -1479,7 +1539,20 @@ const AlphardHomePage = ({ cars }) => {
                                         onClick={() => navigate(`/vehicle/${car.id}`)}
                                     >
                                         <div className="relative h-52">
-                                            <img src={getCarImage(car.folderName, car.imageCount, 'cover', car)} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                            <img
+                                                src={getCarImage(car.folderName, car.imageCount, 'cover', car)}
+                                                alt=""
+                                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                onError={(e) => {
+                                                    const img = e.currentTarget;
+                                                    const src = img.getAttribute('src') || '';
+                                                    if (car?.folderName && (src.includes('cover%20(2).jpg') || src.includes('cover (2).jpg'))) {
+                                                        img.setAttribute('src', encodeURI(`/stock/${car.folderName}/cover.jpg`));
+                                                        return;
+                                                    }
+                                                    img.setAttribute('src', "https://images.unsplash.com/photo-1600661653561-629509216228?auto=format&fit=crop&q=80&w=1000");
+                                                }}
+                                            />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                                             <span className="absolute top-4 left-4 bg-white text-[10px] font-bold uppercase tracking-[0.15em] px-3 py-1.5 rounded-full">
                                                 {t('New Arrival', '新到')}
@@ -1516,7 +1589,7 @@ const AlphardHomePage = ({ cars }) => {
                             onClick={() => navigate('/inventory')}
                                     className="toyota-btn-secondary px-6 py-3"
                         >
-                                    {t('View all', '查看全部')} {safeCars.length} {t('vehicles', '台')}
+                                    {t('View all', '查看全部')} {alphardVellfireCount} {t('Alphard/Vellfire', '埃尔法/威尔法')}
                         </button>
                     </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -3020,7 +3093,71 @@ export function AppContent() {
     // 只保留本地 public/stock 里有 cover.jpg 的车型（避免“无图车型都用同一张默认图”）
     const carsWithLocalStock = useMemo(() => {
         const list = cars || [];
-        return list.filter((car) => car?.folderName && stockFolderSet.has(car.folderName));
+        const resolveFolderName = (car) => {
+            if (!car) return null;
+            const rawFolder = typeof car.folderName === 'string' ? car.folderName.trim() : '';
+            if (rawFolder && stockFolderSet.has(rawFolder)) return rawFolder;
+
+            // Safety: if imported data doesn't specify a folder, do NOT guess.
+            // Otherwise we may accidentally "invent" local stock for a scraped listing.
+            if (!rawFolder) return null;
+
+            const hay = `${car.title || ''} ${rawFolder}`.toLowerCase();
+            const isAlphard = hay.includes('alphard');
+            const isVellfire = hay.includes('vellfire');
+            if (!isAlphard && !isVellfire) return null;
+
+            // Common imported/cached pattern: "Toyota Vellfire 2024" -> "2024 Toyota Vellfire" (or "24 Toyota Vellfire")
+            const m = rawFolder.match(/^toyota\s+(alphard|vellfire)\s+(\d{4})$/i);
+            if (m) {
+                const model = m[1];
+                const year = m[2];
+                const year2 = year.slice(-2);
+                const c1 = `${year} Toyota ${model[0].toUpperCase()}${model.slice(1).toLowerCase()}`;
+                const c2 = `${year2} Toyota ${model[0].toUpperCase()}${model.slice(1).toLowerCase()}`;
+                if (stockFolderSet.has(c1)) return c1;
+                if (stockFolderSet.has(c2)) return c2;
+            }
+
+            // Heuristic: pick best matching stock folder by series + year + trim keywords.
+            const yearFromCar =
+                Number.isFinite(Number(car.year)) ? String(Number(car.year)) : (String(car.title || '').match(/\b(19|20)\d{2}\b/)?.[0] || '');
+            const year2 = yearFromCar ? yearFromCar.slice(-2) : '';
+            const titleLower = String(car.title || '').toLowerCase();
+
+            let best = null;
+            let bestScore = -Infinity;
+            for (const folder of STOCK_FOLDERS) {
+                const f = folder.toLowerCase();
+                if (isVellfire && !f.includes('vellfire')) continue;
+                if (isAlphard && !f.includes('alphard')) continue;
+
+                let score = 0;
+                if (yearFromCar && f.includes(yearFromCar.toLowerCase())) score += 4;
+                if (year2 && f.startsWith(`${year2} `)) score += 3;
+                if (titleLower.includes('executive lounge') && f.includes('executive lounge')) score += 3;
+                if (titleLower.includes('2.5') && f.includes('2.5')) score += 2;
+                if (titleLower.includes('hybrid') && f.includes('hybrid')) score += 2;
+
+                // Prefer a closer length match (avoid mapping a specific trim to a totally different one).
+                score -= Math.abs(folder.length - (rawFolder.length || folder.length)) * 0.02;
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    best = folder;
+                }
+            }
+
+            return bestScore >= 3 ? best : null;
+        };
+
+        return list
+            .map((car) => {
+                const resolved = resolveFolderName(car);
+                if (resolved && resolved !== car.folderName) return { ...car, folderName: resolved };
+                return car;
+            })
+            .filter((car) => car?.folderName && stockFolderSet.has(car.folderName) && !isHiddenCar(car));
     }, [cars, stockFolderSet]);
 
     const brandCounts = useMemo(() => {

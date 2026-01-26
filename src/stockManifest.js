@@ -92,3 +92,29 @@ export const STOCK_FOLDERS = [
   "25 Toyota Vellfire Executive Lounge",
   "New 2019 Toyota Alphard SC 3.5 Auto"
 ];
+
+// Maps folderName -> preferred cover2 filename (if present)
+export const STOCK_COVER2 = {
+  "2016 Toyota Alphard EL Hybrid": "cover (2).jpg",
+  "2016 Toyota Alphard GF V6 Auto": "cover (2).jpg",
+  "2016 Toyota Alphard SRC Hybrid AWD": "cover (2).jpg",
+  "2016 Toyota Alphard SRC with Body kit": "cover (2).jpg",
+  "2016 Toyota Alphard SRC With JBL": "cover (2).jpg",
+  "2016 Toyota Vellfire Hybrid Auto": "cover (2).jpg",
+  "2019 New Toyota Alphard SC Auto": "cover (2).jpg",
+  "2019 Toyota Alphard GF Auto Brand New": "cover (2).jpg",
+  "2020 Toyota Alphard GF 3.5 V6 New Car": "cover (2).jpg",
+  "2023 Toyota Alphard 2.5L": "cover (2).jpg",
+  "2024 Toyota Vellfire": "cover (2).jpg",
+  "2024 Toyota Voxy (BRAND NEW)": "cover(2).jpg",
+  "2025 Toyota Voxy (BRAND NEW)": "cover(2).jpg",
+  "21 Toyota Alphard": "cover (2).jpg",
+  "21 Toyota Camry Ascent": "cover (2).jpg",
+  "22 Toyota RAV4 Cruiser Hybrid": "cover (2).jpg",
+  "23 Toyota Corolla Hybrid": "cover (2).jpg",
+  "24 Toyota Vellfire 2.5L Hybrid": "cover (2).jpg",
+  "24 Toyota Vellfire Hybrid": "cover (2).jpg",
+  "25 Toyota Vellfire": "cover (2).jpg",
+  "25 Toyota Vellfire Executive Lounge": "cover (2).jpg",
+  "New 2019 Toyota Alphard SC 3.5 Auto": "cover (2).jpg"
+};
