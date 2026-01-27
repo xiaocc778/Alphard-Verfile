@@ -26,6 +26,38 @@ export default function AutoAspectImage({
     setAspect(initialAspect);
   }, [initialSrc, initialAspect]);
 
+  // Ensure aspect ratio is computed even when the image is served from cache and onLoad
+  // may not fire reliably across route transitions.
+  useEffect(() => {
+    if (!resolvedSrc) return undefined;
+
+    let cancelled = false;
+    const probe = new Image();
+
+    const apply = () => {
+      if (cancelled) return;
+      const w = probe.naturalWidth || 0;
+      const h = probe.naturalHeight || 0;
+      if (w > 0 && h > 0) setAspect(`${w} / ${h}`);
+    };
+
+    probe.onload = apply;
+    probe.onerror = () => {
+      // If primary fails, try fallback (and let the <img> onError handle real swap too).
+      if (fallbackSrc && probe.src !== fallbackSrc) {
+        probe.src = fallbackSrc;
+        return;
+      }
+    };
+
+    probe.src = resolvedSrc;
+    if (probe.complete) apply();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [resolvedSrc, fallbackSrc]);
+
   const handleError = () => {
     if (fallbackSrc && resolvedSrc !== fallbackSrc) setResolvedSrc(fallbackSrc);
   };
