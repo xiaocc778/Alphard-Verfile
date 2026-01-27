@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Link, useNavigate, useParams, useLocation
 // 2. 引入图标库
 import { MapPin, Phone, MessageCircle, Menu, X, ChevronDown, ArrowLeft, Mail, Info, Instagram, Facebook, Globe, Wrench, ShieldCheck, Clock, DollarSign, ChevronLeft, ChevronRight, CheckCircle2, Star, Award, Users, Car, Sparkles, Play, ArrowRight, Shield, Truck, ThumbsUp, Search, User, HelpCircle, Settings, FileText, BookOpen } from 'lucide-react';
 import HeroSection from './components/HeroSection.jsx';
+import FloatingContact from './components/FloatingContact.jsx';
 // 3. 引入车辆数据
 import { cars as carsFromData } from './carsData.js';
 import { useCarsData } from './hooks/useCarsData.js';
@@ -29,7 +30,7 @@ const SALES_PHONE = "+61431618668";
 const SALES_PHONE_DISPLAY = "0431 618 668";
 const SERVICE_PHONE = "+61298973406";
 const SERVICE_PHONE_DISPLAY = "+61 2 9897 3406";
-const WECHAT_ID = "Alphard sales specialist";
+const WECHAT_ID = "John88888";
 const SHOWROOM_ADDRESS = "17 Kanoona Ave, Homebush NSW 2140";
 const SERVICE_ADDRESS = "19 George St, Clyde NSW 2142";
 const CONTACT_EMAIL = "1078500421@qq.com";
@@ -3288,6 +3289,13 @@ export function AppContent() {
     return (
         <div className="min-h-screen bg-page font-sans">
             <ScrollToTop />
+            <FloatingContact
+                t={t}
+                salesPhone={SALES_PHONE}
+                salesPhoneDisplay={SALES_PHONE_DISPLAY}
+                wechatId={WECHAT_ID}
+                email={CONTACT_EMAIL}
+            />
 
             {/* Toyota.com.au-like Header (layout-only; account/search non-functional) */}
             <nav className="sticky top-0 z-40 bg-white border-b border-black/10 h-20">
