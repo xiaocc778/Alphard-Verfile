@@ -2,11 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const DEFAULT_SLIDES = [
-  '/stock/back/hero-alphard.jpg.jpg',
-  '/stock/2024 Toyota Vellfire/cover.jpg',
-  '/stock/25 Toyota Vellfire Executive Lounge/cover.jpg',
-  '/stock/2023 Toyota Alphard 2.5L/cover.jpg',
-  '/stock/2025 Toyota Voxy (BRAND NEW)/cover.jpg',
+  '/better/hero-lineup-1.jpg',
+  '/better/hero-lineup-2.jpg',
+  '/stock/back/shop-hero.jpg.jpg',
 ];
 
 const HeroSection = ({ t, copyVisible = false, onExplore, slides }) => {
@@ -39,7 +37,7 @@ const HeroSection = ({ t, copyVisible = false, onExplore, slides }) => {
     if (safeSlides.length <= 1) return;
     const id = window.setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % safeSlides.length);
-    }, 6500);
+    }, 2500);
     return () => window.clearInterval(id);
   }, [reduceMotion, safeSlides.length]);
 
@@ -54,18 +52,18 @@ const HeroSection = ({ t, copyVisible = false, onExplore, slides }) => {
   };
 
   return (
-    <section className="relative h-screen sticky top-0 z-0 overflow-hidden bg-black">
+    <section className="relative h-[78svh] md:h-screen md:sticky md:top-0 z-0 overflow-hidden bg-black">
       {/* Background Image */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 pointer-events-none">
         {safeSlides.map((src, idx) => (
           <img
             key={`${src}-${idx}`}
             src={src}
             alt=""
             onError={(e) => {
-              e.currentTarget.src = '/stock/back/hero-alphard.jpg.jpg';
+              e.currentTarget.src = '/better/hero-lineup-1.jpg';
             }}
-            className="absolute inset-0 h-full w-full object-cover parallax-layer scale-105 transition-opacity duration-1000 ease-out"
+            className="absolute inset-0 h-full w-full object-cover object-[75%_50%] md:object-center parallax-layer scale-[1.02] md:scale-105 transition-opacity duration-1000 ease-out"
             style={{
               '--parallax-speed': 0.12,
               opacity: idx === activeIndex ? 1 : 0,
@@ -116,11 +114,11 @@ const HeroSection = ({ t, copyVisible = false, onExplore, slides }) => {
 
       {/* Slideshow controls */}
       {safeSlides.length > 1 && (
-        <div className="absolute bottom-8 left-6 md:left-12 lg:left-16 z-20 flex items-center gap-3">
+        <div className="absolute bottom-6 left-6 md:bottom-8 md:left-12 lg:left-16 z-30 flex items-center gap-3 pointer-events-auto">
           <button
             type="button"
             onClick={goPrev}
-            className="h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur border border-white/15 transition-colors"
+            className="relative z-30 touch-manipulation h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur border border-white/15 transition-colors"
             aria-label="Previous slide"
           >
             <ChevronLeft className="mx-auto" size={18} />
@@ -141,7 +139,7 @@ const HeroSection = ({ t, copyVisible = false, onExplore, slides }) => {
           <button
             type="button"
             onClick={goNext}
-            className="h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur border border-white/15 transition-colors"
+            className="relative z-30 touch-manipulation h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur border border-white/15 transition-colors"
             aria-label="Next slide"
           >
             <ChevronRight className="mx-auto" size={18} />
