@@ -13,6 +13,7 @@ export default function FloatingContact({
   const lastYRef = useRef(0);
   const rafRef = useRef(0);
   const hideTimerRef = useRef(null);
+  const hintTimerRef = useRef(null);
 
   const mailto = useMemo(() => {
     if (!email) return null;
@@ -34,8 +35,16 @@ export default function FloatingContact({
       hideTimerRef.current = window.setTimeout(() => {
         setVisible(false);
         setOpen(false);
-      }, 2200);
+      }, 4500);
     };
+
+    // Hint on first load so users notice the dock exists.
+    setVisible(true);
+    scheduleAutoHide();
+    hintTimerRef.current = window.setTimeout(() => {
+      setVisible(false);
+      setOpen(false);
+    }, 5200);
 
     const onScroll = () => {
       const y = window.scrollY || 0;
@@ -44,11 +53,11 @@ export default function FloatingContact({
 
       window.cancelAnimationFrame(rafRef.current);
       rafRef.current = window.requestAnimationFrame(() => {
-        // Show when user scrolls down; hide when user scrolls up near top.
-        if (dy > 6 && y > 40) {
+        // Make it very easy to trigger: any meaningful scroll down shows the dock.
+        if (dy > 1 && y > 10) {
           setVisible(true);
           scheduleAutoHide();
-        } else if (dy < -8 && y < 120) {
+        } else if (dy < -1) {
           setOpen(false);
           setVisible(false);
         }
@@ -60,6 +69,7 @@ export default function FloatingContact({
       window.removeEventListener('scroll', onScroll);
       window.cancelAnimationFrame(rafRef.current);
       if (hideTimerRef.current) window.clearTimeout(hideTimerRef.current);
+      if (hintTimerRef.current) window.clearTimeout(hintTimerRef.current);
     };
   }, []);
 
@@ -74,16 +84,16 @@ export default function FloatingContact({
 
   return (
     <div
-      className={`fixed right-4 bottom-4 z-50 transition-all duration-300 ${
-        visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
+      className={`fixed right-4 bottom-4 z-50 transition-all duration-500 ease-out ${
+        visible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10 pointer-events-none'
       }`}
       onMouseEnter={() => setVisible(true)}
       onMouseLeave={() => setOpen(false)}
     >
       {/* Panel */}
       <div
-        className={`mb-3 w-[280px] rounded-2xl border border-black/10 bg-white/95 backdrop-blur-md shadow-xl transition-all duration-300 ${
-          open ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
+        className={`mb-3 w-[280px] rounded-2xl border border-black/10 bg-white/95 backdrop-blur-md shadow-xl transition-all duration-400 ease-out ${
+          open ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3 pointer-events-none'
         }`}
       >
         <div className="flex items-center justify-between px-4 pt-4">
