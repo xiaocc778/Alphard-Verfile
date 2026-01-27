@@ -8,7 +8,7 @@ export default function FloatingContact({
   wechatId,
   email,
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [visible, setVisible] = useState(false);
   const lastYRef = useRef(0);
   const rafRef = useRef(0);
@@ -56,6 +56,7 @@ export default function FloatingContact({
         // Make it very easy to trigger: any meaningful scroll down shows the dock.
         if (dy > 1 && y > 10) {
           setVisible(true);
+          setOpen(true);
           scheduleAutoHide();
         } else if (dy < -1) {
           setOpen(false);
@@ -109,10 +110,7 @@ export default function FloatingContact({
         </div>
 
         <div className="px-4 pb-4 pt-3 space-y-2">
-          <a
-            href={salesPhone ? `tel:${salesPhone}` : undefined}
-            className="w-full flex items-center gap-3 rounded-xl border border-black/10 bg-white px-4 py-3 hover:bg-surface transition-colors"
-          >
+          <div className="w-full flex items-center gap-3 rounded-xl border border-black/10 bg-white px-4 py-3">
             <span className="h-10 w-10 rounded-xl bg-brand/10 text-brand flex items-center justify-center">
               <Phone size={18} />
             </span>
@@ -122,7 +120,7 @@ export default function FloatingContact({
               </div>
               <div className="text-sm font-black text-text-heading truncate">{salesPhoneDisplay || salesPhone}</div>
             </div>
-          </a>
+          </div>
 
           <button
             type="button"
