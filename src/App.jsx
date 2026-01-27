@@ -1431,15 +1431,15 @@ const AlphardHomePage = ({ cars }) => {
                                         data-reveal-delay={idx + 1}
                                         onClick={() => navigate(cat.filter ? `/inventory?q=${cat.filter}` : '/inventory')}
                                     >
-                                        <div className="relative aspect-[4/3] rounded-lg overflow-hidden mb-4">
+                                        <div className="relative rounded-lg overflow-hidden mb-4">
                                             <AutoAspectImage
                                                 src={cat.image}
                                                 alt=""
-                                                className="absolute inset-0 h-full w-full"
+                                                className="w-full"
                                                 imgClassName="transition-opacity duration-300 group-hover:opacity-95"
                                             />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                </div>
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent pointer-events-none" />
+                                        </div>
                                         <h3 className="font-bold text-text-heading group-hover:text-brand transition-colors">{cat.name}</h3>
                                         <p className="text-sm text-text-muted mt-1 hidden md:block">{cat.desc}</p>
                                     </div>
