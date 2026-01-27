@@ -14,6 +14,7 @@ export default function FramedImage({
   imgClassName = '',
   bgClassName = '',
   fit = 'contain', // 'contain' | 'cover'
+  mode = 'framed', // 'framed' | 'plain'
   loading,
   decoding = 'async',
 }) {
@@ -34,9 +35,25 @@ export default function FramedImage({
 
   const fitClass = fit === 'cover' ? 'object-cover' : 'object-contain';
 
+  // Plain mode: just show the image (no blur background, no framing).
+  if (mode === 'plain') {
+    return (
+      <div className={`relative overflow-hidden ${className}`}>
+        <img
+          src={resolvedSrc}
+          alt={alt}
+          onError={handleError}
+          loading={loading}
+          decoding={decoding}
+          className={`absolute inset-0 h-full w-full ${fitClass} ${imgClassName}`}
+        />
+      </div>
+    );
+  }
+
+  // Framed mode: contain image + blurred background fill + subtle vignette.
   return (
     <div className={`relative overflow-hidden ${className}`}>
-      {/* Soft background fill */}
       <img
         src={resolvedSrc}
         alt=""
@@ -49,7 +66,6 @@ export default function FramedImage({
       <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent pointer-events-none" />
       <div className="absolute inset-0 ring-1 ring-black/10 pointer-events-none" />
 
-      {/* Foreground image (full, no crop) */}
       <img
         src={resolvedSrc}
         alt={alt}

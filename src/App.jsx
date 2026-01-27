@@ -246,8 +246,8 @@ const CarCard = ({ car }) => {
                     alt={car.title}
                     fallbackSrc="https://images.unsplash.com/photo-1600661653561-629509216228?auto=format&fit=crop&q=80&w=1000"
                     className="h-full w-full"
-                    imgClassName="p-3"
-                    bgClassName="opacity-95"
+                    mode="plain"
+                    fit="cover"
                 />
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent opacity-85 transition-opacity duration-300 pointer-events-none"></div>
@@ -990,8 +990,8 @@ const HomePage = ({ cars }) => {
                                             src={item.image}
                                             alt=""
                                             className="w-full h-56"
-                                            imgClassName="p-3"
-                                            bgClassName="opacity-95"
+                                            mode="plain"
+                                            fit="cover"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent pointer-events-none" />
                                         <div className="absolute bottom-4 left-4 right-4 text-white">
@@ -1208,8 +1208,8 @@ const HomePage = ({ cars }) => {
                                     alt={car.name}
                                     fallbackSrc="/stock/21 Toyota Alphard/cover.jpg"
                                     className="absolute inset-0 h-full w-full"
-                                    imgClassName="p-3"
-                                    bgClassName="opacity-95"
+                                    mode="plain"
+                                    fit="cover"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
                                 <div className="absolute bottom-0 left-0 right-0 p-5">
@@ -1440,8 +1440,8 @@ const AlphardHomePage = ({ cars }) => {
                                                 src={cat.image}
                                                 alt=""
                                                 className="absolute inset-0 h-full w-full"
-                                                imgClassName="p-3"
-                                                bgClassName="opacity-95"
+                                                mode="plain"
+                                                fit="cover"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 </div>
@@ -1466,7 +1466,8 @@ const AlphardHomePage = ({ cars }) => {
                                         alt=""
                                         fallbackSrc="/stock/2024 Toyota Vellfire/cover.jpg"
                                         className="absolute inset-0 h-full w-full"
-                                        imgClassName="p-4"
+                                        mode="plain"
+                                        fit="cover"
                                     />
                                 </div>
                                 <div className="p-8 md:p-12 flex flex-col justify-center bg-white">
@@ -1503,7 +1504,8 @@ const AlphardHomePage = ({ cars }) => {
                                         alt=""
                                         fallbackSrc="/stock/2023 Toyota Alphard 2.5L/cover.jpg"
                                         className="absolute inset-0 h-full w-full"
-                                        imgClassName="p-4"
+                                        mode="plain"
+                                        fit="cover"
                                     />
                         </div>
                                 </div>
@@ -1539,8 +1541,8 @@ const AlphardHomePage = ({ cars }) => {
                                                 alt=""
                                                 fallbackSrc="https://images.unsplash.com/photo-1600661653561-629509216228?auto=format&fit=crop&q=80&w=1000"
                                                 className="absolute inset-0 h-full w-full"
-                                                imgClassName="p-3"
-                                                bgClassName="opacity-95"
+                                                mode="plain"
+                                                fit="cover"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
                                             <span className="absolute top-4 left-4 bg-white text-[10px] font-bold uppercase tracking-[0.15em] px-3 py-1.5 rounded-full">
@@ -1977,8 +1979,8 @@ const InventoryPage = ({ cars, category }) => {
                                         src="/stock/2024 Toyota Vellfire/cover.jpg"
                                         alt={t('Alphard / Vellfire showcase', '埃尔法 / 威尔法展示')}
                                         className="h-64 md:h-72 w-full"
-                                        imgClassName="p-3"
-                                        bgClassName="opacity-95"
+                                    mode="plain"
+                                    fit="cover"
                                     />
                                 </div>
                                 <div className="mt-4 flex gap-3">
@@ -2602,8 +2604,8 @@ const SellPage = () => {
                                 src="/stock/2023 Toyota Alphard 2.5L/cover.jpg"
                                 alt=""
                                 className="absolute inset-0 h-full w-full"
-                                imgClassName="p-3"
-                                bgClassName="opacity-95"
+                                mode="plain"
+                                fit="cover"
                             />
                         </div>
                         <div>
