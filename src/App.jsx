@@ -1336,11 +1336,9 @@ const AlphardHomePage = ({ cars }) => {
     useParallaxHero();
 
     const heroSlides = useMemo(() => [
-        '/stock/back/hero-alphard.jpg.jpg',
-        '/stock/2024 Toyota Vellfire/cover.jpg',
-        '/stock/25 Toyota Vellfire Executive Lounge/cover.jpg',
-        '/stock/2023 Toyota Alphard 2.5L/cover.jpg',
-        '/stock/2025 Toyota Voxy (BRAND NEW)/cover.jpg',
+        '/better/hero-lineup-1.jpg',
+        '/better/hero-lineup-2.jpg',
+        '/stock/back/shop-hero.jpg.jpg',
     ], []);
 
     const alphardVellfireCount = safeCars.filter(car => {
@@ -1430,7 +1428,7 @@ const AlphardHomePage = ({ cars }) => {
                                     { 
                                         name: t('All Vehicles', '全部车辆'), 
                                         desc: t('View our complete inventory.', '查看全部库存。'),
-                                        image: '/stock/back/hero-alphard.jpg.jpg',
+                                        image: '/better/hero-lineup-2.jpg',
                                         filter: ''
                                     },
                                 ].map((cat, idx) => (

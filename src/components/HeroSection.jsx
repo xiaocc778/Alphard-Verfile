@@ -2,11 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const DEFAULT_SLIDES = [
-  '/stock/back/hero-alphard.jpg.jpg',
-  '/stock/2024 Toyota Vellfire/cover.jpg',
-  '/stock/25 Toyota Vellfire Executive Lounge/cover.jpg',
-  '/stock/2023 Toyota Alphard 2.5L/cover.jpg',
-  '/stock/2025 Toyota Voxy (BRAND NEW)/cover.jpg',
+  '/better/hero-lineup-1.jpg',
+  '/better/hero-lineup-2.jpg',
+  '/stock/back/shop-hero.jpg.jpg',
 ];
 
 const HeroSection = ({ t, copyVisible = false, onExplore, slides }) => {
@@ -54,7 +52,7 @@ const HeroSection = ({ t, copyVisible = false, onExplore, slides }) => {
   };
 
   return (
-    <section className="relative h-screen sticky top-0 z-0 overflow-hidden bg-black">
+    <section className="relative h-[78svh] md:h-screen md:sticky md:top-0 z-0 overflow-hidden bg-black">
       {/* Background Image */}
       <div className="absolute inset-0">
         {safeSlides.map((src, idx) => (
@@ -63,9 +61,9 @@ const HeroSection = ({ t, copyVisible = false, onExplore, slides }) => {
             src={src}
             alt=""
             onError={(e) => {
-              e.currentTarget.src = '/stock/back/hero-alphard.jpg.jpg';
+              e.currentTarget.src = '/better/hero-lineup-1.jpg';
             }}
-            className="absolute inset-0 h-full w-full object-cover parallax-layer scale-105 transition-opacity duration-1000 ease-out"
+            className="absolute inset-0 h-full w-full object-cover object-[75%_50%] md:object-center parallax-layer scale-[1.02] md:scale-105 transition-opacity duration-1000 ease-out"
             style={{
               '--parallax-speed': 0.12,
               opacity: idx === activeIndex ? 1 : 0,
