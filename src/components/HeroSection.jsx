@@ -37,7 +37,7 @@ const HeroSection = ({ t, copyVisible = false, onExplore, slides }) => {
     if (safeSlides.length <= 1) return;
     const id = window.setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % safeSlides.length);
-    }, 6500);
+    }, 2500);
     return () => window.clearInterval(id);
   }, [reduceMotion, safeSlides.length]);
 
