@@ -54,7 +54,7 @@ const HeroSection = ({ t, copyVisible = false, onExplore, slides }) => {
   return (
     <section className="relative h-[78svh] md:h-screen md:sticky md:top-0 z-0 overflow-hidden bg-black">
       {/* Background Image */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 pointer-events-none">
         {safeSlides.map((src, idx) => (
           <img
             key={`${src}-${idx}`}
@@ -114,11 +114,11 @@ const HeroSection = ({ t, copyVisible = false, onExplore, slides }) => {
 
       {/* Slideshow controls */}
       {safeSlides.length > 1 && (
-        <div className="absolute bottom-8 left-6 md:left-12 lg:left-16 z-20 flex items-center gap-3">
+        <div className="absolute bottom-6 left-6 md:bottom-8 md:left-12 lg:left-16 z-30 flex items-center gap-3 pointer-events-auto">
           <button
             type="button"
             onClick={goPrev}
-            className="h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur border border-white/15 transition-colors"
+            className="relative z-30 touch-manipulation h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur border border-white/15 transition-colors"
             aria-label="Previous slide"
           >
             <ChevronLeft className="mx-auto" size={18} />
@@ -139,7 +139,7 @@ const HeroSection = ({ t, copyVisible = false, onExplore, slides }) => {
           <button
             type="button"
             onClick={goNext}
-            className="h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur border border-white/15 transition-colors"
+            className="relative z-30 touch-manipulation h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur border border-white/15 transition-colors"
             aria-label="Next slide"
           >
             <ChevronRight className="mx-auto" size={18} />
