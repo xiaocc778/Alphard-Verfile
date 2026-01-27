@@ -239,7 +239,7 @@ const CarCard = ({ car }) => {
             data-reveal
         >
             {/* Image Container */}
-            <div className="relative h-56 overflow-hidden bg-surface">
+            <div className="relative h-56 overflow-hidden bg-gradient-to-br from-white to-surface flex items-center justify-center p-3">
                 <img
                     src={imageUrl}
                     alt={car.title}
@@ -259,10 +259,10 @@ const CarCard = ({ car }) => {
                         }
                         img.setAttribute('src', "https://images.unsplash.com/photo-1600661653561-629509216228?auto=format&fit=crop&q=80&w=1000");
                     }}
-                    className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                    className="max-w-full max-h-full object-contain transition-opacity duration-300 group-hover:opacity-95"
                 />
                 {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent opacity-85 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent opacity-85 transition-opacity duration-300 pointer-events-none"></div>
                 
                 {/* Status Badge */}
                 <div className="absolute top-4 left-4 z-10 flex gap-2">
@@ -998,8 +998,10 @@ const HomePage = ({ cars }) => {
                             ].map((item) => (
                                 <div key={item.title} className="toyota-card overflow-hidden group reveal" data-reveal data-reveal-delay="2">
                                     <div className="relative">
-                                        <img src={item.image} alt="" className="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105" />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                                        <div className="w-full h-56 bg-gradient-to-br from-white to-surface flex items-center justify-center p-3">
+                                            <img src={item.image} alt="" className="max-w-full max-h-full object-contain transition-opacity duration-300 group-hover:opacity-95" />
+                                        </div>
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent pointer-events-none" />
                                         <div className="absolute bottom-4 left-4 right-4 text-white">
                                             <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">
                                                 {t('Category', '分类')}
@@ -1207,15 +1209,15 @@ const HomePage = ({ cars }) => {
                             <div 
                                 key={idx} 
                                 onClick={openAlphardSite}
-                                className="group relative rounded-2xl overflow-hidden cursor-pointer h-72"
+                                className="group relative rounded-2xl overflow-hidden cursor-pointer h-72 bg-white/5 flex items-center justify-center p-3"
                             >
                                 <img 
                                     src={getLocalCover(car.folder)} 
                                     alt={car.name}
-                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                    className="max-w-full max-h-full object-contain transition-opacity duration-300 group-hover:opacity-95"
                                     onError={(e) => { e.target.src = "/stock/21 Toyota Alphard/cover.jpg"; }}
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none"></div>
                                 <div className="absolute bottom-0 left-0 right-0 p-5">
                                     <p className="text-white font-bold text-lg">{car.name}</p>
                                     <p className="text-red-400 font-bold">{car.price}</p>
@@ -1439,11 +1441,11 @@ const AlphardHomePage = ({ cars }) => {
                                         data-reveal-delay={idx + 1}
                                         onClick={() => navigate(cat.filter ? `/inventory?q=${cat.filter}` : '/inventory')}
                                     >
-                                        <div className="relative aspect-[4/3] rounded-lg overflow-hidden mb-4">
+                                        <div className="relative aspect-[4/3] rounded-lg overflow-hidden mb-4 bg-gradient-to-br from-white to-surface flex items-center justify-center p-3">
                                             <img 
                                                 src={cat.image} 
                         alt=""
-                                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                className="max-w-full max-h-full object-contain transition-opacity duration-300 group-hover:opacity-95"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                 </div>
@@ -1462,11 +1464,11 @@ const AlphardHomePage = ({ cars }) => {
                         <div className="max-w-site mx-auto space-y-6">
                             {/* Accessories */}
                             <div className="grid md:grid-cols-2 gap-0 toyota-card overflow-hidden reveal" data-reveal data-reveal-delay="1">
-                                <div className="relative h-64 md:h-auto">
+                                <div className="relative h-64 md:h-auto bg-gradient-to-br from-white to-surface flex items-center justify-center p-4">
                                     <img
                                         src={encodeURI("/stock/2024 Toyota Vellfire/cover (2).jpg")}
                                         alt=""
-                                        className="absolute inset-0 w-full h-full object-cover"
+                                        className="max-w-full max-h-full object-contain"
                                         onError={(e) => {
                                             e.currentTarget.src = "/stock/2024 Toyota Vellfire/cover.jpg";
                                         }}
@@ -1500,11 +1502,11 @@ const AlphardHomePage = ({ cars }) => {
                                         {t('Estimate my repayments', '估算分期')} <ArrowRight size={16} />
                                 </button>
                             </div>
-                                <div className="relative h-64 md:h-auto order-1 md:order-2">
+                                <div className="relative h-64 md:h-auto order-1 md:order-2 bg-gradient-to-br from-white to-surface flex items-center justify-center p-4">
                                     <img
                                         src={encodeURI("/stock/2023 Toyota Alphard 2.5L/cover (2).jpg")}
                                         alt=""
-                                        className="absolute inset-0 w-full h-full object-cover"
+                                        className="max-w-full max-h-full object-contain"
                                         onError={(e) => {
                                             e.currentTarget.src = "/stock/2023 Toyota Alphard 2.5L/cover.jpg";
                                         }}
@@ -1537,11 +1539,11 @@ const AlphardHomePage = ({ cars }) => {
                                         data-reveal-delay={idx + 1}
                                         onClick={() => navigate(`/vehicle/${car.id}`)}
                                     >
-                                        <div className="relative h-52">
+                                        <div className="relative h-52 bg-gradient-to-br from-white to-surface flex items-center justify-center p-3">
                                             <img
                                                 src={getCarImage(car.folderName, car.imageCount, 'cover', car)}
                                                 alt=""
-                                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                className="max-w-full max-h-full object-contain transition-opacity duration-300 group-hover:opacity-95"
                                                 onError={(e) => {
                                                     const img = e.currentTarget;
                                                     const src = img.getAttribute('src') || '';
@@ -1552,7 +1554,7 @@ const AlphardHomePage = ({ cars }) => {
                                                     img.setAttribute('src', "https://images.unsplash.com/photo-1600661653561-629509216228?auto=format&fit=crop&q=80&w=1000");
                                                 }}
                                             />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
                                             <span className="absolute top-4 left-4 bg-white text-[10px] font-bold uppercase tracking-[0.15em] px-3 py-1.5 rounded-full">
                                                 {t('New Arrival', '新到')}
                                             </span>
@@ -1982,11 +1984,11 @@ const InventoryPage = ({ cars, category }) => {
                                 </div>
                             </div>
                             <div className="md:col-span-5">
-                                <div className="rounded-3xl overflow-hidden border border-slate-100 shadow-lg">
+                                <div className="rounded-3xl overflow-hidden border border-slate-100 shadow-lg bg-gradient-to-br from-white to-surface flex items-center justify-center p-3">
                                     <img
                                         src="/stock/2024 Toyota Vellfire/cover.jpg"
                                         alt={t('Alphard / Vellfire showcase', '埃尔法 / 威尔法展示')}
-                                        className="w-full h-64 md:h-72 object-cover"
+                                        className="max-w-full max-h-[18rem] md:max-h-[20rem] object-contain"
                                     />
                                 </div>
                                 <div className="mt-4 flex gap-3">
@@ -2203,7 +2205,7 @@ const CarDetailPage = ({ cars }) => {
                                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur text-white text-xs px-4 py-1.5 rounded-full font-medium tracking-widest">{currentImageIndex + 1} / {galleryImages.length}</div>
                             </>}
                         </div>
-                        {galleryImages.length > 1 && <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">{galleryImages.map((img, idx) => (<button key={idx} onClick={() => setCurrentImageIndex(idx)} className={`flex-shrink-0 w-24 h-16 rounded-lg overflow-hidden border-2 transition-all relative ${currentImageIndex === idx ? 'border-brand ring-2 ring-brand/10' : 'border-transparent opacity-60 hover:opacity-100'}`}><img src={img} alt="thumb" className="w-full h-full object-cover" /></button>))}</div>}
+                        {galleryImages.length > 1 && <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">{galleryImages.map((img, idx) => (<button key={idx} onClick={() => setCurrentImageIndex(idx)} className={`flex-shrink-0 w-24 h-16 rounded-lg overflow-hidden border-2 transition-all relative bg-gradient-to-br from-white to-surface ${currentImageIndex === idx ? 'border-brand ring-2 ring-brand/10' : 'border-transparent opacity-60 hover:opacity-100'}`}><img src={img} alt="thumb" className="w-full h-full object-contain" /></button>))}</div>}
                         <div className="toyota-card p-10">
                             <h3 className="text-xl font-bold text-text-heading mb-6 flex items-center gap-2">
                                 <Info size={20} className="text-brand" /> {t('Vehicle Overview', '车辆概览')}
@@ -2605,11 +2607,11 @@ const SellPage = () => {
             <section className="py-20">
                 <div className="container mx-auto px-6">
                     <div className="max-w-site mx-auto grid md:grid-cols-2 gap-12 items-center">
-                        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden">
+                        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-white to-surface flex items-center justify-center p-3">
                             <img 
                                 src="/stock/2023 Toyota Alphard 2.5L/cover.jpg" 
                                 alt="" 
-                                className="absolute inset-0 w-full h-full object-cover"
+                                className="max-w-full max-h-full object-contain"
                             />
                         </div>
                         <div>
